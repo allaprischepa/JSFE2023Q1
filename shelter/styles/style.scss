@@ -19,9 +19,9 @@ $start-screen-gradient-background-stop: #262425;
 $footer-gradient-background-start: #513D2F;
 $footer-gradient-background-stop: #1A1A1C;
 
-@mixin font($font-family: Arial, $font-size: 15px, $line-height: 160%, $letter-spacing: 0, $color: $color-dark-xl) {
+@mixin font($font-family: Arial, $font-style: normal, $font-size: 15px, $line-height: 160%, $letter-spacing: 0, $color: $color-dark-xl) {
     font-family: $font-family;
-    font-style: normal;
+    font-style: $font-style;
     font-weight: 400;
     font-size: $font-size;
     line-height: $line-height;
@@ -30,17 +30,33 @@ $footer-gradient-background-stop: #1A1A1C;
 
 }
 
-@mixin headers($font-size, $letter-spacing: 0.06em, $color: $color-dark-l) {
-    @include font(Georgia, $font-size, 130%, $letter-spacing, $color);
+@mixin headers($font-size, $line-height: 130%, $letter-spacing: 0.06em, $color: $color-dark-l) {
+    @include font($font-family: Georgia, $font-size: $font-size, $line-height: $line-height, $letter-spacing: $letter-spacing, $color: $color);
+    margin: 0;
 }
 
 %button {
-    @include font(Georgia, 17px, 130%, 0.06em, $color-dark-3xl);
+    @include font($font-family: Georgia, $font-size: 17px, $line-height: 130%, $letter-spacing: 0.06em, $color: $color-dark-3xl);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 45px;
+    justify-content: center;
+    gap: 10px;
+    height: 52px;
     border: none;
     border-radius: 100px;
     cursor: pointer;
     padding: 15px 45px;
+    box-sizing: border-box;
     transition: all 200ms;
+
+    > *{
+        align-self: center;
+        flex: none;
+        order: 0;
+        flex-grow: 0;
+    }
 }
 
 $icons: (
@@ -59,8 +75,8 @@ $icons: (
 @each $icon in $icons {
   .icon--#{$icon} {
     display: inline-block;
-    background: url("../assets/icon-#{$icon}.svg");
-    height: 60px;
+    content: url("../assets/icon-#{$icon}.svg");
+    //height: 60px;
     width: 60px;
     background-size: 100%;
     background-repeat: no-repeat;
@@ -68,15 +84,31 @@ $icons: (
   }
 }
 
+.icon--credit-card {
+    content: url("../assets/credit-card.svg");
+}
+.icon--email {
+    content: url("../assets/icon-email.svg");
+}
+.icon--phone {
+    content: url("../assets/icon-phone.svg");
+}
+.icon--location {
+    content: url("../assets/icon-pin.svg");
+}
 
 body {
     @include font;
 }
 /* Text-size styles */
-h2 {@include headers(44px, 0, $color-light-s);}
-h3 {@include headers(35px);}
-h4 {@include headers(20px);}
-h5 {@include headers(15px);}
+h2 {@include headers($font-size: 44px, $letter-spacing: 0);}
+h3 {@include headers($font-size: 35px);}
+h4 {@include headers($font-size: 20px, $line-height: 115%);}
+h5 {@include headers($font-size: 15px, $line-height: 110%);}
+
+.paragraph-s {
+    @include font($font-style: italic, $font-size: 12px, $line-height: 150%, $color: $color-dark-m);
+}
 
 a {
     color: inherit;
@@ -97,6 +129,18 @@ button, .button-primary {
         padding: 0;
         width: 52px;
         height: 52px;
+        font-size: 20px;
+        line-height: 115%;
+
+        &.arrow-button {
+            line-height:0;
+            &:before {
+                content: url(../assets/Arrow.svg);
+            }
+            &.arrow-button-next {
+                transform: scale(-1, -1);
+            }
+        }
     }
 
     &.make-friend-button {
@@ -113,7 +157,12 @@ button, .button-primary {
     padding: 0 40px;
     box-sizing: border-box;
     overflow: auto;
+
+    .footer-section & {
+        padding-top: 40px;
+    }
 }
+
 header {
     height: 60px;
     display: flex;
@@ -126,22 +175,12 @@ nav {
     display: flex;
     justify-content: space-between;
 }
-a:hover {
-    color: $color-light-s;
-}
-a.active {
-    color: $color-light-s;
-    border-bottom: 3px solid $color-primary;
-    pointer-events: none;
-}
 
 .top-section {
     background: url(../assets/noise_transparent@2x.png), radial-gradient(100% 215.42% at 0% 0%, $start-screen-gradient-background-start 0%, $start-screen-gradient-background-stop 100%), $start-screen-gradient-background;
-    color: $color-dark-s;
 }
 .footer-section {
     background: url(noise_lines_transparent@2X.png), radial-gradient(110.67% 538.64% at 5.73% 50%, $footer-gradient-background-start 0%, $footer-gradient-background-stop 100%), $footer-gradient-background;
-    color: $color-dark-s;
 }
 .pets-section, .donation-section {
     background: $color-light-l;
@@ -160,7 +199,7 @@ a.active {
     height: 100%;
 
     .logo-title {
-        @include font(Georgia, 32px, 110%, 0.06em, $color-primary)
+        @include font($font-family: Georgia, $font-size: 32px, $line-height: 110%, $letter-spacing: 0.06em, $color: $color-primary)
     }
 
     .logo-subtitle {
@@ -185,32 +224,30 @@ a.active {
     gap: 42px;
     align-self: center;
     flex-flow: column;
-    //align-items: flex-start;
+
     .not-only-header {
         width: 310px;
-        // margin-bottom: 42px;
     }
 }
 
 .about-section .container {
     display: flex;
     align-items: center;
-    > .child-item {
-        width: 50%;
-        .about-pets-img {
-            margin-left: 175px;
-        }
-        .about-text-block {
-            width: 430px;
-            display: flex;
-            flex-flow: column;
-            gap: 25px;
-            .about-header {
-                width: 370px;
-            }
+    gap: 120px;
+    margin: auto;
+    justify-content: center;
+
+    .about-text-block {
+        width: 430px;
+        display: flex;
+        flex-flow: column;
+        gap: 25px;
+        .about-header {
+            width: 370px;
         }
     }
 }
+
 .pets-section .container {
     display: flex;
     flex-flow: column;
@@ -221,6 +258,7 @@ a.active {
         text-align: center;
     }
 }
+
 .help-section .container {
     display: flex;
     flex-flow: column;
@@ -234,15 +272,27 @@ a.active {
 
 .help-list {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 120px;
     row-gap: 55px;
+    align-items: self-end;
+    margin: 0 87px;
 
     > .child-item {
         display: flex;
         flex-flow: column;
         align-items: center;
-        gap: 42px;
+        gap: 30px;
+
+        &:nth-child(-n+5) {
+            flex: 1 1 auto;
+            //width: calc((100% - 480px) / 5);
+        }
+        &:nth-child(n+6) {
+            flex: 0 1 auto;
+        }
+
     }
 }
 
@@ -254,11 +304,112 @@ a.active {
     .slider {
         display: flex;
         gap: 90px;
+
         .slider-card {
             display: flex;
             flex-flow: column;
             background: $color-light-s;
             border-radius: 9px;
+
+            .card-name {
+                @include font($font-family: Georgia, $font-size: 20px, $line-height: 23px, $letter-spacing: 0.06em, $color: $color-dark-l);
+            }
+
+            .card-info {
+                display: flex;
+                flex-flow: column;
+                align-items: center;
+                gap: 30px;
+                margin: 30px 0;
+            }
+        }
+    }
+}
+
+.donation-section .container {
+    display: flex;
+    margin: auto;
+    gap: 30px;
+    align-items: center;
+    justify-content: center;
+
+    .donation-text-block {
+        width: 380px;
+        display: flex;
+        flex-flow: column;
+        gap: 20px;
+
+        .donation-header {
+            width: 300px;
+        }
+
+        .credit-card-block-wrapper {
+            display: inline-block;
+            background-color: $color-primary;
+            padding: 10px 15px;
+            border-radius: 9px;
+        }
+        .credit-card-block {
+            display: flex;
+            gap: 15px;
+            line-height: 0;
+        }
+    }
+}
+
+.footer-section .container {
+    display: flex;
+    gap: 160px;
+
+    > .child-item {
+
+        &:nth-child(-n+2) {
+            margin-top: 16px;
+        }
+
+        &:last-child {
+            min-width: 300px;
+        }
+    }
+
+    .footer-contacts {
+        display: flex;
+        flex-flow: column;
+        gap: 40px;
+    }
+
+    .footer-locations {
+        display: flex;
+        flex-flow: column;
+        gap: 34px;
+    }
+
+    .email-item, .phone-item, .location-item {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+}
+
+.dark-section {
+    color: $color-dark-s;
+
+    h1, h2, h3, h4, h5 {
+        color: $color-light-xl;
+    }
+
+    a:hover {
+        color: $color-light-s;
+    }
+    a.active {
+        color: $color-light-s;
+        border-bottom: 3px solid $color-primary;
+        pointer-events: none;
+    }
+
+    .footer-contacts, .footer-locations {
+        a * {
+            color: $color-primary;
         }
     }
 }
