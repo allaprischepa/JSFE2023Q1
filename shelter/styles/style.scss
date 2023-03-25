@@ -105,6 +105,7 @@ body {
     @include font;
 }
 /* Text-size styles */
+h1 {display:none;}
 h2 {@include headers($font-size: 44px, $letter-spacing: 0);}
 h3 {@include headers($font-size: 35px);}
 h4 {@include headers($font-size: 20px, $line-height: 115%);}
@@ -119,8 +120,9 @@ a {
     text-decoration: inherit;
 }
 
-button, button, .button-primary {
+button, .button, .button-primary {
     @extend %button;
+    transition: 0.8s;
 
     &.button-primary {
         background-color: $color-primary;
@@ -173,6 +175,9 @@ header {
     justify-content: space-between;
     align-items: center;
     margin-top: 30px;
+    &:last-child {
+        margin-bottom: 30px;
+    }
 }
 nav {
     width: 443px;
@@ -180,10 +185,10 @@ nav {
     justify-content: space-between;
 }
 
-.top-section {
+.dark-section.top-section {
     background: url(../assets/noise_transparent@2x.png), radial-gradient(100% 215.42% at 0% 0%, $start-screen-gradient-background-start 0%, $start-screen-gradient-background-stop 100%), $start-screen-gradient-background;
 }
-.footer-section {
+.dark-section.footer-section {
     background: url(../assets/noise_transparent@2x.png), radial-gradient(110.67% 538.64% at 5.73% 50%, $footer-gradient-background-start 0%, $footer-gradient-background-stop 100%), $footer-gradient-background;
 }
 .pets-section, .donation-section {
@@ -204,14 +209,19 @@ nav {
     gap: 10px;
 
     .logo-title {
-        @include font($font-family: Georgia, $font-size: 32px, $line-height: 110%, $letter-spacing: 0.06em, $color: $color-primary)
+        @include font($font-family: Georgia, $font-size: 32px, $line-height: 110%, $letter-spacing: 0.06em, $color: $color-dark-l);
+
+        .dark-section & {
+            color: $color-primary;
+        }
     }
 
     .logo-subtitle {
-        font-size: 13px;
-        line-height: 15px;
-        letter-spacing: 0.1em;
-        color: $color-light-xl;
+        @include font($font-size: 13px, $line-height: 15px, $letter-spacing: 0.1em, $color: $color-dark-3xl);
+
+        .dark-section & {
+            color: $color-light-xl;
+        }
     }
 }
 
@@ -305,27 +315,42 @@ nav {
     display: flex;
     gap: 53px;
     align-items: center;
+}
+.slider {
+    display: flex;
+    gap: 90px;
 
-    .slider {
+    &.four-column-slider {
+        flex-wrap: wrap;
+        gap: 40px;
+        row-gap: 30px;
+    }
+
+    .slider-card {
+        width: 270px;
         display: flex;
-        gap: 90px;
+        flex-flow: column;
+        background: $color-light-s;
+        border-radius: 9px;
+        cursor: pointer;
+        transition: 0.8s;
 
-        .slider-card {
+        .card-name {
+            @include font($font-family: Georgia, $font-size: 20px, $line-height: 23px, $letter-spacing: 0.06em, $color: $color-dark-l);
+        }
+
+        .card-info {
             display: flex;
             flex-flow: column;
-            background: $color-light-s;
-            border-radius: 9px;
+            align-items: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
 
-            .card-name {
-                @include font($font-family: Georgia, $font-size: 20px, $line-height: 23px, $letter-spacing: 0.06em, $color: $color-dark-l);
-            }
-
-            .card-info {
-                display: flex;
-                flex-flow: column;
-                align-items: center;
-                gap: 30px;
-                margin: 30px 0;
+        &:hover {
+            background: $color-light-xl;
+            button, .button, .button-primary {
+                background: $color-primary-light;
             }
         }
     }

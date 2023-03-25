@@ -1,6 +1,6 @@
 @import url(../styles/normilize.css);
 /* Color styles */
-button, .button-primary {
+button, .button, .button-primary {
   font-family: Georgia;
   font-style: normal;
   font-weight: 400;
@@ -22,7 +22,7 @@ button, .button-primary {
   box-sizing: border-box;
   transition: all 200ms;
 }
-button > *, .button-primary > * {
+button > *, .button > *, .button-primary > * {
   align-self: center;
   flex: none;
   order: 0;
@@ -141,6 +141,10 @@ body {
 }
 
 /* Text-size styles */
+h1 {
+  display: none;
+}
+
 h2 {
   font-family: Georgia;
   font-style: normal;
@@ -200,33 +204,36 @@ a {
   text-decoration: inherit;
 }
 
-button.button-primary, button.button-primary, .button-primary.button-primary {
+button, .button, .button-primary {
+  transition: 0.8s;
+}
+button.button-primary, .button.button-primary, .button-primary.button-primary {
   background-color: #F1CDB3;
 }
-button.button-secondary, button.button-secondary, .button-primary.button-secondary {
+button.button-secondary, .button.button-secondary, .button-primary.button-secondary {
   border: 2px solid #F1CDB3;
   background-color: inherit;
 }
-button.button-round, button.button-round, .button-primary.button-round {
+button.button-round, .button.button-round, .button-primary.button-round {
   padding: 0;
   width: 52px;
   height: 52px;
   font-size: 20px;
   line-height: 115%;
 }
-button.button-round.arrow-button, button.button-round.arrow-button, .button-primary.button-round.arrow-button {
+button.button-round.arrow-button, .button.button-round.arrow-button, .button-primary.button-round.arrow-button {
   line-height: 0;
 }
-button.button-round.arrow-button:before, button.button-round.arrow-button:before, .button-primary.button-round.arrow-button:before {
+button.button-round.arrow-button:before, .button.button-round.arrow-button:before, .button-primary.button-round.arrow-button:before {
   content: url(../assets/Arrow.svg);
 }
-button.button-round.arrow-button.arrow-button-next, button.button-round.arrow-button.arrow-button-next, .button-primary.button-round.arrow-button.arrow-button-next {
+button.button-round.arrow-button.arrow-button-next, .button.button-round.arrow-button.arrow-button-next, .button-primary.button-round.arrow-button.arrow-button-next {
   transform: scale(-1, -1);
 }
-button.make-friend-button, button.make-friend-button, .button-primary.make-friend-button {
+button.make-friend-button, .button.make-friend-button, .button-primary.make-friend-button {
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
-button:hover, button:hover, .button-primary:hover {
+button:hover, .button:hover, .button-primary:hover {
   background: #FDDCC4;
 }
 
@@ -248,6 +255,9 @@ header {
   align-items: center;
   margin-top: 30px;
 }
+header:last-child {
+  margin-bottom: 30px;
+}
 
 nav {
   width: 443px;
@@ -255,11 +265,11 @@ nav {
   justify-content: space-between;
 }
 
-.top-section {
+.dark-section.top-section {
   background: url(../assets/noise_transparent@2x.png), radial-gradient(100% 215.42% at 0% 0%, #5B483A 0%, #262425 100%), #211F20;
 }
 
-.footer-section {
+.dark-section.footer-section {
   background: url(../assets/noise_transparent@2x.png), radial-gradient(110.67% 538.64% at 5.73% 50%, #513D2F 0%, #1A1A1C 100%), #211F20;
 }
 
@@ -286,12 +296,21 @@ nav {
   font-size: 32px;
   line-height: 110%;
   letter-spacing: 0.06em;
+  color: #545454;
+}
+.dark-section .logo .logo-title {
   color: #F1CDB3;
 }
 .logo .logo-subtitle {
+  font-family: Arial;
+  font-style: normal;
+  font-weight: 400;
   font-size: 13px;
   line-height: 15px;
   letter-spacing: 0.1em;
+  color: #292929;
+}
+.dark-section .logo .logo-subtitle {
   color: #FFFFFF;
 }
 
@@ -381,17 +400,26 @@ nav {
   gap: 53px;
   align-items: center;
 }
-.slider-wrapper .slider {
+
+.slider {
   display: flex;
   gap: 90px;
 }
-.slider-wrapper .slider .slider-card {
+.slider.four-column-slider {
+  flex-wrap: wrap;
+  gap: 40px;
+  row-gap: 30px;
+}
+.slider .slider-card {
+  width: 270px;
   display: flex;
   flex-flow: column;
   background: #FAFAFA;
   border-radius: 9px;
+  cursor: pointer;
+  transition: 0.8s;
 }
-.slider-wrapper .slider .slider-card .card-name {
+.slider .slider-card .card-name {
   font-family: Georgia;
   font-style: normal;
   font-weight: 400;
@@ -400,12 +428,18 @@ nav {
   letter-spacing: 0.06em;
   color: #545454;
 }
-.slider-wrapper .slider .slider-card .card-info {
+.slider .slider-card .card-info {
   display: flex;
   flex-flow: column;
   align-items: center;
   gap: 30px;
   margin: 30px 0;
+}
+.slider .slider-card:hover {
+  background: #FFFFFF;
+}
+.slider .slider-card:hover button, .slider .slider-card:hover .button, .slider .slider-card:hover .button-primary {
+  background: #FDDCC4;
 }
 
 .donation-section .container {
