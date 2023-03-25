@@ -8,7 +8,7 @@ button, .button-primary {
   line-height: 130%;
   letter-spacing: 0.06em;
   color: #292929;
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   align-items: center;
   padding: 15px 45px;
@@ -126,6 +126,10 @@ button > *, .button-primary > * {
   content: url("../assets/icon-pin.svg");
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: Arial;
   font-style: normal;
@@ -196,33 +200,33 @@ a {
   text-decoration: inherit;
 }
 
-button.button-primary, .button-primary.button-primary {
+button.button-primary, button.button-primary, .button-primary.button-primary {
   background-color: #F1CDB3;
 }
-button.button-secondary, .button-primary.button-secondary {
+button.button-secondary, button.button-secondary, .button-primary.button-secondary {
   border: 2px solid #F1CDB3;
   background-color: inherit;
 }
-button.button-round, .button-primary.button-round {
+button.button-round, button.button-round, .button-primary.button-round {
   padding: 0;
   width: 52px;
   height: 52px;
   font-size: 20px;
   line-height: 115%;
 }
-button.button-round.arrow-button, .button-primary.button-round.arrow-button {
+button.button-round.arrow-button, button.button-round.arrow-button, .button-primary.button-round.arrow-button {
   line-height: 0;
 }
-button.button-round.arrow-button:before, .button-primary.button-round.arrow-button:before {
+button.button-round.arrow-button:before, button.button-round.arrow-button:before, .button-primary.button-round.arrow-button:before {
   content: url(../assets/Arrow.svg);
 }
-button.button-round.arrow-button.arrow-button-next, .button-primary.button-round.arrow-button.arrow-button-next {
+button.button-round.arrow-button.arrow-button-next, button.button-round.arrow-button.arrow-button-next, .button-primary.button-round.arrow-button.arrow-button-next {
   transform: scale(-1, -1);
 }
-button.make-friend-button, .button-primary.make-friend-button {
+button.make-friend-button, button.make-friend-button, .button-primary.make-friend-button {
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
-button:hover, .button-primary:hover {
+button:hover, button:hover, .button-primary:hover {
   background: #FDDCC4;
 }
 
@@ -256,7 +260,7 @@ nav {
 }
 
 .footer-section {
-  background: url(noise_lines_transparent@2X.png), radial-gradient(110.67% 538.64% at 5.73% 50%, #513D2F 0%, #1A1A1C 100%), #211F20;
+  background: url(../assets/noise_transparent@2x.png), radial-gradient(110.67% 538.64% at 5.73% 50%, #513D2F 0%, #1A1A1C 100%), #211F20;
 }
 
 .pets-section, .donation-section {
@@ -273,6 +277,7 @@ nav {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  gap: 10px;
 }
 .logo .logo-title {
   font-family: Georgia;
@@ -463,7 +468,7 @@ nav {
 .dark-section h1, .dark-section h2, .dark-section h3, .dark-section h4, .dark-section h5 {
   color: #FFFFFF;
 }
-.dark-section a:hover {
+.dark-section a:not(.button):hover {
   color: #FAFAFA;
 }
 .dark-section a.active {

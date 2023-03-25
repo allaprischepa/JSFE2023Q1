@@ -5,16 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main</title>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.png">
     <link rel="stylesheet" href="../styles/style.css">
 </head>
 <body class="main-page">
-    <section class="dark-section top-section">
+    <div class="dark-section top-section">
         <div class="container">
-            <header id="header">
-                <div class="logo">
-                    <div class="logo-title">Cozy House</div>
-                    <div class="logo-subtitle">Shelter for pets in Boston</div>
-                </div>
+            <header>
+                <a href="">
+                    <div class="logo">
+                        <div class="logo-title">Cozy House</div>
+                        <div class="logo-subtitle">Shelter for pets in Boston</div>
+                    </div>
+                </a>
                 <nav class="paragraph-1">
                     <a href="" class="active">About the shelter</a>
                     <a href="../pets">Our pets</a>
@@ -23,19 +26,19 @@
                 </nav>
             </header>
             <div class="intro">
-                <div class="not-only-container" id="not-only">
+                <div class="not-only-container">
                     <div class="child-item not-only-header"><h2>Not only people need a house</h2></div>
                     <div class="child-item"><p>We offer to give a chance to a little and nice puppy with an extremely wide and open heart. He or she will love you more than anybody else in the world, you will see!</p></div>
-                    <div class="child-item"><button class="button-primary make-friend-button">Make a friend</button></div>
+                    <div class="child-item"><a class="button button-primary make-friend-button" href="#our-frineds">Make a friend</a></div>
                 </div>
                 <div class="puppy-image">
                     <img src="../assets/start-screen-puppy-3.png" alt="Start-screen puppy">
                 </div>
             </div>
         </div>
-    </section>
-    <section class="about-section">
-        <div class="container" id="about">
+    </div>
+    <div class="about-section">
+        <div class="container">
             <div class="child-item"><div class="about-pets-img"><img src="../assets/about-pets-2.png" alt="About pets"></div></div>
             <div class="child-item">
                 <div class="about-text-block">
@@ -45,12 +48,11 @@
                 </div>
             </div>
         </div>
-    </section>
-    <section class="pets-section">
-        <div class="container" id="pets">
+    </div>
+    <div class="pets-section" id="our-frineds">
+        <div class="container">
             <div class="child-item pets-header"><h3>Our friends who are&nbsp;looking for a house</h3></div>
             <div class="child-item slider-wrapper">
-                <!-- <button class="button-secondary button-round arrow-prev">&#129044;</button> -->
                 <button class="button-secondary button-round arrow-button"></button>
                 <div class="slider">
                     <div class="child-item slider-card">
@@ -76,14 +78,12 @@
                     </div>
                 </div>
                 <button class="button-secondary button-round arrow-button arrow-button-next"></button>
-                <!-- <button class="button-secondary button-round arrow-next">&#129046;</button> -->
             </div>
-            <div class="child-item"><div class="child-item"><button class="button-primary">Get to know the rest</button></div></div>
-            <!-- <div id="pets">Pets</div> -->
+            <div class="child-item"><div class="child-item"><a class="button-primary" href="../pets">Get to know the rest</a></div></div>
         </div>
-    </section>
-    <section class="help-section">
-        <div class="container" id="help">
+    </div>
+    <div class="help-section" id="help">
+        <div class="container">
             <div class="child-item help-header"><h3>How you can help our shelter</h3></div>
             <div class="child-item help-list">
                 <div class="child-item first-row">
@@ -124,8 +124,8 @@
                 </div>
             </div>
         </div>
-    </section>
-    <section class="donation-section">
+    </div>
+    <div class="donation-section">
         <div class="container">
             <div class="child-item"><div class="donation-dog-img"><img src="../assets/donation-dog-1.png" alt="Donation image"></div></div>
             <div class="child-item">
@@ -136,7 +136,7 @@
                         <div class="credit-card-block-wrapper">
                             <div class="credit-card-block">
                                 <div class="child-item"><i class="icon--credit-card"></i></div>
-                                <div class="child-item"><a href="tel:83802880802887917435"><h4>8380 2880 8028 8791 7435</h4></a></div>
+                                <div class="child-item"><a href=""><h4>8380 2880 8028 8791 7435</h4></a></div>
                             </div>
                         </div>
                     </div>
@@ -144,14 +144,14 @@
                 </div>
             </div>
         </div>
-    </section>
-    <section class="dark-section footer-section">
+    </div>
+    <div class="dark-section footer-section" id="footer">
         <div class="container">
             <div class="child-item">
                 <div class="footer-contacts">
                     <h3>For questions and&nbsp;suggestions</h3>
-                    <div class="child-item email-item"><i class="icon--email"></i><a href="mailto:email@shelter.com"><h4>email@shelter.com</h4></a></div>
-                    <div class="child-item phone-item"><i class="icon--phone"></i><a href="tel:+136745677554"><h4>+13 674 567 75 54</h4></a></div>
+                    <div class="child-item"><a href="mailto:email@shelter.com" class="email-item"><i class="icon--email"></i><h4>email@shelter.com</h4></a></div>
+                    <div class="child-item"><a href="tel:+136745677554" class="phone-item"><i class="icon--phone"></i><h4>+13 674 567 75 54</h4></a></div>
                 </div>
             </div>
             <div class="child-item">
@@ -165,6 +165,6 @@
                 <img class="footer-image" src="../assets/footer-puppy.png" alt="Footer image">
             </div>
         </div>
-    </section>
+    </div>
 </body>
 </html>

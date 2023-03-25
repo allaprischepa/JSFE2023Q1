@@ -37,7 +37,7 @@ $footer-gradient-background-stop: #1A1A1C;
 
 %button {
     @include font($font-family: Georgia, $font-size: 17px, $line-height: 130%, $letter-spacing: 0.06em, $color: $color-dark-3xl);
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
     align-items: center;
     padding: 15px 45px;
@@ -97,6 +97,10 @@ $icons: (
     content: url("../assets/icon-pin.svg");
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     @include font;
 }
@@ -115,7 +119,7 @@ a {
     text-decoration: inherit;
 }
 
-button, .button-primary {
+button, button, .button-primary {
     @extend %button;
 
     &.button-primary {
@@ -180,7 +184,7 @@ nav {
     background: url(../assets/noise_transparent@2x.png), radial-gradient(100% 215.42% at 0% 0%, $start-screen-gradient-background-start 0%, $start-screen-gradient-background-stop 100%), $start-screen-gradient-background;
 }
 .footer-section {
-    background: url(noise_lines_transparent@2X.png), radial-gradient(110.67% 538.64% at 5.73% 50%, $footer-gradient-background-start 0%, $footer-gradient-background-stop 100%), $footer-gradient-background;
+    background: url(../assets/noise_transparent@2x.png), radial-gradient(110.67% 538.64% at 5.73% 50%, $footer-gradient-background-start 0%, $footer-gradient-background-stop 100%), $footer-gradient-background;
 }
 .pets-section, .donation-section {
     background: $color-light-l;
@@ -197,6 +201,7 @@ nav {
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+    gap: 10px;
 
     .logo-title {
         @include font($font-family: Georgia, $font-size: 32px, $line-height: 110%, $letter-spacing: 0.06em, $color: $color-primary)
@@ -398,7 +403,7 @@ nav {
         color: $color-light-xl;
     }
 
-    a:hover {
+    a:not(.button):hover {
         color: $color-light-s;
     }
     a.active {
