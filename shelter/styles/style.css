@@ -212,6 +212,7 @@ a {
   color: inherit;
   text-decoration: inherit;
   box-sizing: border-box;
+  transition: all 200ms;
 }
 a.active {
   border-bottom: 3px solid #F1CDB3;
@@ -500,6 +501,10 @@ nav {
   display: flex;
   gap: 15px;
   line-height: 0;
+  transition: all 500ms;
+}
+.donation-section .container .donation-text-block .credit-card-block:hover {
+  opacity: 0.5;
 }
 
 .footer-section .container {
@@ -529,7 +534,7 @@ nav {
   flex-flow: column;
   gap: 34px;
 }
-.footer-section .container .email-item, .footer-section .container .phone-item, .footer-section .container .location-item {
+.footer-section .container .contact-link {
   display: flex;
   gap: 20px;
   align-items: center;
@@ -549,8 +554,14 @@ nav {
   border-bottom: 3px solid #F1CDB3;
   pointer-events: none;
 }
+.dark-section .footer-contacts a, .dark-section .footer-locations a {
+  transition: all 500ms;
+}
 .dark-section .footer-contacts a *, .dark-section .footer-locations a * {
   color: #F1CDB3;
+}
+.dark-section .footer-contacts a:hover, .dark-section .footer-locations a:hover {
+  opacity: 0.5;
 }
 
 /*# sourceMappingURL=style.css.map */

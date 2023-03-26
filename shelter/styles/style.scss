@@ -140,6 +140,7 @@ a {
     color: inherit;
     text-decoration: inherit;
     box-sizing: border-box;
+    transition: all 200ms;
 
     &.active {
         border-bottom: 3px solid $color-primary;
@@ -426,6 +427,11 @@ nav {
             display: flex;
             gap: 15px;
             line-height: 0;
+            transition: all 500ms;
+
+            &:hover {
+                opacity: 0.5;
+            }
         }
     }
 }
@@ -463,7 +469,7 @@ nav {
         gap: 34px;
     }
 
-    .email-item, .phone-item, .location-item {
+    .contact-link {
         display: flex;
         gap: 20px;
         align-items: center;
@@ -487,8 +493,13 @@ nav {
     }
 
     .footer-contacts, .footer-locations {
-        a * {
-            color: $color-primary;
+        a {
+            transition: all 500ms;
+            * {color: $color-primary;}
+
+            &:hover {
+                opacity: 0.5;
+            }
         }
     }
 }
