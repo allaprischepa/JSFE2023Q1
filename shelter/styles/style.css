@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @import url(../styles/normilize.css);
 /* Color styles */
 button, .button, .button-primary {
@@ -203,6 +204,13 @@ a {
   color: inherit;
   text-decoration: inherit;
 }
+a.active {
+  border-bottom: 3px solid #F1CDB3;
+  pointer-events: none;
+}
+a:hover {
+  color: #292929;
+}
 
 button, .button, .button-primary {
   transition: 0.8s;
@@ -225,16 +233,31 @@ button.button-round.arrow-button, .button.button-round.arrow-button, .button-pri
   line-height: 0;
 }
 button.button-round.arrow-button:before, .button.button-round.arrow-button:before, .button-primary.button-round.arrow-button:before {
-  content: url(../assets/Arrow.svg);
+  content: "🠔";
 }
 button.button-round.arrow-button.arrow-button-next, .button.button-round.arrow-button.arrow-button-next, .button-primary.button-round.arrow-button.arrow-button-next {
   transform: scale(-1, -1);
+}
+button.active, .button.active, .button-primary.active {
+  background: #F1CDB3;
+  border-color: #F1CDB3;
+  pointer-events: none;
+}
+button.inactive, .button.inactive, .button-primary.inactive {
+  background: none;
+  border-color: #CDCDCD;
+  color: #CDCDCD;
+  pointer-events: none;
+}
+button.inactive:before, .button.inactive:before, .button-primary.inactive:before {
+  color: #CDCDCD;
 }
 button.make-friend-button, .button.make-friend-button, .button-primary.make-friend-button {
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 button:hover, .button:hover, .button-primary:hover {
   background: #FDDCC4;
+  border-color: #FDDCC4;
 }
 
 .container {
@@ -440,6 +463,11 @@ nav {
 }
 .slider .slider-card:hover button, .slider .slider-card:hover .button, .slider .slider-card:hover .button-primary {
   background: #FDDCC4;
+}
+
+.slider-controls {
+  display: flex;
+  gap: 20px;
 }
 
 .donation-section .container {

@@ -118,7 +118,16 @@ h5 {@include headers($font-size: 15px, $line-height: 110%);}
 a {
     color: inherit;
     text-decoration: inherit;
+
+    &.active {
+        border-bottom: 3px solid $color-primary;
+        pointer-events: none;
+    }
+    &:hover {
+        color: $color-dark-3xl;
+    }
 }
+
 
 button, .button, .button-primary {
     @extend %button;
@@ -141,11 +150,26 @@ button, .button, .button-primary {
         &.arrow-button {
             line-height:0;
             &:before {
-                content: url(../assets/Arrow.svg);
+                content: "🠔";
             }
             &.arrow-button-next {
                 transform: scale(-1, -1);
             }
+        }
+    }
+
+    &.active {
+        background: $color-primary;
+        border-color: $color-primary;
+        pointer-events: none;
+    }
+    &.inactive {
+        background: none;
+        border-color: $color-dark-s;
+        color: $color-dark-s;
+        pointer-events: none;
+        &:before {
+            color: $color-dark-s;
         }
     }
 
@@ -154,6 +178,7 @@ button, .button, .button-primary {
     }
     &:hover {
         background: $color-primary-light;
+        border-color: $color-primary-light;
     }
 }
 
@@ -302,7 +327,6 @@ nav {
 
         &:nth-child(-n+5) {
             flex: 1 1 auto;
-            //width: calc((100% - 480px) / 5);
         }
         &:nth-child(n+6) {
             flex: 0 1 auto;
@@ -354,6 +378,10 @@ nav {
             }
         }
     }
+}
+.slider-controls {
+    display: flex;
+    gap: 20px;
 }
 
 .donation-section .container {
