@@ -33,12 +33,19 @@ $main-letter-spacing: 0.06em;
 
 $georgia-font-family: 'GeorgiaRegular';
 
+/* Calculate line-height in px according to font-size */
+@function calculateAndRoundLineHeight($font-size, $line-height) {
+    @if unit($line-height) == 'px' { @return $line-height; }
+
+    @return floor(calc($font-size * ($line-height / 100%)));
+}
+
 @mixin font($font-family: Arial, $font-style: normal, $font-size: 15px, $line-height: 160%, $letter-spacing: 0, $color: $color-dark-xl) {
     font-family: $font-family;
     font-style: $font-style;
     font-weight: 400;
     font-size: $font-size;
-    line-height: $line-height;
+    line-height: calculateAndRoundLineHeight($font-size, $line-height);
     letter-spacing: $letter-spacing;
     color: $color;
 
@@ -123,7 +130,7 @@ h1 {display:none;}
 h2 {@include headers($font-size: 44px, $letter-spacing: 0);}
 h3 {@include headers($font-size: 35px);}
 h4 {@include headers($font-size: 20px, $line-height: 115%);}
-h5 {@include headers($font-size: 15px, $line-height: 110%);}
+h5 {@include headers($font-size: 15px, $line-height: 115%);}
 
 .paragraph-s {
     @include font($font-style: italic, $font-size: 12px, $line-height: 150%, $color: $color-dark-m);
@@ -132,6 +139,7 @@ h5 {@include headers($font-size: 15px, $line-height: 110%);}
 a {
     color: inherit;
     text-decoration: inherit;
+    box-sizing: border-box;
 
     &.active {
         border-bottom: 3px solid $color-primary;
@@ -159,7 +167,7 @@ button, .button, .button-primary {
         width: 52px;
         height: 52px;
         font-size: 20px;
-        line-height: 115%;
+        line-height: calculateAndRoundLineHeight(20px, 115%) ;
 
         &.arrow-button {
             line-height:0;
@@ -425,6 +433,7 @@ nav {
 .footer-section .container {
     display: flex;
     justify-content: space-between;
+    gap: 160px;
 
     > .child-item {
         max-width: 300px;

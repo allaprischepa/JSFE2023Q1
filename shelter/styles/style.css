@@ -8,12 +8,13 @@
   font-weight: 400;
 }
 /* Color styles */
+/* Calculate line-height in px according to font-size */
 button, .button, .button-primary {
   font-family: "GeorgiaRegular";
   font-style: normal;
   font-weight: 400;
   font-size: 17px;
-  line-height: 130%;
+  line-height: 22px;
   letter-spacing: 0.06em;
   color: #292929;
   display: inline-flex;
@@ -143,7 +144,7 @@ body {
   font-style: normal;
   font-weight: 400;
   font-size: 15px;
-  line-height: 160%;
+  line-height: 24px;
   letter-spacing: 0;
   color: #4C4C4C;
 }
@@ -158,7 +159,7 @@ h2 {
   font-style: normal;
   font-weight: 400;
   font-size: 44px;
-  line-height: 130%;
+  line-height: 57px;
   letter-spacing: 0;
   color: #545454;
   margin: 0;
@@ -169,7 +170,7 @@ h3 {
   font-style: normal;
   font-weight: 400;
   font-size: 35px;
-  line-height: 130%;
+  line-height: 45px;
   letter-spacing: 0.06em;
   color: #545454;
   margin: 0;
@@ -180,7 +181,7 @@ h4 {
   font-style: normal;
   font-weight: 400;
   font-size: 20px;
-  line-height: 115%;
+  line-height: 23px;
   letter-spacing: 0.06em;
   color: #545454;
   margin: 0;
@@ -191,7 +192,7 @@ h5 {
   font-style: normal;
   font-weight: 400;
   font-size: 15px;
-  line-height: 110%;
+  line-height: 17px;
   letter-spacing: 0.06em;
   color: #545454;
   margin: 0;
@@ -202,7 +203,7 @@ h5 {
   font-style: italic;
   font-weight: 400;
   font-size: 12px;
-  line-height: 150%;
+  line-height: 18px;
   letter-spacing: 0;
   color: #B2B2B2;
 }
@@ -210,6 +211,7 @@ h5 {
 a {
   color: inherit;
   text-decoration: inherit;
+  box-sizing: border-box;
 }
 a.active {
   border-bottom: 3px solid #F1CDB3;
@@ -234,7 +236,7 @@ button.button-round, .button.button-round, .button-primary.button-round {
   width: 52px;
   height: 52px;
   font-size: 20px;
-  line-height: 115%;
+  line-height: 23px;
 }
 button.button-round.arrow-button, .button.button-round.arrow-button, .button-primary.button-round.arrow-button {
   line-height: 0;
@@ -324,7 +326,7 @@ nav {
   font-style: normal;
   font-weight: 400;
   font-size: 32px;
-  line-height: 110%;
+  line-height: 35px;
   letter-spacing: 0.06em;
   color: #545454;
 }
@@ -503,6 +505,7 @@ nav {
 .footer-section .container {
   display: flex;
   justify-content: space-between;
+  gap: 160px;
 }
 .footer-section .container > .child-item {
   max-width: 300px;
