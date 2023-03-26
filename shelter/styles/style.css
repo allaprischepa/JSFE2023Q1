@@ -1,8 +1,15 @@
 @charset "UTF-8";
 @import url(../styles/normilize.css);
+@font-face {
+  font-family: "GeorgiaRegular";
+  src: url("../fonts/Georgia/GeorgiaRegular/GeorgiaRegular.eot");
+  src: url("../fonts/Georgia/GeorgiaRegular/GeorgiaRegular.eot?#iefix") format("embedded-opentype"), url("../fonts/Georgia/GeorgiaRegular/GeorgiaRegular.woff") format("woff"), url("../fonts/Georgia/GeorgiaRegular/GeorgiaRegular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+}
 /* Color styles */
 button, .button, .button-primary {
-  font-family: Georgia;
+  font-family: "GeorgiaRegular";
   font-style: normal;
   font-weight: 400;
   font-size: 17px;
@@ -147,7 +154,7 @@ h1 {
 }
 
 h2 {
-  font-family: Georgia;
+  font-family: "GeorgiaRegular";
   font-style: normal;
   font-weight: 400;
   font-size: 44px;
@@ -158,7 +165,7 @@ h2 {
 }
 
 h3 {
-  font-family: Georgia;
+  font-family: "GeorgiaRegular";
   font-style: normal;
   font-weight: 400;
   font-size: 35px;
@@ -169,7 +176,7 @@ h3 {
 }
 
 h4 {
-  font-family: Georgia;
+  font-family: "GeorgiaRegular";
   font-style: normal;
   font-weight: 400;
   font-size: 20px;
@@ -180,7 +187,7 @@ h4 {
 }
 
 h5 {
-  font-family: Georgia;
+  font-family: "GeorgiaRegular";
   font-style: normal;
   font-weight: 400;
   font-size: 15px;
@@ -313,7 +320,7 @@ nav {
   gap: 10px;
 }
 .logo .logo-title {
-  font-family: Georgia;
+  font-family: "GeorgiaRegular";
   font-style: normal;
   font-weight: 400;
   font-size: 32px;
@@ -393,7 +400,7 @@ nav {
   align-items: center;
 }
 .help-section .container .help-header {
-  width: 308px;
+  width: 310px;
   text-align: center;
 }
 
@@ -404,19 +411,12 @@ nav {
   gap: 120px;
   row-gap: 55px;
   align-items: self-end;
-  margin: 0 87px;
 }
 .help-list > .child-item {
   display: flex;
   flex-flow: column;
   align-items: center;
   gap: 30px;
-}
-.help-list > .child-item:nth-child(-n+5) {
-  flex: 1 1 auto;
-}
-.help-list > .child-item:nth-child(n+6) {
-  flex: 0 1 auto;
 }
 
 .slider-wrapper {
@@ -444,7 +444,7 @@ nav {
   transition: 0.8s;
 }
 .slider .slider-card .card-name {
-  font-family: Georgia;
+  font-family: "GeorgiaRegular";
   font-style: normal;
   font-weight: 400;
   font-size: 20px;
@@ -502,7 +502,13 @@ nav {
 
 .footer-section .container {
   display: flex;
-  gap: 160px;
+  justify-content: space-between;
+}
+.footer-section .container > .child-item {
+  max-width: 300px;
+}
+.footer-section .container > .child-item:first-child {
+  width: 280px;
 }
 .footer-section .container > .child-item:nth-child(-n+2) {
   margin-top: 16px;
