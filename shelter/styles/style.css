@@ -271,7 +271,7 @@ button:hover, .button:hover, .button-primary:hover {
 }
 
 .container {
-  max-width: 1280px;
+  width: 1280px;
   margin: auto;
   padding: 0 40px;
   box-sizing: border-box;
