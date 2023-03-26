@@ -19,6 +19,8 @@ $start-screen-gradient-background-stop: #262425;
 $footer-gradient-background-start: #513D2F;
 $footer-gradient-background-stop: #1A1A1C;
 
+$main-letter-spacing: 0.06em;
+
 @mixin font($font-family: Arial, $font-style: normal, $font-size: 15px, $line-height: 160%, $letter-spacing: 0, $color: $color-dark-xl) {
     font-family: $font-family;
     font-style: $font-style;
@@ -30,13 +32,13 @@ $footer-gradient-background-stop: #1A1A1C;
 
 }
 
-@mixin headers($font-size, $line-height: 130%, $letter-spacing: 0.06em, $color: $color-dark-l) {
+@mixin headers($font-size, $line-height: 130%, $letter-spacing: $main-letter-spacing, $color: $color-dark-l) {
     @include font($font-family: Georgia, $font-size: $font-size, $line-height: $line-height, $letter-spacing: $letter-spacing, $color: $color);
     margin: 0;
 }
 
 %button {
-    @include font($font-family: Georgia, $font-size: 17px, $line-height: 130%, $letter-spacing: 0.06em, $color: $color-dark-3xl);
+    @include font($font-family: Georgia, $font-size: 17px, $line-height: 130%, $letter-spacing: $main-letter-spacing, $color: $color-dark-3xl);
     display: inline-flex;
     flex-direction: column;
     align-items: center;
@@ -234,7 +236,7 @@ nav {
     gap: 10px;
 
     .logo-title {
-        @include font($font-family: Georgia, $font-size: 32px, $line-height: 110%, $letter-spacing: 0.06em, $color: $color-dark-l);
+        @include font($font-family: Georgia, $font-size: 32px, $line-height: 110%, $letter-spacing: $main-letter-spacing, $color: $color-dark-l);
 
         .dark-section & {
             color: $color-primary;
@@ -361,7 +363,7 @@ nav {
         transition: 0.8s;
 
         .card-name {
-            @include font($font-family: Georgia, $font-size: 20px, $line-height: 23px, $letter-spacing: 0.06em, $color: $color-dark-l);
+            @include font($font-family: Georgia, $font-size: 20px, $line-height: 23px, $letter-spacing: $main-letter-spacing, $color: $color-dark-l);
         }
 
         .card-info {
@@ -374,6 +376,7 @@ nav {
 
         &:hover {
             background: $color-light-xl;
+            box-shadow: 0px 2px 35px 14px rgba(13, 13, 13, 0.04);
             button, .button, .button-primary {
                 background: $color-primary-light;
             }
