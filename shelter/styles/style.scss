@@ -1,3 +1,4 @@
+@use "sass:math";
 @import url(../styles/normilize.css);
 
 @font-face {
@@ -29,9 +30,29 @@ $start-screen-gradient-background-stop: #262425;
 $footer-gradient-background-start: #513D2F;
 $footer-gradient-background-stop: #1A1A1C;
 
+$base-font-size: 16px;
 $main-letter-spacing: 0.06em;
-
 $georgia-font-family: 'GeorgiaRegular';
+$donation-text-block-max-width: 380px;
+
+:root {
+    --container-padding: 40px;
+    --intro-flex-direction: row;
+    --intro-margin-top: 90px;
+    --intro-gap: 42px;
+    --about-flex-direction: row;
+    --about-gap: 120px;
+    --help-list-column-gap: 120px;
+    --donation-flex-direction: row;
+    --donation-gap: 30px;
+    --footer-padding-top: 40px;
+    --footer-flex-wrap: nowrap;
+    --footer-justify-content: space-between;
+    --footer-column-gap: 160px;
+    --footer-row-gap: 0px;
+    --footer-contacts-gap: 40px;
+    --footer-locations-gap: 34px;
+}
 
 /* Calculate line-height in px according to font-size */
 @function calculateAndRoundLineHeight($font-size, $line-height) {
@@ -40,12 +61,17 @@ $georgia-font-family: 'GeorgiaRegular';
     @return floor(calc($font-size * ($line-height / 100%)));
 }
 
+/* Function for converting a px based font-size to rem. */
+@function toRem($size) {
+    @return math.div($size, $base-font-size) * 1rem;
+}
+
 @mixin font($font-family: Arial, $font-style: normal, $font-size: 15px, $line-height: 160%, $letter-spacing: 0, $color: $color-dark-xl) {
     font-family: $font-family;
     font-style: $font-style;
     font-weight: 400;
-    font-size: $font-size;
-    line-height: calculateAndRoundLineHeight($font-size, $line-height);
+    font-size: toRem($font-size);
+    line-height: toRem(calculateAndRoundLineHeight($font-size, $line-height));
     letter-spacing: $letter-spacing;
     color: $color;
 
@@ -120,6 +146,7 @@ $icons: (
 
 html {
     scroll-behavior: smooth;
+    font-size: $base-font-size; // set base font-size
 }
 
 body {
@@ -167,8 +194,8 @@ button, .button, .button-primary {
         padding: 0;
         width: 52px;
         height: 52px;
-        font-size: 20px;
-        line-height: calculateAndRoundLineHeight(20px, 115%) ;
+        font-size: toRem(20px);
+        line-height: toRem(calculateAndRoundLineHeight(20px, 115%));
 
         &.arrow-button {
             line-height:0;
@@ -206,14 +233,14 @@ button, .button, .button-primary {
 }
 
 .container {
-    width: 1280px;
+    max-width: 1280px;
     margin: auto;
-    padding: 0 40px;
+    padding: 0 var(--container-padding);
     box-sizing: border-box;
     overflow: auto;
 
     .footer-section & {
-        padding-top: 40px;
+        padding-top: var(--footer-padding-top);
     }
 }
 
@@ -274,40 +301,49 @@ nav {
     }
 }
 
-.top-section .intro {
-    margin-top: 90px;
-}
-
 .intro {
     display: flex;
+    flex-direction: var(--intro-flex-direction);
+    justify-content: space-between;
+    gap: var(--intro-gap);
+    margin-top: var(--intro-margin-top);
 }
 .not-only-container {
+    flex: 2;
     display: flex;
-    width: 460px;
-    margin: 163px 42px auto auto;
+    max-width: 460px;
+    height: 400px;
     gap: 42px;
     align-self: center;
     flex-flow: column;
 
     .not-only-header {
-        width: 310px;
+        max-width: 310px;
     }
+
+}
+.puppy-image {
+    flex: 3;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
 }
 
 .about-section .container {
     display: flex;
+    flex-direction: var(--about-flex-direction);
     align-items: center;
-    gap: 120px;
+    gap: var(--about-gap);
     margin: auto;
     justify-content: center;
 
     .about-text-block {
-        width: 430px;
+        max-width: 430px;
         display: flex;
         flex-flow: column;
         gap: 25px;
         .about-header {
-            width: 370px;
+            max-width: 370px;
         }
     }
 }
@@ -318,7 +354,7 @@ nav {
     gap: 60px;
     align-items: center;
     .pets-header {
-        width: 400px;
+        max-width: 400px;
         text-align: center;
     }
 }
@@ -329,16 +365,17 @@ nav {
     gap: 60px;
     align-items: center;
     .help-header {
-        width: 310px;
+        max-width: 310px;
         text-align: center;
     }
 }
 
 .help-list {
+    //--help-list-column-gap: 30px;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 120px;
+    column-gap: var(--help-list-column-gap);
     row-gap: 55px;
     align-items: self-end;
 
@@ -402,13 +439,14 @@ nav {
 
 .donation-section .container {
     display: flex;
+    flex-direction: var(--donation-flex-direction);
     margin: auto;
-    gap: 30px;
+    gap: var(--donation-gap);
     align-items: center;
     justify-content: center;
 
     .donation-text-block {
-        width: 380px;
+        max-width: 380px;
         display: flex;
         flex-flow: column;
         gap: 20px;
@@ -438,18 +476,20 @@ nav {
 
 .footer-section .container {
     display: flex;
-    justify-content: space-between;
-    gap: 160px;
+    flex-wrap: var(--footer-flex-wrap);
+    justify-content: var(--footer-justify-content);
+    column-gap: var(--footer-column-gap);
+    row-gap: var(--footer-row-gap);
 
     > .child-item {
         max-width: 300px;
 
         &:first-child {
-            width: 280px;
+            max-width: min-content;
         }
 
         &:nth-child(-n+2) {
-            margin-top: 16px;
+            margin-top: 1rem;
         }
 
         &:last-child {
@@ -460,13 +500,13 @@ nav {
     .footer-contacts {
         display: flex;
         flex-flow: column;
-        gap: 40px;
+        gap: var(--footer-contacts-gap);
     }
 
     .footer-locations {
         display: flex;
         flex-flow: column;
-        gap: 34px;
+        gap: var(--footer-locations-gap);
     }
 
     .contact-link {
@@ -500,6 +540,91 @@ nav {
             &:hover {
                 opacity: 0.5;
             }
+        }
+    }
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    :root {
+        --container-padding: 10px;
+        --intro-flex-direction: column;
+        --about-flex-direction: column-reverse;
+        --help-list-column-gap: 30px;
+        --donation-flex-direction: column-reverse;
+        --footer-padding-top: 30px;
+        --footer-flex-wrap: wrap;
+    }
+    .container{
+        max-width: 100vw;
+    }
+    .help-list {
+        > .child-item {
+            flex-basis: calc((100% - var(--help-list-column-gap)) / 2);
+            max-width: calc((100% - var(--help-list-column-gap)) / 2);
+        }
+    }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 600px) and (max-width: 991px) {
+    :root {
+        --container-padding: 30px;
+        --intro-flex-direction: column;
+        --intro-margin-top: 60px;
+        --intro-gap: 100px;
+        --about-flex-direction: column-reverse;
+        --about-gap: 80px;
+        --help-list-column-gap: 60px;
+        --donation-flex-direction: column-reverse;
+        --donation-gap: 60px;
+        --footer-padding-top: 30px;
+        --footer-flex-wrap: wrap;
+        --footer-justify-content: center;
+        --footer-column-gap: 60px;
+        --footer-row-gap: 65px;
+        --footer-locations-gap: 33px;
+    }
+
+    .intro {
+        .not-only-container {
+            max-width: 59.895vw;
+        }
+
+        .make-friend-button {
+            align-self: center;
+        }
+
+        .puppy-image {
+            img {
+                max-width: 74vw;
+            }
+        }
+    }
+
+    .about-section .container {
+        .about-text-block {
+            min-width: 56vw;
+        }
+    }
+
+    .help-list {
+        margin: 0 39px;
+        > .child-item {
+            flex-basis: calc((100% - var(--help-list-column-gap) * 2) / 3);
+            max-width: calc((100% - var(--help-list-column-gap) * 2) / 3);;
+        }
+    }
+
+    .donation-section .container {
+        .donation-text-block {
+            min-width: 49.5vw;
+        }
+    }
+
+    .footer-section .container {
+        > .child-item:nth-child(-n+2){
+            margin-top: 0;
         }
     }
 }
