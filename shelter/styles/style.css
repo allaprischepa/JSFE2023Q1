@@ -9,13 +9,18 @@
 }
 /* Color styles */
 :root {
+  --icon-width: 60px;
   --container-padding: 40px;
   --intro-flex-direction: row;
   --intro-margin-top: 90px;
   --intro-gap: 42px;
   --about-flex-direction: row;
   --about-gap: 120px;
+  --help-section-container-gap: 60px;
+  --help-list-justify-content: center;
+  --help-list-row-gap: 55px;
   --help-list-column-gap: 120px;
+  --help-list-child-item-gap: 30px;
   --donation-flex-direction: row;
   --donation-gap: 30px;
   --footer-padding-top: 40px;
@@ -25,6 +30,8 @@
   --footer-row-gap: 0px;
   --footer-contacts-gap: 40px;
   --footer-locations-gap: 34px;
+  --sections-padding-top: 80px;
+  --sections-padding-bottom: 100px;
 }
 
 /* Calculate line-height in px according to font-size */
@@ -61,7 +68,7 @@ button > *, .button > *, .button-primary > * {
 .icon--pet-food {
   display: inline-block;
   content: url("../assets/icon-pet-food.svg");
-  width: 60px;
+  width: var(--icon-width);
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -70,7 +77,7 @@ button > *, .button > *, .button-primary > * {
 .icon--transportation {
   display: inline-block;
   content: url("../assets/icon-transportation.svg");
-  width: 60px;
+  width: var(--icon-width);
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -79,7 +86,7 @@ button > *, .button > *, .button-primary > * {
 .icon--toys {
   display: inline-block;
   content: url("../assets/icon-toys.svg");
-  width: 60px;
+  width: var(--icon-width);
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -88,7 +95,7 @@ button > *, .button > *, .button-primary > * {
 .icon--bowls-and-cups {
   display: inline-block;
   content: url("../assets/icon-bowls-and-cups.svg");
-  width: 60px;
+  width: var(--icon-width);
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -97,7 +104,7 @@ button > *, .button > *, .button-primary > * {
 .icon--shampoos {
   display: inline-block;
   content: url("../assets/icon-shampoos.svg");
-  width: 60px;
+  width: var(--icon-width);
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -106,7 +113,7 @@ button > *, .button > *, .button-primary > * {
 .icon--vitamins {
   display: inline-block;
   content: url("../assets/icon-vitamins.svg");
-  width: 60px;
+  width: var(--icon-width);
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -115,7 +122,7 @@ button > *, .button > *, .button-primary > * {
 .icon--medicines {
   display: inline-block;
   content: url("../assets/icon-medicines.svg");
-  width: 60px;
+  width: var(--icon-width);
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -124,7 +131,7 @@ button > *, .button > *, .button-primary > * {
 .icon--collars-leashes {
   display: inline-block;
   content: url("../assets/icon-collars-leashes.svg");
-  width: 60px;
+  width: var(--icon-width);
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -133,7 +140,7 @@ button > *, .button > *, .button-primary > * {
 .icon--sleeping-area {
   display: inline-block;
   content: url("../assets/icon-sleeping-area.svg");
-  width: 60px;
+  width: var(--icon-width);
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -153,6 +160,11 @@ button > *, .button > *, .button-primary > * {
 
 .icon--location {
   content: url("../assets/icon-pin.svg");
+}
+
+.icon--burger {
+  content: url("../assets/burger.png");
+  display: none;
 }
 
 html {
@@ -332,8 +344,8 @@ nav {
 }
 
 .about-section .container, .pets-section .container, .help-section .container, .donation-section .container {
-  padding-top: 80px;
-  padding-bottom: 100px;
+  padding-top: var(--sections-padding-top);
+  padding-bottom: var(--sections-padding-bottom);
 }
 
 .logo {
@@ -429,7 +441,7 @@ nav {
 .help-section .container {
   display: flex;
   flex-flow: column;
-  gap: 60px;
+  gap: var(--help-section-container-gap);
   align-items: center;
 }
 .help-section .container .help-header {
@@ -439,17 +451,17 @@ nav {
 
 .help-list {
   display: flex;
-  justify-content: center;
+  justify-content: var(--help-list-justify-content);
   flex-wrap: wrap;
   column-gap: var(--help-list-column-gap);
-  row-gap: 55px;
+  row-gap: var(--help-list-row-gap);
   align-items: self-end;
 }
 .help-list > .child-item {
   display: flex;
   flex-flow: column;
   align-items: center;
-  gap: 30px;
+  gap: var(--help-list-child-item-gap);
 }
 
 .slider-wrapper {
@@ -520,7 +532,7 @@ nav {
   gap: 20px;
 }
 .donation-section .container .donation-text-block .donation-header {
-  width: 300px;
+  max-width: 300px;
 }
 .donation-section .container .donation-text-block .credit-card-block-wrapper {
   display: inline-block;
@@ -547,14 +559,18 @@ nav {
 }
 .footer-section .container > .child-item {
   max-width: 300px;
+  min-width: 280px;
 }
 .footer-section .container > .child-item:first-child {
-  max-width: min-content;
+  flex: 0;
+  margin-top: 1rem;
 }
-.footer-section .container > .child-item:nth-child(-n+2) {
+.footer-section .container > .child-item:nth-child(2) {
+  flex: 1;
   margin-top: 1rem;
 }
 .footer-section .container > .child-item:last-child {
+  flex: 1;
   min-width: 300px;
 }
 .footer-section .container .footer-contacts {
@@ -600,24 +616,106 @@ nav {
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   :root {
+    --icon-width: 50px;
     --container-padding: 10px;
     --intro-flex-direction: column;
+    --intro-margin-top: 60px;
+    --intro-gap: 105px;
     --about-flex-direction: column-reverse;
+    --help-section-container-gap: 42px;
+    --help-list-justify-content: initial;
+    --help-list-row-gap: 30px;
     --help-list-column-gap: 30px;
+    --help-list-child-item-gap: 20px;
     --donation-flex-direction: column-reverse;
+    --donation-gap: 42px;
+    --sections-padding-top: 42px;
+    --sections-padding-bottom: 42px;
+    --about-gap: 42px;
     --footer-padding-top: 30px;
     --footer-flex-wrap: wrap;
+    --footer-justify-content: center;
+    --footer-row-gap: 40px;
+    --footer-locations-gap: 33px;
+  }
+  .h5-mobile {
+    font-family: "GeorgiaRegular";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 0.9375rem;
+    line-height: 1.0625rem;
+    letter-spacing: 0.06em;
+    color: #545454;
+    margin: 0;
+  }
+  h3, .h3-mobile {
+    font-size: 1.5625rem;
+    line-height: 130%;
+    letter-spacing: 0.06em;
   }
   .container {
     max-width: 100vw;
+  }
+  header {
+    padding: 0 0.625rem;
+  }
+  nav {
+    display: none;
+  }
+  .icon--burger {
+    display: block;
+  }
+  .intro .not-only-container {
+    text-align: center;
+    align-items: center;
+  }
+  .intro .puppy-image img {
+    max-width: 81.2vw;
+  }
+  .about-section .container .about-text-block {
+    padding: 0 15px;
+    text-align: justify;
+  }
+  .about-section .container .about-text-block .about-header {
+    text-align: center;
+  }
+  .about-section .container .about-text-block > .child-item:last-child {
+    margin-top: -3px;
+  }
+  .about-section .container .about-pets-img {
+    max-width: 81vw;
   }
   .help-list > .child-item {
     flex-basis: calc((100% - var(--help-list-column-gap)) / 2);
     max-width: calc((100% - var(--help-list-column-gap)) / 2);
   }
+  .donation-section .container .donation-text-block {
+    padding: 0 9.5px;
+    text-align: justify;
+  }
+  .donation-section .container .donation-text-block .donation-header {
+    text-align: center;
+  }
+  .donation-section .container .donation-text-block .h5-subheading {
+    line-height: 1.5rem;
+    letter-spacing: initial;
+    text-align: center;
+  }
+  .donation-section .container .donation-text-block > .child-item:last-child {
+    margin-top: -3px;
+  }
+  .donation-section .container .donation-dog-img {
+    max-width: 82.8vw;
+  }
+  .footer-section .container > .child-item:nth-child(-n+2) {
+    margin-top: 0;
+  }
+  .footer-section .container .footer-contacts {
+    align-items: center;
+  }
 }
 /* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 600px) and (max-width: 991px) {
+@media only screen and (min-width: 600px) and (max-width: 1279px) {
   :root {
     --container-padding: 30px;
     --intro-flex-direction: column;
