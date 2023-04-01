@@ -780,10 +780,38 @@ nav {
 /* Burger menu styles */
 @media only screen and (max-width: 767px) {
     .menu-block {
-        display: none;
+        position: fixed;
+        right: 0;
+        top: 0;
+        background: $color-dark-3xl;
+        width: 320px;
+        height: 100vh;
+        flex-direction: column;
+        gap: 40px;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin: auto;
+        font-size: 32px;
+        line-height: 160%;
+        color: $color-light-s;
+        transition: all 0.3s;
+        transform: translateX(100%);
+
+        &.open {
+            transform: translateX(0%);
+        }
+
     }
     .icon--burger {
         display: block;
+        z-index: 100;
+        transition: all 0.3s;
+
+        &.open {
+            color: $color-primary;
+            transform: rotate(90deg);
+        }
     }
 
 }

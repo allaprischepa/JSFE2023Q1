@@ -838,10 +838,35 @@ nav {
 /* Burger menu styles */
 @media only screen and (max-width: 767px) {
   .menu-block {
-    display: none;
+    position: fixed;
+    right: 0;
+    top: 0;
+    background: #292929;
+    width: 320px;
+    height: 100vh;
+    flex-direction: column;
+    gap: 40px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: auto;
+    font-size: 32px;
+    line-height: 160%;
+    color: #FAFAFA;
+    transition: all 0.3s;
+    transform: translateX(100%);
+  }
+  .menu-block.open {
+    transform: translateX(0%);
   }
   .icon--burger {
     display: block;
+    z-index: 100;
+    transition: all 0.3s;
+  }
+  .icon--burger.open {
+    color: #F1CDB3;
+    transform: rotate(90deg);
   }
 }
 /* Slider adaptive styles */
