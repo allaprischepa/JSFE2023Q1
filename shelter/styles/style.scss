@@ -150,8 +150,13 @@ $icons: (
     content: url("../assets/icon-pin.svg");
 }
 .icon--burger {
-    content: url("../assets/burger.png");
     display: none;
+    line-height: 0;
+    color: $color-dark-3xl;
+
+    .dark-section & {
+        color: $color-primary;
+    }
 }
 
 html {
@@ -260,6 +265,7 @@ header {
     justify-content: space-between;
     align-items: center;
     margin-top: 30px;
+    gap: 40px;
     &:last-child {
         margin-bottom: 30px;
     }
@@ -292,6 +298,7 @@ nav {
     justify-content: space-between;
     height: 100%;
     gap: 10px;
+    min-width: max-content;
 
     .logo-title {
         @include font($font-family: $georgia-font-family, $font-size: 32px, $line-height: 110%, $letter-spacing: $main-letter-spacing, $color: $color-dark-l);
@@ -559,7 +566,7 @@ nav {
 }
 
 /* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 639px) {
     :root {
         --icon-width: 50px;
         --container-padding: 10px;
@@ -581,14 +588,14 @@ nav {
         --footer-flex-wrap: wrap;
         --footer-justify-content: center;
         --footer-row-gap: 40px;
-        --footer-locations-gap: 33px;
+        --footer-locations-gap: 40px;
     }
 
     .h5-mobile {@include headers($font-size: 15px, $line-height: 115%);}
 
     h3, .h3-mobile {
         font-size: toRem(25px);
-        line-height: 130%;
+        line-height: toRem(32px);
         letter-spacing: 0.06em;
     }
 
@@ -614,7 +621,7 @@ nav {
 
         .puppy-image {
             img {
-                max-width: 81.2vw;
+                max-width: 81.5vw
             }
         }
     }
@@ -634,7 +641,7 @@ nav {
             }
         }
 
-        .about-pets-img {
+        .about-pets-img img {
             max-width: 81vw;
         }
     }
@@ -651,6 +658,7 @@ nav {
             //min-width: 56vw;
             padding: 0 9.5px;
             text-align: justify;
+            align-items: center;
 
             .donation-header {
                 text-align: center;
@@ -661,14 +669,10 @@ nav {
                 letter-spacing: initial;
                 text-align: center;
             }
-
-            & > .child-item:last-child {
-                margin-top: -3px;
-            }
         }
 
         .donation-dog-img {
-            max-width: 82.8vw;
+            max-width: 81.5vw;
         }
     }
 
@@ -680,11 +684,20 @@ nav {
         .footer-contacts {
             align-items: center;
         }
+
+        .footer-contacts-header, .footer-locations-header {
+            text-align: center;
+        }
+
+        .footer-image {
+            max-width: 81.2vw;
+            margin: auto;
+        }
     }
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 600px) and (max-width: 1279px) {
+@media only screen and (min-width: 640px) and (max-width: 1279px) {
     :root {
         --container-padding: 30px;
         --intro-flex-direction: column;
