@@ -418,40 +418,45 @@ nav {
     display: flex;
     gap: var(--slider-gap);
     overflow-x: hidden;
+}
+.our-pets-slider {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 40px;
+    row-gap: 30px;
+    overflow: hidden;
 
-    &.four-column-slider {
-        flex-wrap: wrap;
-        gap: 40px;
-        row-gap: 30px;
+    > .child-item:nth-child(n+9) {
+        display: none;
+    }
+}
+.slider-card {
+    min-width: $slider-card-width;
+    display: flex;
+    flex-flow: column;
+    background: $color-light-s;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: 0.8s;
+
+    .card-name {
+        @include font($font-family: $georgia-font-family, $font-size: 20px, $line-height: 23px, $letter-spacing: $main-letter-spacing, $color: $color-dark-l);
     }
 
-    .slider-card {
-        min-width: $slider-card-width;
+    .card-info {
         display: flex;
         flex-flow: column;
-        background: $color-light-s;
-        border-radius: 9px;
-        cursor: pointer;
-        transition: 0.8s;
+        align-items: center;
+        gap: 30px;
+        margin: 30px 0;
+    }
 
-        .card-name {
-            @include font($font-family: $georgia-font-family, $font-size: 20px, $line-height: 23px, $letter-spacing: $main-letter-spacing, $color: $color-dark-l);
-        }
-
-        .card-info {
-            display: flex;
-            flex-flow: column;
-            align-items: center;
-            gap: 30px;
-            margin: 30px 0;
-        }
-
-        &:hover {
-            background: $color-light-xl;
-            box-shadow: 0px 2px 35px 14px rgba(13, 13, 13, 0.04);
-            button, .button, .button-primary {
-                background: $color-primary-light;
-            }
+    &:hover {
+        background: $color-light-xl;
+        box-shadow: 0px 2px 35px 14px rgba(13, 13, 13, 0.04);
+        button, .button, .button-primary {
+            background: $color-primary-light;
         }
     }
 }
@@ -680,6 +685,10 @@ nav {
                 letter-spacing: initial;
                 text-align: center;
             }
+
+            .credit-card-block * {
+                line-height: toRem(24px);
+            }
         }
 
         .donation-dog-img {
@@ -834,5 +843,45 @@ nav {
     :root {
         --slider-wrapper-gap: 12px;
         --slider-gap: 40px;
+    }
+}
+
+/* Our Pets slider's styles */
+@media only screen and (max-width: 639px) {
+    .our-pets-slider {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(3, 1fr);
+
+        > .child-item:nth-child(n+4) {
+            display: none;
+        }
+
+
+    }
+
+    .our-pets--pets-section.pets-section .slider-controls {
+        gap: 10px;
+    }
+}
+@media only screen and (min-width: 640px) and (max-width: 1279px) {
+    .our-pets--pets-section.pets-section .container {
+        gap: 0;
+        padding-bottom: 76px;
+
+        .pets-header {
+            margin-bottom: 30px;
+        }
+
+        .slider-wrapper {
+            margin-bottom: 40px;
+        }
+    }
+    .our-pets-slider {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+
+        > .child-item:nth-child(n+7) {
+            display: none;
+        }
     }
 }

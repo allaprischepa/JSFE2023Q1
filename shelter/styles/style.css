@@ -485,12 +485,20 @@ nav {
   gap: var(--slider-gap);
   overflow-x: hidden;
 }
-.slider.four-column-slider {
-  flex-wrap: wrap;
+
+.our-pets-slider {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 40px;
   row-gap: 30px;
+  overflow: hidden;
 }
-.slider .slider-card {
+.our-pets-slider > .child-item:nth-child(n+9) {
+  display: none;
+}
+
+.slider-card {
   min-width: 270px;
   display: flex;
   flex-flow: column;
@@ -499,7 +507,7 @@ nav {
   cursor: pointer;
   transition: 0.8s;
 }
-.slider .slider-card .card-name {
+.slider-card .card-name {
   font-family: "GeorgiaRegular";
   font-style: normal;
   font-weight: 400;
@@ -508,18 +516,18 @@ nav {
   letter-spacing: 0.06em;
   color: #545454;
 }
-.slider .slider-card .card-info {
+.slider-card .card-info {
   display: flex;
   flex-flow: column;
   align-items: center;
   gap: 30px;
   margin: 30px 0;
 }
-.slider .slider-card:hover {
+.slider-card:hover {
   background: #FFFFFF;
   box-shadow: 0px 2px 35px 14px rgba(13, 13, 13, 0.04);
 }
-.slider .slider-card:hover button, .slider .slider-card:hover .button, .slider .slider-card:hover .button-primary {
+.slider-card:hover button, .slider-card:hover .button, .slider-card:hover .button-primary {
   background: #FDDCC4;
 }
 
@@ -717,6 +725,9 @@ nav {
     letter-spacing: initial;
     text-align: center;
   }
+  .donation-section .container .donation-text-block .credit-card-block * {
+    line-height: 1.5rem;
+  }
   .donation-section .container .donation-dog-img {
     max-width: 81.5vw;
   }
@@ -833,6 +844,38 @@ nav {
   :root {
     --slider-wrapper-gap: 12px;
     --slider-gap: 40px;
+  }
+}
+/* Our Pets slider's styles */
+@media only screen and (max-width: 639px) {
+  .our-pets-slider {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 1fr);
+  }
+  .our-pets-slider > .child-item:nth-child(n+4) {
+    display: none;
+  }
+  .our-pets--pets-section.pets-section .slider-controls {
+    gap: 10px;
+  }
+}
+@media only screen and (min-width: 640px) and (max-width: 1279px) {
+  .our-pets--pets-section.pets-section .container {
+    gap: 0;
+    padding-bottom: 76px;
+  }
+  .our-pets--pets-section.pets-section .container .pets-header {
+    margin-bottom: 30px;
+  }
+  .our-pets--pets-section.pets-section .container .slider-wrapper {
+    margin-bottom: 40px;
+  }
+  .our-pets-slider {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+  .our-pets-slider > .child-item:nth-child(n+7) {
+    display: none;
   }
 }
 
