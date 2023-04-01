@@ -34,6 +34,7 @@ $base-font-size: 16px;
 $main-letter-spacing: 0.06em;
 $georgia-font-family: 'GeorgiaRegular';
 $donation-text-block-max-width: 380px;
+$slider-card-width: 270px;
 
 :root {
     --icon-width: 60px;
@@ -59,6 +60,9 @@ $donation-text-block-max-width: 380px;
     --footer-locations-gap: 34px;
     --sections-padding-top: 80px;
     --sections-padding-bottom: 100px;
+    --pets-section-container-gap: 60px;
+    --slider-wrapper-gap: 53px;
+    --slider-gap: 90px;
 }
 
 /* Calculate line-height in px according to font-size */
@@ -207,7 +211,7 @@ button, .button, .button-primary {
     }
     &.button-round {
         padding: 0;
-        width: 52px;
+        min-width: 52px;
         height: 52px;
         font-size: toRem(20px);
         line-height: toRem(calculateAndRoundLineHeight(20px, 115%));
@@ -368,7 +372,7 @@ nav {
 .pets-section .container {
     display: flex;
     flex-flow: column;
-    gap: 60px;
+    gap: var(--pets-section-container-gap);
     align-items: center;
     .pets-header {
         max-width: 400px;
@@ -406,12 +410,14 @@ nav {
 
 .slider-wrapper {
     display: flex;
-    gap: 53px;
+    gap: var(--slider-wrapper-gap);
     align-items: center;
+    max-width: 100%;
 }
 .slider {
     display: flex;
-    gap: 90px;
+    gap: var(--slider-gap);
+    overflow-x: hidden;
 
     &.four-column-slider {
         flex-wrap: wrap;
@@ -420,7 +426,7 @@ nav {
     }
 
     .slider-card {
-        width: 270px;
+        min-width: $slider-card-width;
         display: flex;
         flex-flow: column;
         background: $color-light-s;
@@ -589,6 +595,7 @@ nav {
         --footer-justify-content: center;
         --footer-row-gap: 40px;
         --footer-locations-gap: 40px;
+        --pets-section-container-gap: 42px;
     }
 
     .h5-mobile {@include headers($font-size: 15px, $line-height: 115%);}
@@ -646,6 +653,10 @@ nav {
         }
     }
 
+    .slider {
+        max-width: $slider-card-width;
+    }
+
     .help-list {
         > .child-item {
             flex-basis: calc((100% - var(--help-list-column-gap)) / 2);
@@ -697,7 +708,7 @@ nav {
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 640px) and (max-width: 1279px) {
+@media only screen and (min-width: 640px) and (max-width: 1259px) {
     :root {
         --container-padding: 30px;
         --intro-flex-direction: column;
@@ -756,5 +767,72 @@ nav {
         > .child-item:nth-child(-n+2){
             margin-top: 0;
         }
+    }
+}
+
+
+/* Slider adaptive styles */
+@media only screen and (max-width: 449px) {
+    :root {
+        --slider-wrapper-gap: 20px;
+    }
+
+    .slider-wrapper {
+        max-width: $slider-card-width;
+        flex-wrap: wrap;
+        column-gap: 80px;
+        justify-content: center;
+
+        .slider {
+            order: -1;
+            max-width: $slider-card-width;
+        }
+    }
+
+}
+@media only screen and (min-width: 450px) and (max-width: 639px) {
+    :root {
+        --slider-wrapper-gap: 12px;
+        --slider-gap: 40px;
+    }
+
+    .slider-wrapper {
+        .slider {
+            max-width: $slider-card-width;;
+        }
+    }
+}
+@media only screen and (min-width: 640px) and (max-width: 767px) {
+    :root {
+        --slider-wrapper-gap: 20px;
+        --slider-gap: 40px;
+    }
+
+    .slider-wrapper {
+        max-width: calc($slider-card-width * 2 + var(--slider-gap));
+        flex-wrap: wrap;
+        column-gap: 80px;
+        justify-content: center;
+
+        .slider {
+            order: -1;
+            max-width: calc($slider-card-width * 2 + var(--slider-gap));
+        }
+    }
+}
+@media only screen and (min-width: 768px) and (max-width: 1079px) {
+    :root {
+        --slider-wrapper-gap: 12px;
+        --slider-gap: 40px;
+    }
+
+    .slider {
+        max-width: calc($slider-card-width * 2 + var(--slider-gap));
+    }
+}
+@media only screen and (min-width: 1080px) and (max-width: 1279px) {
+    :root {
+        --slider-wrapper-gap: 12px;
+        --slider-gap: 40px;
     }
 }
