@@ -679,12 +679,6 @@ nav {
   header {
     padding: 0 0.625rem;
   }
-  nav {
-    display: none;
-  }
-  .icon--burger {
-    display: block;
-  }
   .intro .not-only-container {
     text-align: center;
     align-items: center;
@@ -788,6 +782,15 @@ nav {
   }
   .footer-section .container > .child-item:nth-child(-n+2) {
     margin-top: 0;
+  }
+}
+/* Burger menu styles */
+@media only screen and (max-width: 767px) {
+  .menu-block {
+    display: none;
+  }
+  .icon--burger {
+    display: block;
   }
 }
 /* Slider adaptive styles */

@@ -618,12 +618,6 @@ nav {
     header {
         padding: 0 toRem(10px);
     }
-    nav {
-        display: none;
-    }
-    .icon--burger {
-        display: block;
-    }
 
     .intro {
         .not-only-container {
@@ -779,6 +773,16 @@ nav {
     }
 }
 
+/* Burger menu styles */
+@media only screen and (max-width: 767px) {
+    .menu-block {
+        display: none;
+    }
+    .icon--burger {
+        display: block;
+    }
+
+}
 
 /* Slider adaptive styles */
 @media only screen and (max-width: 449px) {
