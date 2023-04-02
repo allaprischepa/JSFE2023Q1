@@ -133,8 +133,13 @@
                         <div class="child-item"><a href="https://goo.gl/maps/Sier2ZytyzBNxnQC9" class="contact-link" target="_blank"><i class="icon--location"></i><h4>18 South Park, London</h4></a></div>
                     </div>
                 </div>
-                <div class="child-item">
-                    <img class="footer-image" src="../assets/footer-puppy.png" alt="Footer image">
+                <div class="child-item footer-image">
+                    <picture>
+                        <source media="(max-width:320px)" srcset="../assets/footer-puppy.png">
+                        <source media="(max-width:768px)" srcset="../assets/footer-puppy-1.png">
+                        <source media="(min-width:769px)" srcset="../assets/footer-puppy-2.png">
+                        <img src="../assets/footer-puppy-2.png" alt="Footer image" style="width:auto">
+                    </picture>
                 </div>
             </div>
         </footer>

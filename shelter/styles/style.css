@@ -741,8 +741,8 @@ nav {
   .footer-section .container .footer-contacts-header, .footer-section .container .footer-locations-header {
     text-align: center;
   }
-  .footer-section .container .footer-image {
-    max-width: 81.2vw;
+  .footer-section .container .footer-image img {
+    max-width: 85vw;
     margin: auto;
   }
 }
