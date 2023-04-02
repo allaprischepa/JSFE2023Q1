@@ -138,6 +138,10 @@ $icons: (
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: center;
+
+    @media (min-width: 768px) {
+        content: url("../assets/icon-#{$icon}-2.svg");
+    }
   }
 }
 
@@ -397,7 +401,6 @@ nav {
 }
 
 .help-list {
-    //--help-list-column-gap: 30px;
     display: flex;
     justify-content: var(--help-list-justify-content);
     flex-wrap: wrap;
@@ -666,6 +669,7 @@ nav {
     }
 
     .help-list {
+        margin: 0 5px;
         > .child-item {
             flex-basis: calc((100% - var(--help-list-column-gap)) / 2);
             max-width: calc((100% - var(--help-list-column-gap)) / 2);

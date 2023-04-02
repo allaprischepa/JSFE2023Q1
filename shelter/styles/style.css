@@ -76,6 +76,11 @@ button > *, .button > *, .button-primary > * {
   background-repeat: no-repeat;
   background-position: center;
 }
+@media (min-width: 768px) {
+  .icon--pet-food {
+    content: url("../assets/icon-pet-food-2.svg");
+  }
+}
 
 .icon--transportation {
   display: inline-block;
@@ -84,6 +89,11 @@ button > *, .button > *, .button-primary > * {
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
+}
+@media (min-width: 768px) {
+  .icon--transportation {
+    content: url("../assets/icon-transportation-2.svg");
+  }
 }
 
 .icon--toys {
@@ -94,6 +104,11 @@ button > *, .button > *, .button-primary > * {
   background-repeat: no-repeat;
   background-position: center;
 }
+@media (min-width: 768px) {
+  .icon--toys {
+    content: url("../assets/icon-toys-2.svg");
+  }
+}
 
 .icon--bowls-and-cups {
   display: inline-block;
@@ -102,6 +117,11 @@ button > *, .button > *, .button-primary > * {
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
+}
+@media (min-width: 768px) {
+  .icon--bowls-and-cups {
+    content: url("../assets/icon-bowls-and-cups-2.svg");
+  }
 }
 
 .icon--shampoos {
@@ -112,6 +132,11 @@ button > *, .button > *, .button-primary > * {
   background-repeat: no-repeat;
   background-position: center;
 }
+@media (min-width: 768px) {
+  .icon--shampoos {
+    content: url("../assets/icon-shampoos-2.svg");
+  }
+}
 
 .icon--vitamins {
   display: inline-block;
@@ -120,6 +145,11 @@ button > *, .button > *, .button-primary > * {
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
+}
+@media (min-width: 768px) {
+  .icon--vitamins {
+    content: url("../assets/icon-vitamins-2.svg");
+  }
 }
 
 .icon--medicines {
@@ -130,6 +160,11 @@ button > *, .button > *, .button-primary > * {
   background-repeat: no-repeat;
   background-position: center;
 }
+@media (min-width: 768px) {
+  .icon--medicines {
+    content: url("../assets/icon-medicines-2.svg");
+  }
+}
 
 .icon--collars-leashes {
   display: inline-block;
@@ -139,6 +174,11 @@ button > *, .button > *, .button-primary > * {
   background-repeat: no-repeat;
   background-position: center;
 }
+@media (min-width: 768px) {
+  .icon--collars-leashes {
+    content: url("../assets/icon-collars-leashes-2.svg");
+  }
+}
 
 .icon--sleeping-area {
   display: inline-block;
@@ -147,6 +187,11 @@ button > *, .button > *, .button-primary > * {
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
+}
+@media (min-width: 768px) {
+  .icon--sleeping-area {
+    content: url("../assets/icon-sleeping-area-2.svg");
+  }
 }
 
 .icon--credit-card {
@@ -711,6 +756,9 @@ nav {
   }
   .slider {
     max-width: 270px;
+  }
+  .help-list {
+    margin: 0 5px;
   }
   .help-list > .child-item {
     flex-basis: calc((100% - var(--help-list-column-gap)) / 2);
