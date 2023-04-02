@@ -709,9 +709,6 @@ nav {
   .about-section .container .about-text-block > .child-item:last-child {
     margin-top: -3px;
   }
-  .about-section .container .about-pets-img img {
-    max-width: 81vw;
-  }
   .slider {
     max-width: 270px;
   }

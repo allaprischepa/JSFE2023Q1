@@ -47,7 +47,16 @@
     </div>
     <div class="about-section">
         <div class="container">
-            <div class="child-item"><div class="about-pets-img"><img src="../assets/about-pets-2.png" alt="About pets"></div></div>
+            <div class="child-item">
+                <div class="about-pets-img">
+                    <picture>
+                        <source media="(max-width:320px)" srcset="../assets/about-pets.png">
+                        <source media="(max-width:768px)" srcset="../assets/about-pets-1.png">
+                        <source media="(min-width:769px)" srcset="../assets/about-pets-2.png">
+                        <img src="../assets/about-pets-2.png" alt="About pets" style="width:auto">
+                    </picture>
+                </div>
+            </div>
             <div class="child-item">
                 <div class="about-text-block">
                     <div class="child-item about-header"><h3>About the shelter “Cozy&nbsp;House”</h3></div>
