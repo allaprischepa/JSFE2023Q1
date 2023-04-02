@@ -35,7 +35,12 @@
                     <div class="child-item make-friend-button"><a class="button button-primary make-friend-button" href="#our-friends">Make a friend</a></div>
                 </div>
                 <div class="puppy-image">
-                    <img src="../assets/start-screen-puppy-3.png" alt="Start-screen puppy">
+                    <picture>
+                        <source media="(max-width:320px)" srcset="../assets/start-screen-puppy-1.png">
+                        <source media="(max-width:768px)" srcset="../assets/start-screen-puppy-2.png">
+                        <source media="(min-width:769px)" srcset="../assets/start-screen-puppy-3.png">
+                        <img src="../assets/start-screen-puppy-3.png" alt="Start-screen puppy" style="width:auto">
+                    </picture>
                 </div>
             </div>
         </div>
