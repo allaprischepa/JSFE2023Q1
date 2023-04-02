@@ -1,4 +1,3 @@
-@charset "UTF-8";
 @import url(../styles/normilize.css);
 @font-face {
   font-family: "GeorgiaRegular";
@@ -328,9 +327,6 @@ button.button-round, .button.button-round, .button-primary.button-round {
 }
 button.button-round.arrow-button, .button.button-round.arrow-button, .button-primary.button-round.arrow-button {
   line-height: 0;
-}
-button.button-round.arrow-button:before, .button.button-round.arrow-button:before, .button-primary.button-round.arrow-button:before {
-  content: "🠔";
 }
 button.button-round.arrow-button.arrow-button-next, .button.button-round.arrow-button.arrow-button-next, .button-primary.button-round.arrow-button.arrow-button-next {
   transform: scale(-1, -1);
