@@ -501,7 +501,7 @@ nav {
         .credit-card-block {
             display: flex;
             gap: 15px;
-            line-height: 0;
+            align-items: center;
             transition: all 500ms;
 
             @media(hover:hover) {
@@ -688,14 +688,10 @@ nav {
                 letter-spacing: initial;
                 text-align: center;
             }
-
-            .credit-card-block * {
-                line-height: toRem(24px);
-            }
         }
 
-        .donation-dog-img {
-            max-width: 81.5vw;
+        .donation-dog-img img {
+            max-width: 85vw;
         }
     }
 

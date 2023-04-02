@@ -569,7 +569,7 @@ nav {
 .donation-section .container .donation-text-block .credit-card-block {
   display: flex;
   gap: 15px;
-  line-height: 0;
+  align-items: center;
   transition: all 500ms;
 }
 @media (hover: hover) {
@@ -729,11 +729,8 @@ nav {
     letter-spacing: initial;
     text-align: center;
   }
-  .donation-section .container .donation-text-block .credit-card-block * {
-    line-height: 1.5rem;
-  }
-  .donation-section .container .donation-dog-img {
-    max-width: 81.5vw;
+  .donation-section .container .donation-dog-img img {
+    max-width: 85vw;
   }
   .footer-section .container > .child-item:nth-child(-n+2) {
     margin-top: 0;

@@ -144,7 +144,16 @@
     </div>
     <div class="donation-section">
         <div class="container">
-            <div class="child-item"><div class="donation-dog-img"><img src="../assets/donation-dog-1.png" alt="Donation image"></div></div>
+            <div class="child-item">
+                <div class="donation-dog-img">
+                    <picture>
+                        <source media="(max-width:320px)" srcset="../assets/donation-dog.png">
+                        <source media="(max-width:768px)" srcset="../assets/donation-dog-1.png">
+                        <source media="(min-width:769px)" srcset="../assets/donation-dog-2.png">
+                        <img src="../assets/donation-dog-2.png" alt="Donation image" style="width:auto">
+                    </picture>
+                </div>
+            </div>
             <div class="child-item">
                 <div class="donation-text-block">
                     <div class="child-item donation-header"><h3>You can also make&nbsp;a&nbsp;donation</h3></div>
