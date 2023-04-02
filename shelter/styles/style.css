@@ -699,7 +699,7 @@ nav {
     --intro-margin-top: 60px;
     --intro-gap: 105px;
     --about-flex-direction: column-reverse;
-    --help-section-container-gap: 42px;
+    --help-section-container-gap: 40px;
     --help-list-justify-content: initial;
     --help-list-row-gap: 30px;
     --help-list-column-gap: 30px;
