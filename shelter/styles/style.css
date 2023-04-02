@@ -258,8 +258,10 @@ a.active {
   border-bottom: 3px solid #F1CDB3;
   pointer-events: none;
 }
-a:hover {
-  color: #292929;
+@media (hover: hover) {
+  a:hover {
+    color: #292929;
+  }
 }
 
 button, .button, .button-primary {
@@ -305,9 +307,11 @@ button.inactive:before, .button.inactive:before, .button-primary.inactive:before
 button.make-friend-button, .button.make-friend-button, .button-primary.make-friend-button {
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
-button:hover, .button:hover, .button-primary:hover {
-  background: #FDDCC4;
-  border-color: #FDDCC4;
+@media (hover: hover) {
+  button:hover, .button:hover, .button-primary:hover {
+    background: #FDDCC4;
+    border-color: #FDDCC4;
+  }
 }
 
 .container {
@@ -523,12 +527,15 @@ nav {
   gap: 30px;
   margin: 30px 0;
 }
-.slider-card:hover {
-  background: #FFFFFF;
-  box-shadow: 0px 2px 35px 14px rgba(13, 13, 13, 0.04);
-}
-.slider-card:hover button, .slider-card:hover .button, .slider-card:hover .button-primary {
-  background: #FDDCC4;
+@media (hover: hover) {
+  .slider-card:hover {
+    background: #FFFFFF;
+    box-shadow: 0px 2px 35px 14px rgba(13, 13, 13, 0.04);
+  }
+  .slider-card:hover button, .slider-card:hover .button, .slider-card:hover .button-primary {
+    background: #FDDCC4;
+    border-color: #FDDCC4;
+  }
 }
 
 .slider-controls {
@@ -565,8 +572,10 @@ nav {
   line-height: 0;
   transition: all 500ms;
 }
-.donation-section .container .donation-text-block .credit-card-block:hover {
-  opacity: 0.5;
+@media (hover: hover) {
+  .donation-section .container .donation-text-block .credit-card-block:hover {
+    opacity: 0.5;
+  }
 }
 
 .footer-section .container {
@@ -614,8 +623,10 @@ nav {
 .dark-section h1, .dark-section h2, .dark-section h3, .dark-section h4, .dark-section h5 {
   color: #FFFFFF;
 }
-.dark-section a:not(.button):hover {
-  color: #FAFAFA;
+@media (hover: hover) {
+  .dark-section a:not(.button):hover {
+    color: #FAFAFA;
+  }
 }
 .dark-section a.active {
   color: #FAFAFA;
@@ -628,8 +639,10 @@ nav {
 .dark-section .footer-contacts a *, .dark-section .footer-locations a * {
   color: #F1CDB3;
 }
-.dark-section .footer-contacts a:hover, .dark-section .footer-locations a:hover {
-  opacity: 0.5;
+@media (hover: hover) {
+  .dark-section .footer-contacts a:hover, .dark-section .footer-locations a:hover {
+    opacity: 0.5;
+  }
 }
 
 /* Extra small devices (phones, 600px and down) */

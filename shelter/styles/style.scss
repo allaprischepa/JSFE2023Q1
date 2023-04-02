@@ -192,8 +192,11 @@ a {
         border-bottom: 3px solid $color-primary;
         pointer-events: none;
     }
-    &:hover {
-        color: $color-dark-3xl;
+
+    @media (hover:hover) {
+        &:hover {
+            color: $color-dark-3xl;
+        }
     }
 }
 
@@ -245,9 +248,11 @@ button, .button, .button-primary {
     &.make-friend-button {
         text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     }
-    &:hover {
-        background: $color-primary-light;
-        border-color: $color-primary-light;
+    @media (hover:hover) {
+        &:hover {
+            background: $color-primary-light;
+            border-color: $color-primary-light;
+        }
     }
 }
 
@@ -452,11 +457,15 @@ nav {
         margin: 30px 0;
     }
 
-    &:hover {
-        background: $color-light-xl;
-        box-shadow: 0px 2px 35px 14px rgba(13, 13, 13, 0.04);
-        button, .button, .button-primary {
-            background: $color-primary-light;
+    @media (hover:hover) {
+        &:hover {
+            background: $color-light-xl;
+            box-shadow: 0px 2px 35px 14px rgba(13, 13, 13, 0.04);
+
+            button, .button, .button-primary {
+                background: $color-primary-light;
+                border-color: $color-primary-light;
+            }
         }
     }
 }
@@ -495,8 +504,10 @@ nav {
             line-height: 0;
             transition: all 500ms;
 
-            &:hover {
-                opacity: 0.5;
+            @media(hover:hover) {
+                &:hover {
+                    opacity: 0.5;
+                }
             }
         }
     }
@@ -555,8 +566,10 @@ nav {
         color: $color-light-xl;
     }
 
-    a:not(.button):hover {
-        color: $color-light-s;
+    @media(hover:hover) {
+        a:not(.button):hover {
+            color: $color-light-s;
+        }
     }
     a.active {
         color: $color-light-s;
@@ -569,8 +582,10 @@ nav {
             transition: all 500ms;
             * {color: $color-primary;}
 
-            &:hover {
-                opacity: 0.5;
+            @media(hover:hover) {
+                &:hover {
+                    opacity: 0.5;
+                }
             }
         }
     }
