@@ -225,9 +225,6 @@ button, .button, .button-primary {
 
         &.arrow-button {
             line-height:0;
-            &:before {
-                content: "🠔";
-            }
             &.arrow-button-next {
                 transform: scale(-1, -1);
             }
