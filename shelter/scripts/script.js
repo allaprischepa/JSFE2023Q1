@@ -2,12 +2,36 @@ console.log("100/100\n- Вёрстка страницы Main соответст�
 
 window.addEventListener("DOMContentLoaded", (event) => {
     /**
-     * Open menu by clicking on burger-icon.
+     * Burger menu bahavior.
+     * Open / close menu by clicking on burger-icon.
+     * Close menu by clicking outside the menu.
+     * Close menu by clicking on menu's link.
      */
-    document.getElementById("burgerButton").addEventListener("click",
-        function() {
-            this.classList.toggle("open");
-            document.getElementById("menuBlock").classList.toggle("open");
-        }
-    );
+    const burgerButton = document.getElementById('burgerButton');
+    const menuBlock = document.getElementById('menuBlock');
+    const menuLinks = document.querySelectorAll('#menuBlock a');
+    const body = document.querySelector('body');
+
+    document.addEventListener('click', (e) => {
+        const clickedOnMenu = e.composedPath().includes(menuBlock);
+        const clickedOnButton = e.composedPath().includes(burgerButton);
+        const clickedOnMenuLink = Array.from(menuLinks).includes(e.target);
+        let openClose = false;
+
+        if (clickedOnButton) openClose = true;
+        if (!clickedOnMenu && menuBlock.classList.contains('open')) openClose = true;
+        if (clickedOnMenuLink) openClose = true;
+
+        if (openClose) openCloseMenu();
+
+    })
+
+    /**
+     * Open / close menu.
+     */
+    function openCloseMenu () {
+        burgerButton.classList.toggle('open');
+        menuBlock.classList.toggle('open');
+        body.classList.toggle('frozen');
+    }
 });

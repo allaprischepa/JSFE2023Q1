@@ -211,11 +211,18 @@ button > *, .button > *, .button-primary > * {
 
 .icon--burger {
   display: none;
-  line-height: 0;
-  color: #292929;
+  width: 30px;
+  height: 22px;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
 }
-.dark-section .icon--burger {
-  color: #F1CDB3;
+.icon--burger .icon--burger__bar {
+  height: 2px;
+  background-color: #292929;
+}
+.dark-section .icon--burger .icon--burger__bar {
+  background-color: #F1CDB3;
 }
 
 html {
@@ -231,6 +238,9 @@ body {
   line-height: 1.5rem;
   letter-spacing: 0;
   color: #4C4C4C;
+}
+body.frozen {
+  overflow: hidden;
 }
 
 /* Text-size styles */
@@ -296,11 +306,14 @@ a {
   color: inherit;
   text-decoration: inherit;
   box-sizing: border-box;
-  transition: all 200ms;
+  transition: color 200ms;
 }
 a.active {
   border-bottom: 3px solid #F1CDB3;
   pointer-events: none;
+}
+a:not(.button):active {
+  border-bottom: 3px solid #F1CDB3;
 }
 @media (hover: hover) {
   a:hover {
@@ -674,6 +687,10 @@ nav {
   border-bottom: 3px solid #F1CDB3;
   pointer-events: none;
 }
+.dark-section a:not(.button):active {
+  color: #FAFAFA;
+  border-bottom: 3px solid #F1CDB3;
+}
 .dark-section .footer-contacts a, .dark-section .footer-locations a {
   transition: all 500ms;
 }
@@ -684,6 +701,16 @@ nav {
   .dark-section .footer-contacts a:hover, .dark-section .footer-locations a:hover {
     opacity: 0.5;
   }
+}
+
+.frozen .overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 999;
 }
 
 /* Extra small devices (phones, 600px and down) */
@@ -852,21 +879,27 @@ nav {
     margin: auto;
     font-size: 32px;
     line-height: 160%;
-    color: #FAFAFA;
-    transition: all 0.3s;
+    color: #CDCDCD;
+    z-index: 1000;
+    transition: all 0.5s;
     transform: translateX(100%);
+  }
+  .menu-block a.active, .menu-block a:active {
+    color: #FAFAFA;
   }
   .menu-block.open {
     transform: translateX(0%);
   }
   .icon--burger {
-    display: block;
-    z-index: 100;
+    display: flex;
+    z-index: 1001;
     transition: all 0.3s;
   }
   .icon--burger.open {
-    color: #F1CDB3;
     transform: rotate(90deg);
+  }
+  .icon--burger.open .icon--burger__bar {
+    background-color: #F1CDB3;
   }
 }
 /* Slider adaptive styles */
