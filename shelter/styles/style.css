@@ -542,6 +542,7 @@ nav {
   display: flex;
   gap: var(--slider-gap);
   overflow-x: hidden;
+  width: calc(810px + var(--slider-gap) * 2);
 }
 
 .our-pets-slider {
@@ -711,6 +712,9 @@ nav {
   right: 0;
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 999;
+}
+.frozen .overlay.cover-all {
+  z-index: 1099;
 }
 
 /* Extra small devices (phones, 600px and down) */
@@ -915,7 +919,7 @@ nav {
   }
   .slider-wrapper .slider {
     order: -1;
-    max-width: 270px;
+    width: 270px;
   }
 }
 @media only screen and (min-width: 450px) and (max-width: 639px) {
@@ -924,7 +928,7 @@ nav {
     --slider-gap: 40px;
   }
   .slider-wrapper .slider {
-    max-width: 270px;
+    width: 270px;
   }
 }
 @media only screen and (min-width: 640px) and (max-width: 767px) {
@@ -940,7 +944,7 @@ nav {
   }
   .slider-wrapper .slider {
     order: -1;
-    max-width: calc(540px + var(--slider-gap));
+    width: calc(540px + var(--slider-gap));
   }
 }
 @media only screen and (min-width: 768px) and (max-width: 1079px) {
@@ -949,7 +953,7 @@ nav {
     --slider-gap: 40px;
   }
   .slider {
-    max-width: calc(540px + var(--slider-gap));
+    width: calc(540px + var(--slider-gap));
   }
 }
 @media only screen and (min-width: 1080px) and (max-width: 1279px) {

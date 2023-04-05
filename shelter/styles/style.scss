@@ -38,6 +38,8 @@ $slider-card-width: 270px;
 $overlay-z-index: 999;
 $menu-block-z-index: $overlay-z-index + 1;
 $icon--burger-z-index: $menu-block-z-index + 1;
+$overlay-cover-all-z-index: $overlay-z-index + 100;
+$popup-z-index: $overlay-cover-all-z-index + 1;
 
 :root {
     --icon-width: 60px;
@@ -441,6 +443,7 @@ nav {
     display: flex;
     gap: var(--slider-gap);
     overflow-x: hidden;
+    width: calc($slider-card-width * 3 + var(--slider-gap) * 2);
 }
 .our-pets-slider {
     display: grid;
@@ -621,6 +624,9 @@ nav {
     right: 0;
     background-color: rgba(0, 0, 0, 0.7);
     z-index: $overlay-z-index;
+    &.cover-all {
+        z-index: $overlay-cover-all-z-index;
+    }
 }
 
 /* Extra small devices (phones, 600px and down) */
@@ -870,7 +876,7 @@ nav {
 
         .slider {
             order: -1;
-            max-width: $slider-card-width;
+            width: $slider-card-width;
         }
     }
 
@@ -883,7 +889,7 @@ nav {
 
     .slider-wrapper {
         .slider {
-            max-width: $slider-card-width;;
+            width: $slider-card-width;;
         }
     }
 }
@@ -901,7 +907,7 @@ nav {
 
         .slider {
             order: -1;
-            max-width: calc($slider-card-width * 2 + var(--slider-gap));
+            width: calc($slider-card-width * 2 + var(--slider-gap));
         }
     }
 }
@@ -912,7 +918,7 @@ nav {
     }
 
     .slider {
-        max-width: calc($slider-card-width * 2 + var(--slider-gap));
+        width: calc($slider-card-width * 2 + var(--slider-gap));
     }
 }
 @media only screen and (min-width: 1080px) and (max-width: 1279px) {

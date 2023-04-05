@@ -8,6 +8,7 @@
     <link rel="icon" type="image/x-icon" href="../assets/favicon.png">
     <link rel="stylesheet" href="../styles/style.css">
     <script src="../scripts/script.js"></script>
+    <script src="../scripts/slider.js"></script>
 </head>
 <body>
     <h1>Shelter: Main Page</h1>
@@ -74,11 +75,11 @@
         <div class="container">
             <div class="child-item pets-header"><h3>Our friends who are&nbsp;looking for a house</h3></div>
             <div class="child-item slider-wrapper">
-                <button class="button-secondary button-round arrow-button">
+                <button class="button-secondary button-round arrow-button" id="infiniteSliderPrev">
                     <svg width="14" height="6"><use xlink:href="../assets/arrow.svg#arrowLeft" x="0" y="0" /></svg>
                 </button>
-                <div class="slider">
-                    <div class="child-item slider-card">
+                <div class="slider" id="infiniteSliderContainer">
+                    <!-- <div class="child-item slider-card">
                         <div class="card-image"><img src="../assets/pets-katrine-1.png" alt="Pet Katrine"></div>
                         <div class="card-info">
                             <div class="card-name">Katrine</div>
@@ -98,9 +99,9 @@
                             <div class="card-name">Woody</div>
                             <button class="button-secondary">Learn more</button>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
-                <button class="button-secondary button-round arrow-button arrow-button-next">
+                <button class="button-secondary button-round arrow-button arrow-button-next" id="infiniteSliderNext">
                     <svg width="14" height="6"><use xlink:href="../assets/arrow.svg#arrowLeft" x="0" y="0" /></svg>
                 </button>
             </div>
