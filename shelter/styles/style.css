@@ -310,13 +310,13 @@ a {
 }
 a.active {
   border-bottom: 3px solid #F1CDB3;
-  pointer-events: none;
+  cursor: default;
 }
 a:not(.button):active {
   border-bottom: 3px solid #F1CDB3;
 }
 @media (hover: hover) {
-  a:hover {
+  a::not(.button, .active):hover {
     color: #292929;
   }
 }
@@ -347,13 +347,13 @@ button.button-round.arrow-button.arrow-button-next, .button.button-round.arrow-b
 button.active, .button.active, .button-primary.active {
   background: #F1CDB3;
   border-color: #F1CDB3;
-  pointer-events: none;
+  cursor: default;
 }
 button.inactive, .button.inactive, .button-primary.inactive {
   background: none;
   border-color: #CDCDCD;
   color: #CDCDCD;
-  pointer-events: none;
+  cursor: default;
 }
 button.inactive:before, .button.inactive:before, .button-primary.inactive:before {
   color: #CDCDCD;
@@ -362,7 +362,7 @@ button.make-friend-button, .button.make-friend-button, .button-primary.make-frie
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 @media (hover: hover) {
-  button:hover, .button:hover, .button-primary:hover {
+  button:not(.active, .inactive):hover, .button:not(.active, .inactive):hover, .button-primary:not(.active, .inactive):hover {
     background: #FDDCC4;
     border-color: #FDDCC4;
   }
@@ -678,14 +678,14 @@ nav {
   color: #FFFFFF;
 }
 @media (hover: hover) {
-  .dark-section a:not(.button):hover {
+  .dark-section a:not(.button, .active):hover {
     color: #FAFAFA;
   }
 }
 .dark-section a.active {
   color: #FAFAFA;
   border-bottom: 3px solid #F1CDB3;
-  pointer-events: none;
+  cursor: default;
 }
 .dark-section a:not(.button):active {
   color: #FAFAFA;

@@ -13,14 +13,20 @@ window.addEventListener("DOMContentLoaded", (event) => {
     const body = document.querySelector('body');
 
     document.addEventListener('click', (e) => {
+        /**
+         * Prevent click on active/inactive link or button.
+         */
+        if (e.target.classList.contains('active') || e.target.classList.contains('inactive')) e.preventDefault();
+
         const clickedOnMenu = e.composedPath().includes(menuBlock);
         const clickedOnButton = e.composedPath().includes(burgerButton);
         const clickedOnMenuLink = Array.from(menuLinks).includes(e.target);
+        const menuIsOpen = menuBlock.classList.contains('open');
         let openClose = false;
 
         if (clickedOnButton) openClose = true;
-        if (!clickedOnMenu && menuBlock.classList.contains('open')) openClose = true;
-        if (clickedOnMenuLink) openClose = true;
+        if (!clickedOnMenu && menuIsOpen) openClose = true;
+        if (clickedOnMenuLink && menuIsOpen) openClose = true;
 
         if (openClose) openCloseMenu();
 
