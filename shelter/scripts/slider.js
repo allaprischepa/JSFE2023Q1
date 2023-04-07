@@ -106,6 +106,7 @@ let sliderGapForMobile = 40;
 window.addEventListener("DOMContentLoaded", function () {
     sliderConstruct();
     buttonsHandler();
+    popupHandler();
 });
 window.addEventListener('resize', sliderConstruct);
 visualViewport.addEventListener('resize', sliderConstruct);
@@ -173,6 +174,34 @@ function buttonsHandler() {
 }
 
 /**
+ * Popup handler.
+ */
+function popupHandler() {
+    const popup = document.querySelector('.card-description-popup');
+    const body = document.querySelector('body');
+    const overlay = document.querySelector('.overlay');
+
+
+    document.addEventListener('click', (e) => {
+        const closePopupBtn = document.getElementById('closePopupBtn');
+        const clickedOnOverlay = e.composedPath().includes(overlay);
+        const clickedOnCloseButton = e.composedPath().includes(closePopupBtn);
+        const popupIsOpen = popup.classList.contains('open');
+
+        if (popupIsOpen && (clickedOnOverlay || clickedOnCloseButton)) closePopup();
+
+    })
+
+    /**
+     * Open / close menu.
+     */
+    function closePopup() {
+        popup.classList.toggle('open');
+        body.classList.toggle('frozen');
+    }
+};
+
+/**
  * Shuffle array,
  *
  * @param {*} arr
@@ -218,7 +247,7 @@ function getCurrentPetsGroup(petsArr, cardsPerPage) {
 function getSidePetsGroup(petsArr, cardsPerPage) {
     let petsGroup = [];
     let petsArrShuffled = shuffle(petsArr.slice(0));
-    
+
     for (let i = 0; i < cardsPerPage; i++) {
         petsGroup.push(petsArrShuffled.shift());
     }
@@ -253,6 +282,35 @@ function formHtmlSliderCard(petObj) {
                                 <div class="card-name">${petObj.name}</div>
                                 <button class="button-secondary">Learn more</button>
                              </div>`;
+
+    // Show popup on click on card.
+    cardElement.addEventListener('click', function () {
+        let popup = document.querySelector('.card-description-popup');
+        let body = document.querySelector('body');
+
+        popup.innerHTML = `<div class="card-description">
+                                <div class="child-item card-description-img"><img src="${petObj.img}" alt="Pet Katrine"></div>
+                                <div class="child-item card-description-info">
+                                    <div class="child-item pet-name-type">
+                                        <h3>${petObj.name}</h3>
+                                        <h4>${petObj.type} - ${petObj.breed}</h4>
+                                    </div>
+                                    <div class="child-item pet-description">${petObj.description}</div>
+                                    <div class="child-item">
+                                        <ul class="pet-options-list">
+                                            <li><h5><b>Age:</b> ${petObj.age}</h5></li>
+                                            <li><h5><b>Inoculations:</b> ${petObj.inoculations.join(', ')}</h5></li>
+                                            <li><h5><b>Diseases:</b> ${petObj.diseases.join(', ')}</h5></li>
+                                            <li><h5><b>Parasites:</b> ${petObj.parasites.join(', ')}</h5></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="button-secondary button-round button-close" id="closePopupBtn"></button>`;
+
+        popup.classList.toggle('open');
+        body.classList.toggle('frozen');
+    });
 
     return cardElement;
 }
