@@ -98,6 +98,13 @@ let currentPetsGroup, prevPetsGroup, nextPetsGroup;
 let sliderScrollWidth = 0;
 let scrollEnd = 0;
 let sliderGapForMobile = 40;
+let ourPetsMultiplier = 8;
+let ourPetsCount = ourPetsMultiplier * initialPets.length;
+let ourPetsSliderContainer;
+let pageNumberOfOurPetsColumns = 0;
+let ourPetsSliderGap = 40;
+const ourPetsArr = formOurPetsArray();
+let ourPetsSliderCurrentPage = 1;
 
 
 /**
@@ -107,33 +114,43 @@ window.addEventListener("DOMContentLoaded", function () {
     sliderConstruct();
     buttonsHandler();
     popupHandler();
+    ourPetsSliderConstruct();
 });
-window.addEventListener('resize', sliderConstruct);
-visualViewport.addEventListener('resize', sliderConstruct);
+window.addEventListener('resize', function () {
+    sliderConstruct();
+    ourPetsSliderConstruct();
+});
+visualViewport.addEventListener('resize', function () {
+    sliderConstruct();
+    ourPetsSliderConstruct();
+});
 
 /**
  * Construct slider. Dinamycly change it.
  */
 function sliderConstruct() {
     sliderContainer = document.getElementById('infiniteSliderContainer');
-    let currentNumberOfCards = Math.floor(sliderContainer.clientWidth / cardWidth);
-    let currentGap = currentNumberOfCards > 1 ? (sliderContainer.clientWidth % cardWidth) / (currentNumberOfCards - 1) : sliderGapForMobile;
-    let petsArr = shuffle(initialPets.slice(0)); // Get new randomly shuffled array.
-    sliderScrollWidth = sliderContainer.clientWidth * 3;
-    scrollEnd = (cardWidth + currentGap) * currentNumberOfCards;
 
-    // Initialize the slider or reinitialize on viewport/window width change.
-    if (currentNumberOfCards === 0 || currentNumberOfCards !== pageNumberOfCards) {
-        pageNumberOfCards = currentNumberOfCards; // Save number of cards state.
+    if (sliderContainer) {
+        let currentNumberOfCards = Math.floor(sliderContainer.clientWidth / cardWidth);
+        let currentGap = currentNumberOfCards > 1 ? (sliderContainer.clientWidth % cardWidth) / (currentNumberOfCards - 1) : sliderGapForMobile;
+        let petsArr = shuffle(initialPets.slice(0)); // Get new randomly shuffled array.
+        sliderScrollWidth = sliderContainer.clientWidth * 3;
+        scrollEnd = (cardWidth + currentGap) * currentNumberOfCards;
 
-        currentPetsGroup = getCurrentPetsGroup(petsArr, currentNumberOfCards);
-        prevPetsGroup = getSidePetsGroup(petsArr, currentNumberOfCards);
-        nextPetsGroup = getSidePetsGroup(petsArr, currentNumberOfCards);
+        // Initialize the slider or reinitialize on viewport/window width change.
+        if (currentNumberOfCards === 0 || currentNumberOfCards !== pageNumberOfCards) {
+            pageNumberOfCards = currentNumberOfCards; // Save number of cards state.
 
-        updateSliderHtml();
+            currentPetsGroup = getCurrentPetsGroup(petsArr, currentNumberOfCards);
+            prevPetsGroup = getSidePetsGroup(petsArr, currentNumberOfCards);
+            nextPetsGroup = getSidePetsGroup(petsArr, currentNumberOfCards);
+
+            updateSliderHtml();
+        }
+
+        sliderContainer.scrollLeft = scrollEnd;
     }
-
-    sliderContainer.scrollLeft = scrollEnd;
 }
 
 /**
@@ -143,34 +160,39 @@ function buttonsHandler() {
     const prevButton = document.getElementById('infiniteSliderPrev');
     const nextButton = document.getElementById('infiniteSliderNext');
 
-    prevButton.addEventListener('click', function () {
-        // Save state.
-        nextPetsGroup = currentPetsGroup;
-        currentPetsGroup = prevPetsGroup;
+    if (prevButton) {
+        prevButton.addEventListener('click', function () {
+            // Save state.
+            nextPetsGroup = currentPetsGroup;
+            currentPetsGroup = prevPetsGroup;
 
-        // Add group for prev side.
-        let petsArr = shuffle(initialPets.slice(0));
-        petsArr = petsArr.filter((item) => !currentPetsGroup.find((element) => element.name === item.name));
-        prevPetsGroup = getSidePetsGroup(petsArr, pageNumberOfCards);
+            // Add group for prev side.
+            let petsArr = shuffle(initialPets.slice(0));
+            petsArr = petsArr.filter((item) => !currentPetsGroup.find((element) => element.name === item.name));
+            prevPetsGroup = getSidePetsGroup(petsArr, pageNumberOfCards);
 
-        updateSliderHtml();
-        animateHorizontalScroll(sliderContainer, scrollEnd * 2, scrollEnd)
+            updateSliderHtml();
+            animateHorizontalScroll(sliderContainer, scrollEnd * 2, scrollEnd, 0.5 * (pageNumberOfCards + 1))
 
-    });
+        });
+    }
 
-    nextButton.addEventListener('click', function () {
-        // Save state.
-        prevPetsGroup = currentPetsGroup;
-        currentPetsGroup = nextPetsGroup;
 
-        // Add group for next side.
-        let petsArr = shuffle(initialPets.slice(0));
-        petsArr = petsArr.filter((item) => !currentPetsGroup.find((element) => element.name === item.name));
-        nextPetsGroup = getSidePetsGroup(petsArr, pageNumberOfCards);
+    if (nextButton) {
+        nextButton.addEventListener('click', function () {
+            // Save state.
+            prevPetsGroup = currentPetsGroup;
+            currentPetsGroup = nextPetsGroup;
 
-        updateSliderHtml();
-        animateHorizontalScroll(sliderContainer, 0, scrollEnd)
-    });
+            // Add group for next side.
+            let petsArr = shuffle(initialPets.slice(0));
+            petsArr = petsArr.filter((item) => !currentPetsGroup.find((element) => element.name === item.name));
+            nextPetsGroup = getSidePetsGroup(petsArr, pageNumberOfCards);
+
+            updateSliderHtml();
+            animateHorizontalScroll(sliderContainer, 0, scrollEnd, 0.5 * (pageNumberOfCards + 1))
+        });
+    }
 }
 
 /**
@@ -186,7 +208,7 @@ function popupHandler() {
         const closePopupBtn = document.getElementById('closePopupBtn');
         const clickedOnOverlay = e.composedPath().includes(overlay);
         const clickedOnCloseButton = e.composedPath().includes(closePopupBtn);
-        const popupIsOpen = popup.classList.contains('open');
+        const popupIsOpen = popup ? popup.classList.contains('open') : false;
 
         if (popupIsOpen && (clickedOnOverlay || clickedOnCloseButton)) closePopup();
 
@@ -200,6 +222,30 @@ function popupHandler() {
         body.classList.toggle('frozen');
     }
 };
+
+/**
+ * Construct slider. Dinamycly change it.
+ */
+function ourPetsSliderConstruct() {
+    ourPetsSliderContainer = document.getElementById('ourPetsSliderContainer');
+
+
+    if (ourPetsSliderContainer) {
+        let currentNumberOfOurPetsColumns = Math.floor(ourPetsSliderContainer.clientWidth / cardWidth);
+
+        // Initialize the slider or reinitialize on viewport/window width change.
+        if (currentNumberOfOurPetsColumns !== pageNumberOfOurPetsColumns) {
+            let prevPageNumberOfOurPetsColumns = pageNumberOfOurPetsColumns;
+            pageNumberOfOurPetsColumns = currentNumberOfOurPetsColumns; // Save number of cards state.
+            // Calculate cards to offset.
+            let offset = prevPageNumberOfOurPetsColumns > 0 ? (ourPetsSliderCurrentPage - 1) * getOurPetsNumberOfCardsPerPage(prevPageNumberOfOurPetsColumns) : 0;
+            ourPetsSliderCurrentPage = Math.floor(offset / getOurPetsNumberOfCardsPerPage()) + 1;
+
+            updateOurPetsSliderHtml();
+            updateOurPetsSliderControls();
+        }
+    }
+}
 
 /**
  * Shuffle array,
@@ -288,28 +334,30 @@ function formHtmlSliderCard(petObj) {
         let popup = document.querySelector('.card-description-popup');
         let body = document.querySelector('body');
 
-        popup.innerHTML = `<div class="card-description">
-                                <div class="child-item card-description-img"><img src="${petObj.img}" alt="Pet Katrine"></div>
-                                <div class="child-item card-description-info">
-                                    <div class="child-item pet-name-type">
-                                        <h3>${petObj.name}</h3>
-                                        <h4>${petObj.type} - ${petObj.breed}</h4>
-                                    </div>
-                                    <div class="child-item pet-description">${petObj.description}</div>
-                                    <div class="child-item">
-                                        <ul class="pet-options-list">
-                                            <li><h5><b>Age:</b> ${petObj.age}</h5></li>
-                                            <li><h5><b>Inoculations:</b> ${petObj.inoculations.join(', ')}</h5></li>
-                                            <li><h5><b>Diseases:</b> ${petObj.diseases.join(', ')}</h5></li>
-                                            <li><h5><b>Parasites:</b> ${petObj.parasites.join(', ')}</h5></li>
-                                        </ul>
+        if (popup) {
+            popup.innerHTML = `<div class="card-description">
+                                    <div class="child-item card-description-img"><img src="${petObj.img}" alt="Pet ${petObj.img}"></div>
+                                    <div class="child-item card-description-info">
+                                        <div class="child-item pet-name-type">
+                                            <h3>${petObj.name}</h3>
+                                            <h4>${petObj.type} - ${petObj.breed}</h4>
+                                        </div>
+                                        <div class="child-item pet-description">${petObj.description}</div>
+                                        <div class="child-item">
+                                            <ul class="pet-options-list">
+                                                <li><h5><b>Age:</b> ${petObj.age}</h5></li>
+                                                <li><h5><b>Inoculations:</b> ${petObj.inoculations.join(', ')}</h5></li>
+                                                <li><h5><b>Diseases:</b> ${petObj.diseases.join(', ')}</h5></li>
+                                                <li><h5><b>Parasites:</b> ${petObj.parasites.join(', ')}</h5></li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <button class="button-secondary button-round button-close" id="closePopupBtn"></button>`;
+                                <button class="button-secondary button-round button-close" id="closePopupBtn"></button>`;
 
-        popup.classList.toggle('open');
-        body.classList.toggle('frozen');
+            popup.classList.toggle('open');
+            body.classList.toggle('frozen');
+        }
     });
 
     return cardElement;
@@ -322,9 +370,8 @@ function formHtmlSliderCard(petObj) {
  * @param {*} start
  * @param {*} end
  */
-function animateHorizontalScroll(element, start, end) {
+function animateHorizontalScroll(element, start, end, coefficient = 0.5) {
     const startTime = performance.now();
-    const coefficient = 0.5 * (pageNumberOfCards + 1);
 
     function scroll() {
         const elapsed = performance.now() - startTime;
@@ -349,4 +396,133 @@ function updateSliderHtml() {
     appendPetsGroupToSlider(sliderContainer, prevPetsGroup);
     appendPetsGroupToSlider(sliderContainer, currentPetsGroup);
     appendPetsGroupToSlider(sliderContainer, nextPetsGroup);
+}
+
+/**
+ * Form Our Pets array.
+ */
+function formOurPetsArray() {
+    let resultArr = [];
+    let tail = [];
+    let groupBy = 6;
+
+    for (let i=0; i < ourPetsMultiplier; i++) {
+        let petsArr = shuffle(initialPets.slice(0));
+
+        switch (tail.length) {
+            case 0: {
+                resultArr = resultArr.concat(petsArr.splice(0, 6));
+                tail = petsArr;
+                break;
+            }
+            case 6: {
+                resultArr = resultArr.concat(tail);
+                tail = [];
+                break;
+            }
+            default: {
+                let head = [];
+
+                for (let j = 0; j < petsArr.length && head.length < (groupBy - tail.length); j++) {
+                    const petObj = petsArr[j];
+                    if (!tail.some((el) => petObj.name === el.name)) {
+                        head.push(petObj);
+                        petsArr.splice(j, 1);
+                        j--;
+                    }
+                }
+                resultArr = [...resultArr, ...tail, ...head];
+                tail = petsArr;
+                break;
+            }
+        }
+    }
+
+    return resultArr;
+}
+
+/**
+ * Update inner html for slider.
+ */
+function updateOurPetsSliderHtml() {
+    ourPetsSliderContainer.innerHTML = '';
+    let currentNumberOfOurPetsPerPage = getOurPetsNumberOfCardsPerPage();
+    let ourPetsArrCopy = ourPetsArr.slice(0);
+    let page = 1;
+
+    while(ourPetsArrCopy.length) {
+        let pageElement = document.createElement('div');
+        pageElement.classList.add('page');
+        pageElement.id = `page-${page}`;
+
+        for (let i = 0; i < currentNumberOfOurPetsPerPage; i++) {
+            pageElement.append(formHtmlSliderCard(ourPetsArrCopy.shift()));
+        }
+
+        ourPetsSliderContainer.append(pageElement);
+        page++;
+    }
+
+    const pageToShow = ourPetsSliderContainer.querySelector(`#page-${ourPetsSliderCurrentPage}`);
+    let start = ourPetsSliderContainer.scrollLeft;
+    let end = pageToShow.offsetLeft - ourPetsSliderContainer.offsetLeft;
+    animateHorizontalScroll(ourPetsSliderContainer, start, end, 0.5 * (pageNumberOfOurPetsColumns + 1));
+}
+
+/**
+ * Update controls for Our Pets slider.
+ */
+function updateOurPetsSliderControls() {
+    let ourPetsSliderControlsContainer = document.getElementById('ourPetsSliderControls');
+    let pagesCount = ourPetsSliderContainer.getElementsByClassName('page').length;
+
+    if (ourPetsSliderControlsContainer) {
+        let buttonClassList = 'button button-round button-secondary';
+        let prevInactive = ourPetsSliderCurrentPage === 1 ? 'inactive' : '';
+        let nextInactive = ourPetsSliderCurrentPage === pagesCount ? 'inactive' : '';
+        let prevPageNumber = ourPetsSliderCurrentPage === 1 ? ourPetsSliderCurrentPage : ourPetsSliderCurrentPage - 1;
+        let nextPageNumber = ourPetsSliderCurrentPage === pagesCount ? ourPetsSliderCurrentPage : ourPetsSliderCurrentPage + 1;
+
+        ourPetsSliderControlsContainer.innerHTML = '';
+        ourPetsSliderControlsContainer.innerHTML += `<div class="child-item"><a class="${buttonClassList} ${prevInactive}" data-page="1">&lt;&lt;</a></div>`;
+        ourPetsSliderControlsContainer.innerHTML += `<div class="child-item"><a class="${buttonClassList} ${prevInactive}" data-page="${prevPageNumber}">&lt;</a></div>`;
+
+        ourPetsSliderControlsContainer.innerHTML += `<div class="child-item"><a class="${buttonClassList} active" data-page="${ourPetsSliderCurrentPage}"><h4>${ourPetsSliderCurrentPage}</h4></a></div>`;
+
+        ourPetsSliderControlsContainer.innerHTML += `<div class="child-item"><a class="${buttonClassList} ${nextInactive}" data-page="${nextPageNumber}">&gt;</a></div>`;
+        ourPetsSliderControlsContainer.innerHTML += `<div class="child-item"><a class="${buttonClassList} ${nextInactive}" data-page="${pagesCount}">&gt;&gt;</a></div>`;
+
+        let buttons = ourPetsSliderControlsContainer.getElementsByTagName('a');
+        [...buttons].forEach(function(element, index) {
+            element.addEventListener('click', function (e) {
+                let choosenPage = +this.getAttribute('data-page');
+
+                if (choosenPage && choosenPage !== ourPetsSliderCurrentPage) {
+                    const pageToShow = ourPetsSliderContainer.querySelector(`#page-${choosenPage}`);
+                    let start = ourPetsSliderContainer.scrollLeft;
+                    let end = pageToShow.offsetLeft - ourPetsSliderContainer.offsetLeft;
+                    animateHorizontalScroll(ourPetsSliderContainer, start, end, 0.5 * (pageNumberOfOurPetsColumns + 1));
+
+                    ourPetsSliderCurrentPage = choosenPage;
+                    updateOurPetsSliderControls()
+                }
+            });
+        });
+
+    }
+
+}
+
+/**
+ * Get number of cards per page.
+ *
+ * @param {*} columns
+ * @returns
+ */
+function getOurPetsNumberOfCardsPerPage(columns = pageNumberOfOurPetsColumns) {
+    switch (columns) {
+        case 4: return 8;
+        case 2: return 6;
+        default: return 3;
+    }
 }

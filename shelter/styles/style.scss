@@ -75,6 +75,7 @@ $popup-z-index: $overlay-cover-all-z-index + 1;
     --card-description-info-padding-right: 20px;
     --card-description-img-width: 500px;
     --card-description-info-width: 370px;
+    --our-pets-slider-gap: 40px;
 }
 
 /* Calculate line-height in px according to font-size */
@@ -473,19 +474,23 @@ nav {
     width: calc($slider-card-width * 3 + var(--slider-gap) * 2);
 }
 .our-pets-slider {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 40px;
-    row-gap: 30px;
+    display: flex;
+    flex-direction: row;
+    width: calc($slider-card-width * 4 + var(--our-pets-slider-gap) * 3);
     overflow: hidden;
+    gap: var(--our-pets-slider-gap);
 
-    > .child-item:nth-child(n+9) {
-        display: none;
+    & .page {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: var(--our-pets-slider-gap);
+        row-gap: 30px;
     }
 }
 .slider-card {
-    min-width: $slider-card-width;
+    width: $slider-card-width;
+    flex-shrink: 0;
     display: flex;
     flex-flow: column;
     background: $color-light-s;
@@ -1094,14 +1099,11 @@ nav {
 /* Our Pets slider's styles */
 @media only screen and (max-width: 639px) {
     .our-pets-slider {
-        grid-template-columns: 1fr;
-        grid-template-rows: repeat(3, 1fr);
-
-        > .child-item:nth-child(n+4) {
-            display: none;
+        width: $slider-card-width;
+        & .page {
+            grid-template-columns: 1fr;
+            grid-template-rows: repeat(3, 1fr);
         }
-
-
     }
 
     .our-pets--pets-section.pets-section .slider-controls {
@@ -1122,11 +1124,10 @@ nav {
         }
     }
     .our-pets-slider {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(3, 1fr);
-
-        > .child-item:nth-child(n+7) {
-            display: none;
+        width: calc($slider-card-width * 2 + var(--our-pets-slider-gap));
+        & .page {
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(3, 1fr);
         }
     }
 }
