@@ -117,10 +117,10 @@ window.addEventListener("DOMContentLoaded", function () {
     popupHandler();
     ourPetsSliderConstruct();
 });
-window.addEventListener('resize', debounce(function () {
-        sliderConstruct();
-        ourPetsSliderConstruct();
-    }, 50));
+window.addEventListener('resize', function () {
+    sliderConstruct();
+    debounce(ourPetsSliderConstruct, 50)();
+});
 
 /**
  * Construct slider. Dinamycly change it.
