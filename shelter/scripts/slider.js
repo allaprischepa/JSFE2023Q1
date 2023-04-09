@@ -117,18 +117,10 @@ window.addEventListener("DOMContentLoaded", function () {
     popupHandler();
     ourPetsSliderConstruct();
 });
-window.addEventListener('resize', function () {
-    if (screenWidthChanged()) {
+window.addEventListener('resize', debounce(function () {
         sliderConstruct();
         ourPetsSliderConstruct();
-    }
-});
-visualViewport.addEventListener('resize', function () {
-    if (screenWidthChanged()) {
-        sliderConstruct();
-        ourPetsSliderConstruct();
-    }
-});
+    }, 50));
 
 /**
  * Construct slider. Dinamycly change it.
@@ -532,17 +524,16 @@ function getOurPetsNumberOfCardsPerPage(columns = pageNumberOfOurPetsColumns) {
 }
 
 /**
- * Listen change of screen size only.
+ * Debounce.
  *
+ * @param {*} func
+ * @param {*} delay
  * @returns
  */
-function screenWidthChanged() {
-    let changed = false;
-
-    if (screenWidth !== screen.width) {
-        changed = true;
-        screenWidth = screen.width;
-    }
-
-    return changed;
+function debounce(func, delay) {
+  let timeoutId;
+  return function () {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(func, delay);
+  };
 }
