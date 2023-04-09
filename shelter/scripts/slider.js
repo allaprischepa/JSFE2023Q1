@@ -105,6 +105,7 @@ let pageNumberOfOurPetsColumns = 0;
 let ourPetsSliderGap = 40;
 const ourPetsArr = formOurPetsArray();
 let ourPetsSliderCurrentPage = 1;
+let screenWidth = screen.width;
 
 
 /**
@@ -117,12 +118,16 @@ window.addEventListener("DOMContentLoaded", function () {
     ourPetsSliderConstruct();
 });
 window.addEventListener('resize', function () {
-    sliderConstruct();
-    ourPetsSliderConstruct();
+    if (screenWidthChanged()) {
+        sliderConstruct();
+        ourPetsSliderConstruct();
+    }
 });
 visualViewport.addEventListener('resize', function () {
-    sliderConstruct();
-    ourPetsSliderConstruct();
+    if (screenWidthChanged()) {
+        sliderConstruct();
+        ourPetsSliderConstruct();
+    }
 });
 
 /**
@@ -228,7 +233,6 @@ function popupHandler() {
  */
 function ourPetsSliderConstruct() {
     ourPetsSliderContainer = document.getElementById('ourPetsSliderContainer');
-
 
     if (ourPetsSliderContainer) {
         let currentNumberOfOurPetsColumns = Math.floor(ourPetsSliderContainer.clientWidth / cardWidth);
@@ -525,4 +529,20 @@ function getOurPetsNumberOfCardsPerPage(columns = pageNumberOfOurPetsColumns) {
         case 2: return 6;
         default: return 3;
     }
+}
+
+/**
+ * Listen change of screen size only.
+ *
+ * @returns
+ */
+function screenWidthChanged() {
+    let changed = false;
+
+    if (screenWidth !== screen.width) {
+        changed = true;
+        screenWidth = screen.width;
+    }
+
+    return changed;
 }
