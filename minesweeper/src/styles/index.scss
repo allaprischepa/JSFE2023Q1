@@ -1,0 +1,31 @@
+$main-color: #c0c0c0;
+$border-color: #ececec;
+:root {
+  --cell-size: 30px;
+}
+
+.minesweeper__field {
+  display: grid;
+
+  &.field_rows_10 {
+    grid-template-columns: repeat(10, var(--cell-size));
+  }
+}
+
+.cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  box-sizing: border-box;
+  background: $main-color;
+  border: 2px outset $border-color;
+  cursor: pointer;
+
+  &.type_m {
+    background-image: url('../assets/icons/icon--mine.png');
+    background-size: 85%;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}
+
+
