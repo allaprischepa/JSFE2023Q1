@@ -1,8 +1,107 @@
 $main-color: #c0c0c0;
 $border-color: #ececec;
+$switcher-size: 30px;
+
+$cell-types: (
+  'm': 'mine',
+  'f': 'flag',
+  '1': 'digit1',
+  '2': 'digit2',
+  '3': 'digit3',
+  '4': 'digit4',
+  '5': 'digit5',
+  '6': 'digit6',
+  '7': 'digit7',
+  '8': 'digit8',
+);
+
 :root {
   --cell-size: 30px;
 }
+
+.theme-light {
+  --background-color: #fbfbfe;
+  --font-color: #000000;
+}
+.theme-dark {
+  --background-color: #2a2c2d;
+  --font-color: #ffffff;
+}
+
+.page {
+  background-color: var(--background-color);
+  color: var(--font-color);
+}
+
+/* Switcher mixin */
+@mixin switcher($type, $icon-on, $icon-off) {
+  .minesweeper__#{$type} {
+    position: relative;
+    display: inline-block;
+    width: calc($switcher-size + ($switcher-size / 2));
+    height: 15px;
+  }
+
+  .#{$type}-switcher__input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .#{$type}-switcher__toggle {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $main-color;
+    border-radius: calc($switcher-size / 2);
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+
+    .#{$type}-switcher__input:checked + & {
+      background-color: #2196f3;
+    }
+
+    &:before {
+      position: absolute;
+      content: "";
+      height: $switcher-size;
+      width: $switcher-size;
+      border-radius: 50%;
+      left: 0;
+      bottom: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto 0;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+      box-shadow: 0 0px 10px $main-color;
+      background: white url('../assets/icons/' + #{$icon-off});
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 65%;
+
+      .#{$type}-switcher__input:checked + & {
+        $translateX: calc($switcher-size / 2);
+        -webkit-transform: translateX($translateX);
+        -ms-transform: translateX($translateX);
+        transform: translateX($translateX);
+        background: white url('../assets/icons/' + #{$icon-on});
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 65%;
+      }
+    }
+  }
+}
+
+/* Theme switcher */
+@include switcher('theme', 'icon--sun.png', 'icon--moon.png');
+
+/* Sound switcher */
+@include switcher('sound', 'icon--volume.png', 'icon--mute.png');
 
 .minesweeper__field {
   display: grid;
@@ -20,12 +119,12 @@ $border-color: #ececec;
   border: 2px outset $border-color;
   cursor: pointer;
 
-  &.type_m {
-    background-image: url('../assets/icons/icon--mine.png');
-    background-size: 85%;
-    background-repeat: no-repeat;
-    background-position: center;
+  @each $type, $icon in $cell-types {
+    &.type_#{$type} {
+      background-image: url('../assets/icons/icon--#{$icon}.png');
+      background-size: 85%;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
   }
 }
-
-
