@@ -1,5 +1,17 @@
-$main-color: #c0c0c0;
-$border-color: #ececec;
+$light-grey-l: #ececec;
+$grey-l: #bdbdbd;
+$dark-grey-l: #8e8e8e;
+$light-grey-d: #8e8e8e;
+$grey-d: #686868;
+$dark-grey-d: #4e4e4e;
+$blue: #2196f3;
+$black: #1b1b1b;
+$red: #e60000;
+$cell-l: darken($grey-l, 5%);
+$cell-d: darken($grey-d, 5%);
+$border-l: darken($dark-grey-l, 10%);
+$border-d: darken($dark-grey-d, 90%);
+
 $switcher-size: 30px;
 
 $cell-types: (
@@ -15,23 +27,30 @@ $cell-types: (
   '8': 'digit8',
 );
 
+$rows-number: (10, 15, 25);
+
 :root {
   --cell-size: 30px;
 }
 
 .theme-light {
-  --background-color: #fbfbfe;
+  --grey-color: #{$grey-l};
+  --light-grey-color: #{$light-grey-l};
+  --dark-grey-color: #{$dark-grey-l};
+  --cell-color: #{$cell-l};
+  --cells-border: #{$border-l};
   --font-color: #000000;
 }
 .theme-dark {
-  --background-color: #2a2c2d;
+  --grey-color: #{$grey-d};
+  --light-grey-color: #{$light-grey-d};
+  --dark-grey-color: #{$dark-grey-d};
+  --cell-color: #{$cell-d};
+  --cells-border: #{$border-d};
   --font-color: #ffffff;
 }
 
-.page {
-  background-color: var(--background-color);
-  color: var(--font-color);
-}
+@font-face{font-family: DS Digital; src: url(../assets/fonts/Ds_digital/DS-DIGI.TTF) }
 
 /* Switcher mixin */
 @mixin switcher($type, $icon-on, $icon-off) {
@@ -55,13 +74,13 @@ $cell-types: (
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: $main-color;
+    background-color: $grey-l;
     border-radius: calc($switcher-size / 2);
     -webkit-transition: 0.4s;
     transition: 0.4s;
 
     .#{$type}-switcher__input:checked + & {
-      background-color: #2196f3;
+      background-color: $blue;
     }
 
     &:before {
@@ -77,7 +96,7 @@ $cell-types: (
       margin: auto 0;
       -webkit-transition: 0.4s;
       transition: 0.4s;
-      box-shadow: 0 0px 10px $main-color;
+      box-shadow: 0 0px 10px $dark-grey-l;
       background: white url('../assets/icons/' + #{$icon-off});
       background-repeat: no-repeat;
       background-position: center;
@@ -97,17 +116,198 @@ $cell-types: (
   }
 }
 
+@mixin range-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 25px;
+  background: $blue;
+  border: none;
+  box-shadow: 0 0 2px $grey-l;
+}
+
+@mixin range-track {
+  background: $blue;
+}
+
+@mixin game-field-border {
+  border: 5px inset var(--light-grey-color);
+}
+
+@mixin stat-field($icon) {
+  display: flex;
+  width: 100px;
+  height: 40px;
+  box-sizing: border-box;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background: $black;
+  padding: 0 5px;
+  color: $red;
+  font-family: DS Digital;
+  font-size: 36px;
+
+  &:before {
+    content: '';
+    background-image: url('../assets/icons/#{$icon}');
+    background-size: cover;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.minesweeper {
+  min-width: 500px;
+  max-width: 800px;
+  margin: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+}
+
+.minesweeper__row-first,
+.minesweeper__row-second,
+.minesweeper__row-third {
+  display: flex;
+  gap: 50px;
+  margin: auto;
+}
+
+.minesweeper__mode,
+.minesweeper__mines-count {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.setting-block {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.setting-name {
+  font-weight: 600;
+}
+
+.mode-easy,
+.mode-medium,
+.mode-hard {
+  width: auto;
+	box-sizing: border-box;
+	appearance: none;
+  -webkit-appearance: none;
+	-moz-appearance: none;
+	outline: none;
+	cursor: pointer;
+  padding: 10px 20px;
+	background: $grey-l;
+  font-size: 0.9em;
+  margin: 0;
+
+  &:checked {
+    background: $blue;
+  }
+
+  &:before {
+    content: attr(label);
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+  }
+}
+
+.count {
+  appearance: none;
+  -webkit-appearance: none;
+	-moz-appearance: none;
+  outline: none;
+  height: 15px;
+  background: $grey-l;
+  border-radius: 15px;
+
+  &::-moz-range-thumb {
+    @include range-thumb();
+  }
+  &::-webkit-slider-thumb {
+    @include range-thumb();
+  }
+}
+
+.mines-count__value {
+  opacity: 0.4;
+}
+
 /* Theme switcher */
 @include switcher('theme', 'icon--sun.png', 'icon--moon.png');
 
 /* Sound switcher */
 @include switcher('sound', 'icon--volume.png', 'icon--mute.png');
 
+.minesweeper__game {
+  $padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: auto;
+  box-sizing: border-box;
+  background: var(--cell-color);
+  padding: $padding;
+
+  @each $number in $rows-number {
+    &.game_rows_#{$number} {
+      //width: calc((var(--cell-size) * $number) + $padding * 2);
+    }
+  }
+}
+
+.minesweeper__stat {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  align-items: center;
+  @include game-field-border();
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+.stat__remaining {
+  @include stat-field('icon--mine-l.png');
+}
+
+.stat__flags {
+  @include stat-field('icon--flag-l.png');
+}
+
+.stat__steps {
+  @include stat-field('icon--steps-l.png');
+}
+
+.stat__time {
+  @include stat-field('icon--time-l.png');
+}
+
 .minesweeper__field {
   display: grid;
+  width: fit-content;
+  @include game-field-border();
 
-  &.field_rows_10 {
-    grid-template-columns: repeat(10, var(--cell-size));
+  @each $number in $rows-number {
+    &.field_rows_#{$number} {
+      grid-template-columns: repeat(#{$number}, var(--cell-size));
+    }
   }
 }
 
@@ -115,9 +315,13 @@ $cell-types: (
   width: var(--cell-size);
   height: var(--cell-size);
   box-sizing: border-box;
-  background: $main-color;
-  border: 2px outset $border-color;
+  background: var(--cell-color);
   cursor: pointer;
+
+  &.cell_closed {
+    background: var(--grey-color);
+    border: 2px outset var(--light-grey-color);
+  }
 
   @each $type, $icon in $cell-types {
     &.type_#{$type} {
@@ -126,5 +330,34 @@ $cell-types: (
       background-repeat: no-repeat;
       background-position: center;
     }
+  }
+
+  &.cell_opened {
+    @for $i from 0 through 24 {
+      @for $j from 0 through 24 {
+        &.cell_#{$i}_#{$j} + &.cell_#{$i}_#{$j + 1} {
+          border-left: 1px solid var(--cells-border);
+        }
+        &.cell_#{$i}_#{$j} ~ &.cell_#{$i + 1}_#{$j} {
+          border-top: 1px solid var(--cells-border);
+        }
+      }
+    }
+  }
+}
+
+.restart {
+  width: 40px;
+  height: 40px;
+  box-sizing: border-box;
+  border: 3px outset var(--light-grey-color);
+  cursor: pointer;
+  background: var(--grey-color) url('../assets/icons/icon--restart.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 80%;
+
+  &:active {
+    border: 3px inset var(--light-grey-color);
   }
 }

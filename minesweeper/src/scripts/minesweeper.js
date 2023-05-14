@@ -5,16 +5,28 @@ export default class Minesweeper {
   init() {
     this.selectors = {
       main: 'minesweeper',
+      header: 'minesweeper__header',
       mode: 'minesweeper__mode',
       minesCount: 'minesweeper__mines-count',
+      gameBlock: 'minesweeper__game',
+      stat: 'minesweeper__stat',
+      remaining: 'stat__remaining',
+      flags: 'stat__flags',
+      steps: 'stat__steps',
+      time: 'stat__time',
+      restart: 'restart',
       field: 'minesweeper__field',
       theme: 'minesweeper__theme',
+      sound: 'minesweeper__sound',
+      flagged: 'type_f',
     };
 
     this.mode = localStorage.getItem('mode') || 'easy';
     this.minesCount = localStorage.getItem('minesCount') || 10;
     this.theme = localStorage.getItem('theme') || 'light';
     this.sound = localStorage.getItem('sound') || 'on';
+    this.flags = +localStorage.getItem('flags') || 0;
+    this.gameStarted = false;
 
     this.body = document.querySelector('body');
     this.body.className = 'page';
@@ -24,12 +36,15 @@ export default class Minesweeper {
     this.themeSwitcherBlock = this.addThemeSwitcherBlock();
     this.soundSwitcherBlock = this.addSoundSwitcherBlock();
     [this.modeBlock, this.countBlock] = this.addSettingsBlock();
+    this.gameBlock = this.addGameBlock();
     this.gameFieldBlock = this.addGameFieldBlock();
 
     this.listenThemeChange();
     this.listenSoundChange();
     this.listenModeChange();
     this.listenMinesCountChange();
+
+    this.initializeGame();
   }
 
   /**
@@ -39,6 +54,18 @@ export default class Minesweeper {
   addMainBlock() {
     const mainBlock = document.createElement('div');
     mainBlock.classList = this.selectors.main;
+
+    const header = document.createElement('h1');
+    header.classList = this.selectors.header;
+    header.innerText = 'Minesweeper';
+    mainBlock.appendChild(header);
+
+    ['first', 'second', 'third'].forEach((row) => {
+      const block = document.createElement('div');
+      block.classList = `minesweeper__row-${row}`;
+      mainBlock.appendChild(block);
+    });
+
     this.body.appendChild(mainBlock);
 
     return mainBlock;
@@ -49,6 +76,7 @@ export default class Minesweeper {
    * @returns
    */
   addThemeSwitcherBlock() {
+    const firstRow = this.mainBlock.querySelector('.minesweeper__row-first');
     const themeSwitcherBlock = document.createElement('div');
     themeSwitcherBlock.classList = this.selectors.theme;
 
@@ -68,7 +96,8 @@ export default class Minesweeper {
     label.appendChild(span);
 
     themeSwitcherBlock.appendChild(label);
-    this.mainBlock.appendChild(themeSwitcherBlock);
+    firstRow.appendChild(themeSwitcherBlock);
+    this.mainBlock.appendChild(firstRow);
 
     return themeSwitcherBlock;
   }
@@ -78,8 +107,9 @@ export default class Minesweeper {
    * @returns
    */
   addSoundSwitcherBlock() {
+    const firstRow = this.mainBlock.querySelector('.minesweeper__row-first');
     const soundSwitcherBlock = document.createElement('div');
-    soundSwitcherBlock.classList = this.selectors.theme;
+    soundSwitcherBlock.classList = this.selectors.sound;
 
     const input = document.createElement('input');
     const inputID = 'sound-switcher';
@@ -97,7 +127,8 @@ export default class Minesweeper {
     label.appendChild(span);
 
     soundSwitcherBlock.appendChild(label);
-    this.mainBlock.appendChild(soundSwitcherBlock);
+    firstRow.appendChild(soundSwitcherBlock);
+    this.mainBlock.appendChild(firstRow);
 
     return soundSwitcherBlock;
   }
@@ -107,6 +138,8 @@ export default class Minesweeper {
    * @returns
    */
   addSettingsBlock() {
+    const secondRow = this.mainBlock.querySelector('.minesweeper__row-second');
+
     // Create Mode block.
     const modes = ['easy', 'medium', 'hard'];
     const modeBlock = document.createElement('div');
@@ -122,7 +155,6 @@ export default class Minesweeper {
     modeBlock.appendChild(modesWrapper);
 
     modes.forEach((mode) => {
-      const label = document.createElement('label');
       const input = document.createElement('input');
       const inputID = `mode-${mode}`;
       const inputAttrs = {
@@ -130,6 +162,7 @@ export default class Minesweeper {
         name: 'mode',
         id: inputID,
         value: mode,
+        label: Minesweeper.capitalize(mode),
       };
 
       Object.entries(inputAttrs).forEach(([key, value]) => {
@@ -138,11 +171,9 @@ export default class Minesweeper {
       if (mode === this.mode) {
         input.checked = true;
       }
-      label.setAttribute('for', inputID);
-      label.innerText = Minesweeper.capitalize(mode);
 
-      label.appendChild(input);
-      modesWrapper.appendChild(label);
+      input.classList = inputID;
+      modesWrapper.appendChild(input);
     });
 
     // Create Mines count block.
@@ -172,6 +203,7 @@ export default class Minesweeper {
       id: rangeID,
       name: rangeID,
       value: this.minesCount,
+      class: rangeID,
     };
 
     Object.entries(rangeAttrs).forEach(([key, value]) => {
@@ -181,10 +213,64 @@ export default class Minesweeper {
     countWrapper.appendChild(countInput);
     countWrapper.appendChild(countValue);
 
-    this.mainBlock.appendChild(modeBlock);
-    this.mainBlock.appendChild(countBlock);
+    secondRow.appendChild(modeBlock);
+    secondRow.appendChild(countBlock);
+
+    this.mainBlock.appendChild(secondRow);
 
     return [modeBlock, countBlock];
+  }
+
+  /**
+   * Add game block.
+   * @returns
+   */
+  addGameBlock() {
+    const thirdRow = this.mainBlock.querySelector('.minesweeper__row-third');
+    const gameBlock = document.createElement('div');
+    gameBlock.classList = this.selectors.gameBlock;
+    thirdRow.appendChild(gameBlock);
+    this.mainBlock.appendChild(thirdRow);
+
+    const statBlock = document.createElement('div');
+    statBlock.classList = this.selectors.stat;
+    gameBlock.appendChild(statBlock);
+
+    // Add remaining mines count and flags.
+    const firstBlock = document.createElement('div');
+    const remainingMines = document.createElement('div');
+    remainingMines.classList = this.selectors.remaining;
+    remainingMines.innerText = this.minesCount;
+    firstBlock.appendChild(remainingMines);
+
+    const flags = document.createElement('div');
+    flags.classList = this.selectors.flags;
+    flags.innerText = 0;
+    firstBlock.appendChild(flags);
+
+    // Add restart button.
+    const secondBlock = document.createElement('div');
+    const restart = document.createElement('button');
+    restart.classList = this.selectors.restart;
+    secondBlock.appendChild(restart);
+
+    // Add steps and time.
+    const thirdBlock = document.createElement('div');
+    const time = document.createElement('div');
+    time.classList = this.selectors.time;
+    time.innerText = 0;
+    thirdBlock.appendChild(time);
+
+    const steps = document.createElement('div');
+    steps.classList = this.selectors.steps;
+    steps.innerText = 0;
+    thirdBlock.appendChild(steps);
+
+    statBlock.appendChild(firstBlock);
+    statBlock.appendChild(secondBlock);
+    statBlock.appendChild(thirdBlock);
+
+    return gameBlock;
   }
 
   /**
@@ -193,21 +279,28 @@ export default class Minesweeper {
    */
   addGameFieldBlock() {
     const gameFieldBlock = document.createElement('div');
-    const rowsCount = 10;
-    gameFieldBlock.classList = `${this.selectors.field} field_rows_${rowsCount}`;
+    this.gameBlock.appendChild(gameFieldBlock);
+
+    return gameFieldBlock;
+  }
+
+  /**
+   * Add cells.
+   */
+  addCells() {
+    const rowsCount = this.getRowsCount();
+    this.gameFieldBlock.innerHTML = '';
+    this.gameFieldBlock.classList = `${this.selectors.field} field_rows_${rowsCount}`;
+    this.gameBlock.classList = `${this.selectors.gameBlock} game_rows_${rowsCount}`;
 
     // Generate cells.
     for (let row = 0; row < rowsCount; row += 1) {
-      for (let column = 0; column < 10; column += 1) {
+      for (let column = 0; column < rowsCount; column += 1) {
         const cell = document.createElement('div');
         cell.classList = `cell cell_${row}_${column} cell_closed`;
-        gameFieldBlock.appendChild(cell);
+        this.gameFieldBlock.appendChild(cell);
       }
     }
-
-    this.mainBlock.appendChild(gameFieldBlock);
-
-    return gameFieldBlock;
   }
 
   /**
@@ -246,8 +339,13 @@ export default class Minesweeper {
       radio.addEventListener('change', (event) => {
         const { target } = event;
         const currentValue = target.getAttribute('value');
+        const defaultMinesCount = Minesweeper.getDefaultMinesCount(currentValue);
+        const countInput = this.countBlock.querySelector('input[name="count"]');
+        countInput.value = defaultMinesCount;
 
+        countInput.dispatchEvent(new Event('change'));
         this.updateProperty('mode', currentValue);
+        this.initializeGame();
       });
     });
   }
@@ -257,18 +355,49 @@ export default class Minesweeper {
    */
   listenMinesCountChange() {
     const input = this.countBlock.querySelector('input[name="count"]');
-    const span = this.countBlock.querySelector('.mines-count__value');
 
     input.addEventListener('input', (event) => {
+      const span = this.countBlock.querySelector('.mines-count__value');
       span.innerText = event.target.value;
     });
 
     input.addEventListener('change', (event) => {
+      const span = this.countBlock.querySelector('.mines-count__value');
       const { target } = event;
       const currentValue = target.value;
+      span.innerText = currentValue;
 
       target.setAttribute('value', currentValue);
       this.updateProperty('minesCount', currentValue);
+      this.initializeGame();
+    });
+  }
+
+  /**
+   * Listen clicking on cell.
+   */
+  listenClickOnCell() {
+    const cells = this.gameFieldBlock.querySelectorAll('.cell');
+
+    cells.forEach((cell) => {
+      cell.addEventListener('click', (event) => {
+        if (this.isMarked(cell)) event.preventDefault();
+        else {
+          if (!this.gameStarted) this.startGame();
+          console.log('click');
+        }
+      });
+      cell.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+
+        if (!this.gameStarted) this.startGame();
+
+        if (!this.isMarked(cell)) {
+          if (+this.flags < +this.minesCount) {
+            this.markFlagged(cell);
+          }
+        } else this.markFlagged(cell, false);
+      });
     });
   }
 
@@ -280,6 +409,122 @@ export default class Minesweeper {
   updateProperty(property, value) {
     localStorage.setItem(property, value);
     this[property] = value;
+  }
+
+  /**
+   * Get amount of rows according to mode.
+   * @returns
+   */
+  getRowsCount() {
+    switch (this.mode) {
+      case 'easy':
+        return 10;
+      case 'medium':
+        return 15;
+      default:
+        return 25;
+    }
+  }
+
+  /**
+   * Get default amount of mines according to mode.
+   * @param {*} mode
+   * @returns
+   */
+  static getDefaultMinesCount(mode) {
+    switch (mode) {
+      case 'easy':
+        return 10;
+      case 'medium':
+        return 40;
+      default:
+        return 99;
+    }
+  }
+
+  /**
+   * Initialize game.
+   */
+  initializeGame() {
+    this.setFlags();
+    this.setRemaining();
+
+    this.addCells();
+    this.listenClickOnCell();
+  }
+
+  /**
+   * Check if cell is flagged.
+   * @param {*} cell
+   * @returns
+   */
+  isMarked(cell) {
+    return cell.classList.contains(this.selectors.flagged);
+  }
+
+  /**
+   * Mark cell with flag.
+   * @param {*} cell
+   * @param {*} mark
+   */
+  markFlagged(cell, mark = true) {
+    if (mark) {
+      cell.classList.add(this.selectors.flagged);
+      this.updateProperty('flags', +this.flags + 1);
+    } else {
+      cell.classList.remove(this.selectors.flagged);
+      this.updateProperty('flags', +this.flags - 1);
+    }
+
+    this.setFlags();
+    this.setRemaining();
+  }
+
+  /**
+   * Start game.
+   */
+  startGame() {
+    this.gameStarted = true;
+
+    // Set timer.
+    const timerElement = this.gameBlock.querySelector(`.${this.selectors.time}`);
+    timerElement.innerText = 0;
+    this.time = 0;
+    this.timer = setInterval(() => {
+      this.time += 1;
+      timerElement.innerText = this.time;
+
+      if (this.time === 999) this.finishGame();
+    }, 1000);
+  }
+
+  /**
+   * Finish game.
+   */
+  finishGame() {
+    this.gameStarted = false;
+    this.updateProperty('flags', 0);
+
+    // Clear timer.
+    const timerElement = this.gameBlock.querySelector('.stat__time');
+    timerElement.innerText = 0;
+    clearInterval(this.timer);
+  }
+
+  /**
+   * Set flags counter.
+   */
+  setFlags() {
+    const flags = this.gameBlock.querySelector(`.${this.selectors.flags}`);
+    flags.innerText = +this.flags;
+  }
+
+  /**
+   * Set remaining mines counter.
+   */
+  setRemaining() {
+    const remainingMines = this.gameBlock.querySelector(`.${this.selectors.remaining}`);
+    remainingMines.innerText = +this.minesCount - +this.flags;
   }
 
   /**
