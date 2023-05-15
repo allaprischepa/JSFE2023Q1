@@ -26,7 +26,11 @@ export default class Minesweeper {
     this.theme = localStorage.getItem('theme') || 'light';
     this.sound = localStorage.getItem('sound') || 'on';
     this.flags = +localStorage.getItem('flags') || 0;
-    this.gameStarted = false;
+
+    this.savedState = this.getSavedState();
+    this.gameStarted = localStorage.getItem('gameStarted') || false;
+    this.firstClick = localStorage.getItem('firstClick') || true;
+    this.gameFinished = localStorage.getItem('gameFinished') || false;
 
     this.body = document.querySelector('body');
     this.body.className = 'page';
@@ -44,7 +48,7 @@ export default class Minesweeper {
     this.listenModeChange();
     this.listenMinesCountChange();
 
-    this.initializeGame();
+    this.initializeGame(false);
   }
 
   /**
@@ -288,6 +292,7 @@ export default class Minesweeper {
    * Add cells.
    */
   addCells() {
+    const cells = this.getSavedState();
     const rowsCount = this.getRowsCount();
     this.gameFieldBlock.innerHTML = '';
     this.gameFieldBlock.classList = `${this.selectors.field} field_rows_${rowsCount}`;
@@ -297,7 +302,14 @@ export default class Minesweeper {
     for (let row = 0; row < rowsCount; row += 1) {
       for (let column = 0; column < rowsCount; column += 1) {
         const cell = document.createElement('div');
-        cell.classList = `cell cell_${row}_${column} cell_closed`;
+        cell.id = `cell_${row}_${column}`;
+        cell.classList = `cell ${cell.id}`;
+        if (cells[cell.id].opened) {
+          cell.classList.add('cell_opened');
+          cell.classList.add(`type_${cells[cell.id].type}`);
+        } else {
+          cell.classList.add('cell_closed');
+        }
         this.gameFieldBlock.appendChild(cell);
       }
     }
@@ -381,22 +393,29 @@ export default class Minesweeper {
 
     cells.forEach((cell) => {
       cell.addEventListener('click', (event) => {
-        if (this.isMarked(cell)) event.preventDefault();
+        if (this.isMarked(cell) || this.gameFinished) event.preventDefault();
         else {
           if (!this.gameStarted) this.startGame();
-          console.log('click');
+          if (this.firstClick) {
+            this.setMines(cell.id);
+            this.updateProperty('firstClick', false);
+          }
+
+          this.openCell(cell.id);
         }
       });
       cell.addEventListener('contextmenu', (event) => {
         event.preventDefault();
 
-        if (!this.gameStarted) this.startGame();
+        if (!this.gameFinished) {
+          if (!this.gameStarted) this.startGame();
 
-        if (!this.isMarked(cell)) {
-          if (+this.flags < +this.minesCount) {
-            this.markFlagged(cell);
-          }
-        } else this.markFlagged(cell, false);
+          if (!this.isMarked(cell)) {
+            if (+this.flags < +this.minesCount) {
+              this.markFlagged(cell);
+            }
+          } else this.markFlagged(cell, false);
+        }
       });
     });
   }
@@ -445,9 +464,14 @@ export default class Minesweeper {
   /**
    * Initialize game.
    */
-  initializeGame() {
+  initializeGame(newGame = true) {
     this.setFlags();
     this.setRemaining();
+
+    if (newGame) {
+      this.updateProperty('gameFinished', false);
+      this.setCells();
+    }
 
     this.addCells();
     this.listenClickOnCell();
@@ -484,7 +508,7 @@ export default class Minesweeper {
    * Start game.
    */
   startGame() {
-    this.gameStarted = true;
+    this.updateProperty('gameStarted', true);
 
     // Set timer.
     const timerElement = this.gameBlock.querySelector(`.${this.selectors.time}`);
@@ -501,9 +525,10 @@ export default class Minesweeper {
   /**
    * Finish game.
    */
-  finishGame() {
-    this.gameStarted = false;
+  finishGame(win = true) {
+    this.updateProperty('gameStarted', false);
     this.updateProperty('flags', 0);
+    this.updateProperty('gameFinished', true);
 
     // Clear timer.
     const timerElement = this.gameBlock.querySelector('.stat__time');
@@ -525,6 +550,133 @@ export default class Minesweeper {
   setRemaining() {
     const remainingMines = this.gameBlock.querySelector(`.${this.selectors.remaining}`);
     remainingMines.innerText = +this.minesCount - +this.flags;
+  }
+
+  /**
+   * Get saved state.
+   * @returns
+   */
+  getSavedState() {
+    const saved = localStorage.getItem('savedState');
+    const cells = saved ? JSON.parse(saved) : this.setCells();
+
+    return cells;
+  }
+
+  /**
+   * Save current state.
+   * @param {*} cells
+   */
+  setSavedState(cells) {
+    const saved = JSON.stringify(cells);
+
+    this.updateProperty('savedState', saved);
+  }
+
+  /**
+   * Set cells array.
+   * @returns
+   */
+  setCells() {
+    const rowsCount = this.getRowsCount();
+    const cells = {};
+
+    // Generate cells.
+    for (let row = 0; row < rowsCount; row += 1) {
+      for (let column = 0; column < rowsCount; column += 1) {
+        cells[`cell_${row}_${column}`] = {
+          type: 0,
+          flagged: 0,
+          opened: 0,
+        };
+      }
+    }
+
+    this.setSavedState(cells);
+
+    return cells;
+  }
+
+  /**
+   * Set mines.
+   * @param {*} exclude
+   */
+  setMines(exclude) {
+    const rowsCount = this.getRowsCount();
+    const cells = this.getSavedState();
+    let addedMines = 0;
+
+    // Set mines.
+    while (addedMines < this.minesCount) {
+      const row = Math.floor(Math.random() * rowsCount);
+      const column = Math.floor(Math.random() * rowsCount);
+
+      if (`cell_${row}_${column}` !== exclude) {
+        cells[`cell_${row}_${column}`].type = 'm';
+        addedMines += 1;
+
+        for (let i = row - 1; i <= row + 1; i += 1) {
+          for (let j = column - 1; j <= column + 1; j += 1) {
+            const lookingID = `cell_${i}_${j}`;
+            if (!(cells[lookingID] === undefined) && !(i === row && j === column)) {
+              if (cells[lookingID].type !== 'm') cells[lookingID].type += 1;
+            }
+          }
+        }
+      }
+    }
+
+    this.setSavedState(cells);
+  }
+
+  /**
+   * Open the cell.
+   * @param {*} id
+   */
+  openCell(id) {
+    const cells = this.getSavedState();
+
+    if (!cells[id].opened) {
+      const rowsCount = this.getRowsCount();
+      const cell = this.gameFieldBlock.querySelector(`#${id}`);
+
+      cell.classList.remove('cell_closed');
+      cell.classList.add('cell_opened');
+      cell.classList.add(`type_${cells[id].type}`);
+
+      cells[id].opened = 1;
+      this.setSavedState(cells);
+
+      if (cells[id].type === 0) {
+        const [, row, column] = id.split('_').map((num) => parseInt(num, 10));
+        for (let i = row - 1; i <= row + 1; i += 1) {
+          for (let j = column - 1; j <= column + 1; j += 1) {
+            if (i >= 0 && i < rowsCount && j >= 0 && j < rowsCount) {
+              const lookingID = `cell_${i}_${j}`;
+              if (!(cells[lookingID] === undefined) && !(i === row && j === column)) {
+                if (cells[lookingID].type !== 'm') {
+                  this.openCell(lookingID);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      if (cells[id].type === 'm') this.finishGame(false);
+
+      const won = Minesweeper.checkIfWon(cells);
+      if (won) this.finishGame(won);
+    }
+  }
+
+  /**
+   * Check if user won the game.
+   * @param {*} cells
+   * @returns
+   */
+  static checkIfWon(cells) {
+    return Object.values(cells).filter((el) => el.type !== 'm').every((el) => el.opened === 1);
   }
 
   /**
