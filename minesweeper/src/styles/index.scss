@@ -40,6 +40,7 @@ $rows-number: (10, 15, 25);
   --cell-color: #{$cell-l};
   --cells-border: #{$border-l};
   --font-color: #000000;
+  --cell-exploded: #{$red};
 }
 .theme-dark {
   --grey-color: #{$grey-d};
@@ -48,6 +49,7 @@ $rows-number: (10, 15, 25);
   --cell-color: #{$cell-d};
   --cells-border: #{$border-d};
   --font-color: #ffffff;
+  --cell-exploded: #{$red};
 }
 
 @font-face{font-family: DS Digital; src: url(../assets/fonts/Ds_digital/DS-DIGI.TTF) }
@@ -343,6 +345,10 @@ $rows-number: (10, 15, 25);
         }
       }
     }
+  }
+
+  &.cell_exploded {
+    background-color: var(--cell-exploded);
   }
 }
 

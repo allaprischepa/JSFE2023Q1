@@ -21,20 +21,9 @@ export default class Minesweeper {
       flagged: 'type_f',
     };
 
-    this.mode = localStorage.getItem('mode') || 'easy';
-    this.minesCount = localStorage.getItem('minesCount') || 10;
-    this.theme = localStorage.getItem('theme') || 'light';
-    this.sound = localStorage.getItem('sound') || 'on';
-    this.flags = +localStorage.getItem('flags') || 0;
-
-    this.savedState = this.getSavedState();
-    this.gameStarted = localStorage.getItem('gameStarted') || false;
-    this.firstClick = localStorage.getItem('firstClick') || true;
-    this.gameFinished = localStorage.getItem('gameFinished') || false;
-
     this.body = document.querySelector('body');
     this.body.className = 'page';
-    document.documentElement.className = `theme-${this.theme}`;
+    document.documentElement.className = `theme-${Minesweeper.getProperty('theme')}`;
 
     this.mainBlock = this.addMainBlock();
     this.themeSwitcherBlock = this.addThemeSwitcherBlock();
@@ -47,6 +36,7 @@ export default class Minesweeper {
     this.listenSoundChange();
     this.listenModeChange();
     this.listenMinesCountChange();
+    this.listenRestartButtonClick();
 
     this.initializeGame(false);
   }
@@ -89,7 +79,7 @@ export default class Minesweeper {
     input.setAttribute('type', 'checkbox');
     input.setAttribute('id', inputID);
     input.classList = 'theme-switcher__input';
-    if (this.theme === 'light') input.checked = true;
+    if (Minesweeper.getProperty('theme') === 'light') input.checked = true;
 
     const span = document.createElement('span');
     span.classList = 'theme-switcher__toggle';
@@ -120,7 +110,7 @@ export default class Minesweeper {
     input.setAttribute('type', 'checkbox');
     input.setAttribute('id', inputID);
     input.classList = 'sound-switcher__input';
-    if (this.sound === 'on') input.checked = true;
+    if (Minesweeper.getProperty('sound') === 'on') input.checked = true;
 
     const span = document.createElement('span');
     span.classList = 'sound-switcher__toggle';
@@ -172,7 +162,7 @@ export default class Minesweeper {
       Object.entries(inputAttrs).forEach(([key, value]) => {
         input.setAttribute(key, value);
       });
-      if (mode === this.mode) {
+      if (mode === Minesweeper.getProperty('mode')) {
         input.checked = true;
       }
 
@@ -196,7 +186,7 @@ export default class Minesweeper {
     const countInput = document.createElement('input');
     const countValue = document.createElement('span');
     countValue.classList = 'mines-count__value';
-    countValue.innerText = this.minesCount;
+    countValue.innerText = Minesweeper.getProperty('minesCount');
 
     const rangeID = 'count';
     const rangeAttrs = {
@@ -206,7 +196,7 @@ export default class Minesweeper {
       step: 1,
       id: rangeID,
       name: rangeID,
-      value: this.minesCount,
+      value: Minesweeper.getProperty('minesCount'),
       class: rangeID,
     };
 
@@ -244,7 +234,7 @@ export default class Minesweeper {
     const firstBlock = document.createElement('div');
     const remainingMines = document.createElement('div');
     remainingMines.classList = this.selectors.remaining;
-    remainingMines.innerText = this.minesCount;
+    remainingMines.innerText = Minesweeper.getProperty('minesCount');
     firstBlock.appendChild(remainingMines);
 
     const flags = document.createElement('div');
@@ -292,8 +282,8 @@ export default class Minesweeper {
    * Add cells.
    */
   addCells() {
-    const cells = this.getSavedState();
-    const rowsCount = this.getRowsCount();
+    const cells = Minesweeper.getSavedState();
+    const rowsCount = Minesweeper.getRowsCount();
     this.gameFieldBlock.innerHTML = '';
     this.gameFieldBlock.classList = `${this.selectors.field} field_rows_${rowsCount}`;
     this.gameBlock.classList = `${this.selectors.gameBlock} game_rows_${rowsCount}`;
@@ -307,12 +297,19 @@ export default class Minesweeper {
         if (cells[cell.id].opened) {
           cell.classList.add('cell_opened');
           cell.classList.add(`type_${cells[cell.id].type}`);
+
+          if (cells[cell.id].exploded) {
+            cell.classList.add('cell_exploded');
+          }
         } else {
+          if (cells[cell.id].flagged) cell.classList.add('type_f');
           cell.classList.add('cell_closed');
         }
         this.gameFieldBlock.appendChild(cell);
       }
     }
+
+    this.listenClickOnCell();
   }
 
   /**
@@ -322,9 +319,9 @@ export default class Minesweeper {
     const input = this.themeSwitcherBlock.querySelector('input');
 
     input.addEventListener('change', () => {
-      const newTheme = this.theme === 'light' ? 'dark' : 'light';
+      const newTheme = Minesweeper.getProperty('theme') === 'light' ? 'dark' : 'light';
 
-      this.updateProperty('theme', newTheme);
+      Minesweeper.updateProperty('theme', newTheme);
       document.documentElement.className = `theme-${newTheme}`;
     });
   }
@@ -336,9 +333,9 @@ export default class Minesweeper {
     const input = this.soundSwitcherBlock.querySelector('input');
 
     input.addEventListener('change', () => {
-      const newSetting = this.sound === 'on' ? 'off' : 'on';
+      const newSetting = Minesweeper.getProperty('sound') === 'on' ? 'off' : 'on';
 
-      this.updateProperty('sound', newSetting);
+      Minesweeper.updateProperty('sound', newSetting);
     });
   }
 
@@ -356,7 +353,7 @@ export default class Minesweeper {
         countInput.value = defaultMinesCount;
 
         countInput.dispatchEvent(new Event('change'));
-        this.updateProperty('mode', currentValue);
+        Minesweeper.updateProperty('mode', currentValue);
         this.initializeGame();
       });
     });
@@ -380,7 +377,7 @@ export default class Minesweeper {
       span.innerText = currentValue;
 
       target.setAttribute('value', currentValue);
-      this.updateProperty('minesCount', currentValue);
+      Minesweeper.updateProperty('minesCount', currentValue);
       this.initializeGame();
     });
   }
@@ -393,31 +390,111 @@ export default class Minesweeper {
 
     cells.forEach((cell) => {
       cell.addEventListener('click', (event) => {
-        if (this.isMarked(cell) || this.gameFinished) event.preventDefault();
-        else {
-          if (!this.gameStarted) this.startGame();
-          if (this.firstClick) {
-            this.setMines(cell.id);
-            this.updateProperty('firstClick', false);
+        if (this.isMarked(cell) || Minesweeper.getProperty('gameFinished')) {
+          event.preventDefault();
+        } else {
+          if (!Minesweeper.getProperty('gameStarted')) this.startGame();
+          if (Minesweeper.getProperty('firstClick')) {
+            Minesweeper.setMines(cell.id);
+            Minesweeper.updateProperty('firstClick', 0);
           }
 
           this.openCell(cell.id);
+
+          // Count steps.
+          Minesweeper.updateProperty('steps', Minesweeper.getProperty('steps') + 1);
+          this.setSteps();
         }
       });
       cell.addEventListener('contextmenu', (event) => {
         event.preventDefault();
 
-        if (!this.gameFinished) {
-          if (!this.gameStarted) this.startGame();
+        if (!Minesweeper.getProperty('gameFinished')) {
+          if (!Minesweeper.getProperty('gameStarted')) this.startGame();
 
           if (!this.isMarked(cell)) {
-            if (+this.flags < +this.minesCount) {
-              this.markFlagged(cell);
+            if (Minesweeper.getProperty('flags') < Minesweeper.getProperty('minesCount')) {
+              this.markFlagged(cell.id);
             }
-          } else this.markFlagged(cell, false);
+          } else {
+            this.markFlagged(cell.id, false);
+          }
         }
       });
     });
+  }
+
+  /**
+   * Listen click on restart button.
+   */
+  listenRestartButtonClick() {
+    const restartBtn = this.gameBlock.querySelector(`.${this.selectors.restart}`);
+
+    if (restartBtn) {
+      restartBtn.addEventListener('click', () => this.initializeGame());
+    }
+  }
+
+  /**
+   * Get stored property.
+   * @param {*} name
+   * @returns
+   */
+  static getProperty(name) {
+    let defaultValue = '';
+    let value = localStorage.getItem(name);
+
+    if (!value) {
+      switch (name) {
+        case 'mode':
+          defaultValue = 'easy';
+          break;
+
+        case 'minesCount':
+          defaultValue = 10;
+          break;
+
+        case 'theme':
+          defaultValue = 'light';
+          break;
+
+        case 'sound':
+          defaultValue = 'on';
+          break;
+
+        case 'flags':
+          defaultValue = 0;
+          break;
+
+        case 'gameStarted':
+          defaultValue = 0;
+          break;
+
+        case 'firstClick':
+          defaultValue = 1;
+          break;
+
+        case 'gameFinished':
+          defaultValue = 0;
+          break;
+
+        case 'steps':
+          defaultValue = 0;
+          break;
+
+        case 'time':
+          defaultValue = 0;
+          break;
+
+        default:
+      }
+
+      value = Minesweeper.updateProperty(name, defaultValue);
+    } else if (['minesCount', 'flags', 'gameStarted', 'firstClick', 'gameFinished', 'steps', 'time'].includes(name)) {
+      value = +value;
+    }
+
+    return value;
   }
 
   /**
@@ -425,17 +502,18 @@ export default class Minesweeper {
    * @param {*} property
    * @param {*} value
    */
-  updateProperty(property, value) {
+  static updateProperty(property, value) {
     localStorage.setItem(property, value);
-    this[property] = value;
+
+    return value;
   }
 
   /**
    * Get amount of rows according to mode.
    * @returns
    */
-  getRowsCount() {
-    switch (this.mode) {
+  static getRowsCount() {
+    switch (Minesweeper.getProperty('mode')) {
       case 'easy':
         return 10;
       case 'medium':
@@ -465,16 +543,23 @@ export default class Minesweeper {
    * Initialize game.
    */
   initializeGame(newGame = true) {
-    this.setFlags();
-    this.setRemaining();
-
     if (newGame) {
-      this.updateProperty('gameFinished', false);
-      this.setCells();
+      Minesweeper.updateProperty('gameStarted', 0);
+      Minesweeper.updateProperty('gameFinished', 0);
+      Minesweeper.updateProperty('firstClick', 1);
+      Minesweeper.updateProperty('flags', 0);
+      Minesweeper.updateProperty('steps', 0);
+      Minesweeper.setCells();
+      this.clearTimer();
+    } else if (!Minesweeper.getProperty('gameFinished')) {
+      this.startTimer();
     }
 
+    this.setFlags();
+    this.setRemaining();
+    this.setSteps();
+    this.setTime();
     this.addCells();
-    this.listenClickOnCell();
   }
 
   /**
@@ -491,15 +576,23 @@ export default class Minesweeper {
    * @param {*} cell
    * @param {*} mark
    */
-  markFlagged(cell, mark = true) {
+  markFlagged(id, mark = true) {
+    const cells = Minesweeper.getSavedState();
+    const cell = this.gameFieldBlock.querySelector(`#${id}`);
+
     if (mark) {
-      cell.classList.add(this.selectors.flagged);
-      this.updateProperty('flags', +this.flags + 1);
-    } else {
+      if (!cells[id].flagged) {
+        cells[id].flagged = 1;
+        cell.classList.add(this.selectors.flagged);
+        Minesweeper.updateProperty('flags', Minesweeper.getProperty('flags') + 1);
+      }
+    } else if (cells[id].flagged) {
+      cells[id].flagged = 0;
       cell.classList.remove(this.selectors.flagged);
-      this.updateProperty('flags', +this.flags - 1);
+      Minesweeper.updateProperty('flags', Minesweeper.getProperty('flags') - 1);
     }
 
+    Minesweeper.setSavedState(cells);
     this.setFlags();
     this.setRemaining();
   }
@@ -508,31 +601,81 @@ export default class Minesweeper {
    * Start game.
    */
   startGame() {
-    this.updateProperty('gameStarted', true);
+    Minesweeper.updateProperty('gameStarted', 1);
 
     // Set timer.
-    const timerElement = this.gameBlock.querySelector(`.${this.selectors.time}`);
-    timerElement.innerText = 0;
-    this.time = 0;
-    this.timer = setInterval(() => {
-      this.time += 1;
-      timerElement.innerText = this.time;
+    this.startTimer();
+  }
 
-      if (this.time === 999) this.finishGame();
+  /**
+   * Start timer.
+   */
+  startTimer() {
+    const timerElement = this.gameBlock.querySelector(`.${this.selectors.time}`);
+    this.setTime();
+
+    this.timer = setInterval(() => {
+      const newTime = Minesweeper.getProperty('time') + 1;
+      timerElement.innerText = newTime;
+      Minesweeper.updateProperty('time', newTime);
+
+      if (newTime === 999) this.finishGame();
     }, 1000);
+  }
+
+  /**
+   * Set time in block.
+   */
+  setTime() {
+    const timerElement = this.gameBlock.querySelector(`.${this.selectors.time}`);
+    timerElement.innerText = Minesweeper.getProperty('time');
   }
 
   /**
    * Finish game.
    */
-  finishGame(win = true) {
-    this.updateProperty('gameStarted', false);
-    this.updateProperty('flags', 0);
-    this.updateProperty('gameFinished', true);
+  finishGame(won = false) {
+    const cells = Minesweeper.getSavedState();
 
-    // Clear timer.
+    Minesweeper.updateProperty('gameStarted', 0);
+    Minesweeper.updateProperty('gameFinished', 1);
+    Minesweeper.updateProperty('firstClick', 1);
+
+    if (won) {
+      // If won mark all mines with flags.
+      Object.entries(cells).forEach(([cellID, cell]) => {
+        if (cell.type === 'm' && !cell.flagged) {
+          this.markFlagged(cellID);
+        }
+      });
+    } else {
+      // If lost show all mines.
+      Object.entries(cells).forEach(([cellID, cell]) => {
+        if (cell.type === 'm' && !cell.opened) {
+          this.markFlagged(cellID, false);
+          this.openCell(cellID, true);
+        }
+      });
+    }
+
+    this.stopTimer();
+  }
+
+  /**
+   * Clear time block and stop timer.
+   */
+  clearTimer() {
     const timerElement = this.gameBlock.querySelector('.stat__time');
     timerElement.innerText = 0;
+    Minesweeper.updateProperty('time', 0);
+
+    this.stopTimer();
+  }
+
+  /**
+   * Stop timer.
+   */
+  stopTimer() {
     clearInterval(this.timer);
   }
 
@@ -541,7 +684,7 @@ export default class Minesweeper {
    */
   setFlags() {
     const flags = this.gameBlock.querySelector(`.${this.selectors.flags}`);
-    flags.innerText = +this.flags;
+    flags.innerText = Minesweeper.getProperty('flags');
   }
 
   /**
@@ -549,16 +692,24 @@ export default class Minesweeper {
    */
   setRemaining() {
     const remainingMines = this.gameBlock.querySelector(`.${this.selectors.remaining}`);
-    remainingMines.innerText = +this.minesCount - +this.flags;
+    remainingMines.innerText = Minesweeper.getProperty('minesCount') - Minesweeper.getProperty('flags');
+  }
+
+  /**
+   * Set steps.
+   */
+  setSteps() {
+    const steps = this.gameBlock.querySelector(`.${this.selectors.steps}`);
+    steps.innerText = Minesweeper.getProperty('steps');
   }
 
   /**
    * Get saved state.
    * @returns
    */
-  getSavedState() {
+  static getSavedState() {
     const saved = localStorage.getItem('savedState');
-    const cells = saved ? JSON.parse(saved) : this.setCells();
+    const cells = saved ? JSON.parse(saved) : Minesweeper.setCells();
 
     return cells;
   }
@@ -567,18 +718,18 @@ export default class Minesweeper {
    * Save current state.
    * @param {*} cells
    */
-  setSavedState(cells) {
+  static setSavedState(cells) {
     const saved = JSON.stringify(cells);
 
-    this.updateProperty('savedState', saved);
+    Minesweeper.updateProperty('savedState', saved);
   }
 
   /**
    * Set cells array.
    * @returns
    */
-  setCells() {
-    const rowsCount = this.getRowsCount();
+  static setCells() {
+    const rowsCount = Minesweeper.getRowsCount();
     const cells = {};
 
     // Generate cells.
@@ -592,7 +743,7 @@ export default class Minesweeper {
       }
     }
 
-    this.setSavedState(cells);
+    Minesweeper.setSavedState(cells);
 
     return cells;
   }
@@ -601,18 +752,19 @@ export default class Minesweeper {
    * Set mines.
    * @param {*} exclude
    */
-  setMines(exclude) {
-    const rowsCount = this.getRowsCount();
-    const cells = this.getSavedState();
+  static setMines(exclude) {
+    const rowsCount = Minesweeper.getRowsCount();
+    const cells = Minesweeper.getSavedState();
     let addedMines = 0;
 
     // Set mines.
-    while (addedMines < this.minesCount) {
+    while (addedMines < Minesweeper.getProperty('minesCount')) {
       const row = Math.floor(Math.random() * rowsCount);
       const column = Math.floor(Math.random() * rowsCount);
+      const cellID = `cell_${row}_${column}`;
 
-      if (`cell_${row}_${column}` !== exclude) {
-        cells[`cell_${row}_${column}`].type = 'm';
+      if (cellID !== exclude && cells[cellID].type !== 'm') {
+        cells[cellID].type = 'm';
         addedMines += 1;
 
         for (let i = row - 1; i <= row + 1; i += 1) {
@@ -626,18 +778,18 @@ export default class Minesweeper {
       }
     }
 
-    this.setSavedState(cells);
+    Minesweeper.setSavedState(cells);
   }
 
   /**
    * Open the cell.
    * @param {*} id
    */
-  openCell(id) {
-    const cells = this.getSavedState();
+  openCell(id, afterFinish = false) {
+    const cells = Minesweeper.getSavedState();
 
     if (!cells[id].opened) {
-      const rowsCount = this.getRowsCount();
+      const rowsCount = Minesweeper.getRowsCount();
       const cell = this.gameFieldBlock.querySelector(`#${id}`);
 
       cell.classList.remove('cell_closed');
@@ -645,7 +797,11 @@ export default class Minesweeper {
       cell.classList.add(`type_${cells[id].type}`);
 
       cells[id].opened = 1;
-      this.setSavedState(cells);
+      Minesweeper.setSavedState(cells);
+
+      if (cells[id].flagged) {
+        this.markFlagged(id, false);
+      }
 
       if (cells[id].type === 0) {
         const [, row, column] = id.split('_').map((num) => parseInt(num, 10));
@@ -663,10 +819,17 @@ export default class Minesweeper {
         }
       }
 
-      if (cells[id].type === 'm') this.finishGame(false);
+      if (!afterFinish) {
+        if (cells[id].type === 'm') {
+          cells[id].exploded = 1;
+          cell.classList.add('cell_exploded');
+          Minesweeper.setSavedState(cells);
+          this.finishGame();
+        }
 
-      const won = Minesweeper.checkIfWon(cells);
-      if (won) this.finishGame(won);
+        const won = Minesweeper.checkIfWon(cells);
+        if (won) this.finishGame(won);
+      }
     }
   }
 
