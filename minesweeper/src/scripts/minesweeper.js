@@ -551,7 +551,7 @@ export default class Minesweeper {
       Minesweeper.updateProperty('steps', 0);
       Minesweeper.setCells();
       this.clearTimer();
-    } else if (!Minesweeper.getProperty('gameFinished')) {
+    } else if (Minesweeper.getProperty('gameStarted')) {
       this.startTimer();
     }
 
