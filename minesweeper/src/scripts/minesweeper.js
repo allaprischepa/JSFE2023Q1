@@ -1,3 +1,8 @@
+import soundLose from '../assets/sounds/lose.mp3';
+import soundWin from '../assets/sounds/win.mp3';
+import soundClick from '../assets/sounds/click.mp3';
+import soundTick from '../assets/sounds/tick.mp3';
+
 export default class Minesweeper {
   /**
    * Initialize all variables and blocks.
@@ -31,6 +36,11 @@ export default class Minesweeper {
     [this.modeBlock, this.countBlock] = this.addSettingsBlock();
     this.gameBlock = this.addGameBlock();
     this.gameFieldBlock = this.addGameFieldBlock();
+
+    this.soundLose = new Audio(soundLose);
+    this.soundWin = new Audio(soundWin);
+    this.soundClick = new Audio(soundClick);
+    this.soundTick = new Audio(soundTick);
 
     this.listenThemeChange();
     this.listenSoundChange();
@@ -394,16 +404,22 @@ export default class Minesweeper {
           event.preventDefault();
         } else {
           if (!Minesweeper.getProperty('gameStarted')) this.startGame();
+
           if (Minesweeper.getProperty('firstClick')) {
             Minesweeper.setMines(cell.id);
             Minesweeper.updateProperty('firstClick', 0);
           }
 
-          this.openCell(cell.id);
+          if (cell.classList.contains('cell_closed')) {
+            this.openCell(cell.id);
 
-          // Count steps.
-          Minesweeper.updateProperty('steps', Minesweeper.getProperty('steps') + 1);
-          this.setSteps();
+            // Count steps.
+            Minesweeper.updateProperty('steps', Minesweeper.getProperty('steps') + 1);
+            this.setSteps();
+
+            // Play click sound.
+            this.playSound('soundClick');
+          }
         }
       });
       cell.addEventListener('contextmenu', (event) => {
@@ -415,6 +431,9 @@ export default class Minesweeper {
           if (!this.isMarked(cell)) {
             if (Minesweeper.getProperty('flags') < Minesweeper.getProperty('minesCount')) {
               this.markFlagged(cell.id);
+
+              // Play tick sound.
+              this.playSound('soundTick');
             }
           } else {
             this.markFlagged(cell.id, false);
@@ -648,6 +667,9 @@ export default class Minesweeper {
           this.markFlagged(cellID);
         }
       });
+
+      // Play win sound.
+      this.playSound('soundWin');
     } else {
       // If lost show all mines.
       Object.entries(cells).forEach(([cellID, cell]) => {
@@ -656,6 +678,9 @@ export default class Minesweeper {
           this.openCell(cellID, true);
         }
       });
+
+      // Play lose sound.
+      this.playSound('soundLose');
     }
 
     this.stopTimer();
@@ -852,5 +877,13 @@ export default class Minesweeper {
     const otherLetters = word.slice(1);
 
     return `${firstLetter}${otherLetters}`;
+  }
+
+  /**
+   * Play sound of specific type.
+   * @param {*} type
+   */
+  playSound(type) {
+    if (Minesweeper.getProperty('sound') === 'on') this[type].play();
   }
 }

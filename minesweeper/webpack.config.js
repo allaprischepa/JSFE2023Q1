@@ -10,7 +10,7 @@ const config = {
   entry: './src/scripts/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    assetModuleFilename: 'assets/[name][ext]',
+    filename: 'scripts/[name].js',
   },
   devServer: {
     open: true,
@@ -23,7 +23,9 @@ const config = {
       favicon: './src/assets/favicon.png',
     }),
 
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'styles/[name].css',
+    }),
   ],
   module: {
     rules: [
@@ -40,8 +42,25 @@ const config = {
         use: [stylesHandler, 'css-loader', 'sass-loader'],
       },
       {
-        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
+        test: /\.(eot|ttf|woff|woff2)$/i,
         type: 'asset/resource',
+        generator: {
+          filename: 'assets/fonts/[name][ext]',
+        },
+      },
+      {
+        test: /\.(svg|png|jpg|gif)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/images/[name][ext]',
+        },
+      },
+      {
+        test: /\.(mp3)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/sounds/[name][ext]',
+        },
       },
     ],
   },
