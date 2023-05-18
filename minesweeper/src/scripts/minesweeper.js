@@ -65,11 +65,15 @@ export default class Minesweeper {
   addMainBlock() {
     const mainBlock = document.createElement('div');
     mainBlock.classList = this.selectors.main;
+    mainBlock.classList.add('container');
 
-    const header = document.createElement('h1');
-    header.classList = this.selectors.header;
-    header.innerText = 'Minesweeper';
-    mainBlock.appendChild(header);
+    const header = document.createElement('header');
+    const h1 = document.createElement('h1');
+    header.classList = 'container';
+    h1.classList = this.selectors.header;
+    h1.innerText = 'Minesweeper';
+    header.appendChild(h1);
+    this.body.appendChild(header);
 
     ['first', 'second', 'third'].forEach((row) => {
       const block = document.createElement('div');
@@ -90,6 +94,7 @@ export default class Minesweeper {
     const firstRow = this.mainBlock.querySelector('.minesweeper__row-first');
     const themeSwitcherBlock = document.createElement('div');
     themeSwitcherBlock.classList = this.selectors.theme;
+    themeSwitcherBlock.setAttribute('title', 'Theme Dark/Light');
 
     const input = document.createElement('input');
     const inputID = 'theme-switcher';
@@ -121,6 +126,7 @@ export default class Minesweeper {
     const firstRow = this.mainBlock.querySelector('.minesweeper__row-first');
     const soundSwitcherBlock = document.createElement('div');
     soundSwitcherBlock.classList = this.selectors.sound;
+    soundSwitcherBlock.setAttribute('title', 'Sound On/Off');
 
     const input = document.createElement('input');
     const inputID = 'sound-switcher';
@@ -263,6 +269,7 @@ export default class Minesweeper {
     const secondBlock = document.createElement('div');
     const restart = document.createElement('button');
     restart.classList = this.selectors.restart;
+    restart.setAttribute('title', 'Restart');
     secondBlock.appendChild(restart);
 
     // Add steps and time.
@@ -807,6 +814,10 @@ export default class Minesweeper {
       score.forEach((el) => {
         content += `<div class="table__row"><span>${el.mode}</span><span>${el.mines}</span><span>${el.time}</span><span>${el.steps}</span></div>`;
       });
+    }
+
+    for (let i = 0; i < 10 - score.length; i += 1) {
+      content += '<div class="table__row"><span> </span><span> </span><span> </span><span> </span></div>';
     }
 
     content += '</div>';
