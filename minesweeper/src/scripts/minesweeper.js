@@ -24,6 +24,9 @@ export default class Minesweeper {
       theme: 'minesweeper__theme',
       sound: 'minesweeper__sound',
       flagged: 'type_f',
+      closed: 'cell_closed',
+      opened: 'cell_opened',
+      exploded: 'cell_exploded',
       scoreBlock: 'minesweeper__score',
       popup: 'popup',
       overlay: 'overlay',
@@ -369,15 +372,15 @@ export default class Minesweeper {
         cell.id = `cell_${row}_${column}`;
         cell.classList = `cell ${cell.id}`;
         if (cells[cell.id].opened) {
-          cell.classList.add('cell_opened');
+          cell.classList.add(this.selectors.opened);
           cell.classList.add(`type_${cells[cell.id].type}`);
 
           if (cells[cell.id].exploded) {
-            cell.classList.add('cell_exploded');
+            cell.classList.add(this.selectors.exploded);
           }
         } else {
           if (cells[cell.id].flagged) cell.classList.add('type_f');
-          cell.classList.add('cell_closed');
+          cell.classList.add(this.selectors.closed);
         }
         this.gameFieldBlock.appendChild(cell);
       }
@@ -474,12 +477,14 @@ export default class Minesweeper {
             Minesweeper.updateProperty('firstClick', 0);
           }
 
-          if (cell.classList.contains('cell_closed')) {
+          if (this.isClosed(cell)) {
             // Count steps.
             Minesweeper.updateProperty('steps', Minesweeper.getProperty('steps') + 1);
             this.setSteps();
 
             this.openCell(cell.id, false, true);
+          } else {
+            this.openAdjacent(cell.id);
           }
         }
       });
@@ -489,15 +494,17 @@ export default class Minesweeper {
         if (!Minesweeper.getProperty('gameFinished')) {
           if (!Minesweeper.getProperty('gameStarted')) this.startGame();
 
-          if (!this.isMarked(cell)) {
-            if (Minesweeper.getProperty('flags') < Minesweeper.getProperty('minesCount')) {
-              this.markFlagged(cell.id);
+          if (this.isClosed(cell)) {
+            if (!this.isMarked(cell)) {
+              if (Minesweeper.getProperty('flags') < Minesweeper.getProperty('minesCount')) {
+                this.markFlagged(cell.id);
 
-              // Play tick sound.
-              this.playSound('soundTick');
+                // Play tick sound.
+                this.playSound('soundTick');
+              }
+            } else {
+              this.markFlagged(cell.id, false);
             }
-          } else {
-            this.markFlagged(cell.id, false);
           }
         }
       });
@@ -653,6 +660,15 @@ export default class Minesweeper {
   }
 
   /**
+ * Check if cell is closed.
+ * @param {*} cell
+ * @returns
+ */
+  isClosed(cell) {
+    return cell.classList.contains(this.selectors.closed);
+  }
+
+  /**
    * Mark cell with flag.
    * @param {*} cell
    * @param {*} mark
@@ -660,17 +676,18 @@ export default class Minesweeper {
   markFlagged(id, mark = true) {
     const cells = Minesweeper.getSavedState();
     const cell = this.gameFieldBlock.querySelector(`#${id}`);
+    const flagsCount = Minesweeper.getProperty('flags');
 
     if (mark) {
       if (!cells[id].flagged) {
         cells[id].flagged = 1;
         cell.classList.add(this.selectors.flagged);
-        Minesweeper.updateProperty('flags', Minesweeper.getProperty('flags') + 1);
+        Minesweeper.updateProperty('flags', flagsCount + 1);
       }
     } else if (cells[id].flagged) {
       cells[id].flagged = 0;
       cell.classList.remove(this.selectors.flagged);
-      Minesweeper.updateProperty('flags', Minesweeper.getProperty('flags') - 1);
+      Minesweeper.updateProperty('flags', flagsCount - 1);
     }
 
     Minesweeper.setSavedState(cells);
@@ -914,8 +931,8 @@ export default class Minesweeper {
       const rowsCount = Minesweeper.getRowsCount();
       const cell = this.gameFieldBlock.querySelector(`#${id}`);
 
-      cell.classList.remove('cell_closed');
-      cell.classList.add('cell_opened');
+      cell.classList.remove(this.selectors.closed);
+      cell.classList.add(this.selectors.opened);
       cell.classList.add(`type_${cells[id].type}`);
 
       cells[id].opened = 1;
@@ -944,7 +961,7 @@ export default class Minesweeper {
       if (!afterFinish) {
         if (cells[id].type === 'm') {
           cells[id].exploded = 1;
-          cell.classList.add('cell_exploded');
+          cell.classList.add(this.selectors.exploded);
           Minesweeper.setSavedState(cells);
           this.finishGame();
         } else if (playSound) {
@@ -954,6 +971,52 @@ export default class Minesweeper {
 
         const won = Minesweeper.checkIfWon(cells);
         if (won) this.finishGame(won);
+      }
+    }
+  }
+
+  /**
+   * Open adjacent cells if all surrounded mined cells are flagged.
+   * @param {*} id
+   */
+  openAdjacent(id) {
+    const cells = Minesweeper.getSavedState();
+    const rowsCount = Minesweeper.getRowsCount();
+
+    if (cells[id].opened && !cells[id].flagged) {
+      // Check that all surrounding mined cells are flagged.
+      let minedAreFlagged = true;
+      const [, row, column] = id.split('_').map((num) => parseInt(num, 10));
+      const adjacentCells = [];
+
+      for (let i = row - 1; i <= row + 1; i += 1) {
+        for (let j = column - 1; j <= column + 1; j += 1) {
+          if (i >= 0 && i < rowsCount && j >= 0 && j < rowsCount) {
+            const lookingID = `cell_${i}_${j}`;
+            if (!(cells[lookingID] === undefined) && !(i === row && j === column)) {
+              adjacentCells.push(lookingID);
+
+              if (cells[lookingID].type === 'm' && !cells[lookingID].flagged) {
+                minedAreFlagged = false;
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      if (minedAreFlagged) {
+        // Count steps.
+        Minesweeper.updateProperty('steps', Minesweeper.getProperty('steps') + 1);
+        this.setSteps();
+
+        // Play click sound.
+        this.playSound('soundClick');
+
+        // Open adjacent.
+        adjacentCells.forEach((cellID) => {
+          this.openCell(cellID);
+        });
       }
     }
   }
