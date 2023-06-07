@@ -39,8 +39,8 @@ class News {
         }
       });
 
-      newsContainer.appendChild(fragment);
       newsContainer.innerHTML = '';
+      newsContainer.appendChild(fragment);
     }
   }
 }
