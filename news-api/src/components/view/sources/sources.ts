@@ -7,7 +7,7 @@ class Sources {
     const sourceItemTemp = document.querySelector('#sourceItemTemp') as HTMLTemplateElement;
     const sources = document.querySelector('.sources');
 
-    if (!!fragment && !!sourceItemTemp && !!sources) {
+    if (fragment && sourceItemTemp && sources) {
       data.forEach((item) => {
         const sourceClone = sourceItemTemp.content.cloneNode(true) as HTMLElement;
 

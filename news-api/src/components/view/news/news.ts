@@ -9,7 +9,7 @@ class News {
     const newsItemTemp = document.querySelector('#newsItemTemp') as HTMLTemplateElement;
     const newsContainer = document.querySelector('.news');
 
-    if (!!fragment && !!newsItemTemp && !!newsContainer) {
+    if (fragment && newsItemTemp && newsContainer) {
       news.forEach((item, idx) => {
         const newsClone = newsItemTemp.content.cloneNode(true) as HTMLElement;
 
@@ -23,7 +23,7 @@ class News {
         const newsReadMoreLink = newsClone.querySelector('.news__read-more a');
 
         if (newsClone) {
-          if (idx % 2 && !!newsItem) newsItem.classList.add('alt');
+          if (idx % 2 && newsItem) newsItem.classList.add('alt');
 
           if (newsMetaPhoto)
             newsMetaPhoto.style.backgroundImage = `url(${item.urlToImage || 'img/news_placeholder.jpg'})`;
