@@ -1,8 +1,8 @@
-import { IOptions, IRequest, CallbackFunction } from '../../types/types';
+import { IOptions, IRequest, CallbackFunction, DataType } from '../../types/types';
 
 class Loader {
-  baseLink: string;
-  options: IOptions;
+  private baseLink: string;
+  private options: IOptions;
 
   constructor(baseLink: string, options: IOptions) {
     this.baseLink = baseLink;
@@ -10,7 +10,7 @@ class Loader {
   }
 
   protected getResp(
-    request: IRequest,
+    request: Partial<IRequest>,
     callback: CallbackFunction = (): void => {
       console.error('No callback for GET response');
     }
@@ -28,7 +28,7 @@ class Loader {
     return res;
   }
 
-  private makeUrl(request: IRequest): string {
+  private makeUrl(request: Partial<IRequest>): string {
     const urlOptions: IOptions = { ...this.options, ...request.options };
     let url = `${this.baseLink}${request.endpoint}?`;
 
@@ -39,12 +39,12 @@ class Loader {
     return url.slice(0, -1);
   }
 
-  private load(method: string, request: IRequest, callback: CallbackFunction): void {
+  private load(method: string, request: Partial<IRequest>, callback: CallbackFunction): void {
     fetch(this.makeUrl(request), { method })
       .then(this.errorHandler)
       .then((res) => res.json())
-      .then((data) => callback(data))
-      .catch((err) => console.error(err));
+      .then((data: DataType) => callback(data))
+      .catch((err: Error) => console.error(err));
   }
 }
 

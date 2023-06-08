@@ -6,27 +6,62 @@ export interface IOptions {
 
 export interface IRequest {
   endpoint: string;
-  options?: IOptions;
+  options: IOptions;
 }
 
-export interface IData {
-  articles?: [];
-  sources?: [];
+export interface ISource {
+  id: string;
+  name: string;
+  description: string;
+  url: string;
+  category: string;
+  language: string;
+  country: string;
 }
 
-export interface INewsItem {
-  urlToImage: string;
-  author?: string;
-  source: { name: string };
-  publishedAt: string;
+export interface IArticle {
+  source: { id: string; name: string };
+  author: string;
   title: string;
   description: string;
   url: string;
+  urlToImage: string;
+  publishedAt: string;
+  content: string;
 }
 
-export interface ISourcesItem {
-  name: string;
-  id: string;
+export interface IDataSources extends Response {
+  sources: ISource[];
 }
 
-export type CallbackFunction = (() => void) | ((data: IData) => void);
+export interface IDataNews extends Response {
+  articles: IArticle[];
+}
+
+export type DataType = IDataNews | IDataSources | undefined;
+export type CallbackFunction = {
+  (data: DataType): void;
+  (data: IDataNews): void;
+  (data: IDataSources): void;
+  (data: undefined): void;
+};
+
+export enum NewsSelectors {
+  itemTemplate = '#newsItemTemp',
+  container = '.news',
+  item = '.news__item',
+  metaPhoto = '.news__meta-photo',
+  metaAuthor = '.news__meta-author',
+  metaDate = '.news__meta-date',
+  descriptionTitle = '.news__description-title',
+  descriptionSource = '.news__description-source',
+  descriptionContent = '.news__description-content',
+  readMoreLink = '.news__read-more a',
+}
+
+export enum SourcesSelectors {
+  itemTemplate = '#sourceItemTemp',
+  container = '.sources',
+  item = '.source__item',
+  itemName = '.source__item-name',
+}

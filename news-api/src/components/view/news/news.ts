@@ -1,26 +1,27 @@
-import { INewsItem } from '../../../types/types';
+import { IArticle, NewsSelectors } from '../../../types/types';
+import { getElement } from '../../../utils/utils';
 import './news.css';
 
 class News {
-  public draw(data: INewsItem[]): void {
-    const news = data.length >= 10 ? data.filter((_item, idx) => idx < 10) : data;
+  public draw(data: IArticle[]): void {
+    const news = data.length >= 10 ? data.filter((_item: IArticle, idx: number) => idx < 10) : data;
 
     const fragment = document.createDocumentFragment();
-    const newsItemTemp = document.querySelector('#newsItemTemp') as HTMLTemplateElement;
-    const newsContainer = document.querySelector('.news');
+    const newsItemTemp = getElement(NewsSelectors.itemTemplate) as HTMLTemplateElement;
+    const newsContainer = getElement(NewsSelectors.container);
 
     if (fragment && newsItemTemp && newsContainer) {
-      news.forEach((item, idx) => {
+      news.forEach((item: IArticle, idx: number) => {
         const newsClone = newsItemTemp.content.cloneNode(true) as HTMLElement;
 
-        const newsItem = newsClone.querySelector('.news__item');
-        const newsMetaPhoto = newsClone.querySelector('.news__meta-photo') as HTMLElement;
-        const newsMetaAutor = newsClone.querySelector('.news__meta-author');
-        const newsMetaDate = newsClone.querySelector('.news__meta-date');
-        const newsDescriptionTitle = newsClone.querySelector('.news__description-title');
-        const newsDescriptionSource = newsClone.querySelector('.news__description-source');
-        const newsDescriptionContent = newsClone.querySelector('.news__description-content');
-        const newsReadMoreLink = newsClone.querySelector('.news__read-more a');
+        const newsItem = getElement(NewsSelectors.item, newsClone);
+        const newsMetaPhoto = getElement(NewsSelectors.metaPhoto, newsClone);
+        const newsMetaAutor = getElement(NewsSelectors.metaAuthor, newsClone);
+        const newsMetaDate = getElement(NewsSelectors.metaDate, newsClone);
+        const newsDescriptionTitle = getElement(NewsSelectors.descriptionTitle, newsClone);
+        const newsDescriptionSource = getElement(NewsSelectors.descriptionSource, newsClone);
+        const newsDescriptionContent = getElement(NewsSelectors.descriptionContent, newsClone);
+        const newsReadMoreLink = getElement(NewsSelectors.readMoreLink, newsClone);
 
         if (newsClone) {
           if (idx % 2 && newsItem) newsItem.classList.add('alt');

@@ -1,10 +1,11 @@
-import { IData } from '../../types/types';
+import { CallbackFunction, IDataNews, IDataSources } from '../../types/types';
+import { getElement } from '../../utils/utils';
 import AppController from '../controller/controller';
 import { AppView } from '../view/appView';
 
 class App {
-  controller;
-  view;
+  private controller: AppController;
+  private view: AppView;
 
   constructor() {
     this.controller = new AppController();
@@ -12,12 +13,12 @@ class App {
   }
 
   public start(): void {
-    const sources = document.querySelector('.sources');
+    const sources = getElement('.sources');
     if (sources) {
-      sources.addEventListener('click', (e): void =>
-        this.controller.getNews(e, (data: IData): void => this.view.drawNews(data))
+      sources.addEventListener('click', (e: MouseEvent): void =>
+        this.controller.getNews(e, ((data: IDataNews): void => this.view.drawNews(data)) as CallbackFunction)
       );
-      this.controller.getSources((data: IData): void => this.view.drawSources(data));
+      this.controller.getSources(((data: IDataSources): void => this.view.drawSources(data)) as CallbackFunction);
     }
   }
 }
