@@ -2,11 +2,11 @@ import { CallbackFunction } from '../../types/types';
 import AppLoader from './appLoader';
 
 class AppController extends AppLoader {
-  getSources(callback: CallbackFunction) {
+  public getSources(callback: CallbackFunction): void {
     super.getResp({ endpoint: 'sources' }, callback);
   }
 
-  getNews(e: Event, callback: CallbackFunction) {
+  public getNews(e: Event, callback: CallbackFunction): void {
     let target = e.target as Element;
     const newsContainer = e.currentTarget as Element;
 

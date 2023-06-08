@@ -9,16 +9,16 @@ class Loader {
     this.options = options;
   }
 
-  getResp(
+  protected getResp(
     request: IRequest,
-    callback: CallbackFunction = () => {
+    callback: CallbackFunction = (): void => {
       console.error('No callback for GET response');
     }
   ): void {
     this.load('GET', request, callback);
   }
 
-  errorHandler(res: Response): Response {
+  private errorHandler(res: Response): Response {
     if (!res.ok) {
       if (res.status === 401 || res.status === 404)
         console.log(`Sorry, but there is ${res.status} error: ${res.statusText}`);
@@ -28,7 +28,7 @@ class Loader {
     return res;
   }
 
-  makeUrl(request: IRequest): string {
+  private makeUrl(request: IRequest): string {
     const urlOptions: IOptions = { ...this.options, ...request.options };
     let url = `${this.baseLink}${request.endpoint}?`;
 
@@ -39,7 +39,7 @@ class Loader {
     return url.slice(0, -1);
   }
 
-  load(method: string, request: IRequest, callback: CallbackFunction): void {
+  private load(method: string, request: IRequest, callback: CallbackFunction): void {
     fetch(this.makeUrl(request), { method })
       .then(this.errorHandler)
       .then((res) => res.json())
