@@ -65,3 +65,7 @@ export enum SourcesSelectors {
   item = '.source__item',
   itemName = '.source__item-name',
 }
+
+export type AlphabetMap = {
+  [key: string]: HTMLElement;
+};

@@ -1,6 +1,7 @@
 import { IArticle, NewsSelectors } from '../../../types/types';
 import { getElement } from '../../../utils/utils';
 import './news.css';
+import placeholderImage from '../../../assets/img/news-placeholder.jpg';
 
 class News {
   public draw(data: IArticle[]): void {
@@ -26,8 +27,7 @@ class News {
         if (newsClone) {
           if (idx % 2 && newsItem) newsItem.classList.add('alt');
 
-          if (newsMetaPhoto)
-            newsMetaPhoto.style.backgroundImage = `url(${item.urlToImage || 'img/news_placeholder.jpg'})`;
+          if (newsMetaPhoto) newsMetaPhoto.style.backgroundImage = `url(${item.urlToImage || placeholderImage})`;
           if (newsMetaAutor) newsMetaAutor.textContent = item.author || item.source.name;
           if (newsMetaDate) newsMetaDate.textContent = item.publishedAt.slice(0, 10).split('-').reverse().join('-');
 

@@ -18,6 +18,13 @@ const baseConfig = {
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
             },
+            {
+              test: /\.(svg|png|jpg|gif)$/i,
+              type: 'asset/resource',
+              generator: {
+                filename: 'assets/images/[name][ext]',
+              },
+            },
         ],
     },
     resolve: {
@@ -26,12 +33,14 @@ const baseConfig = {
     output: {
         filename: 'index.js',
         path: path.resolve(__dirname, 'dist'),
+        assetModuleFilename: 'assets/images/[name][ext]'
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/index.html'),
             filename: 'index.html',
             inject: 'body',
+            favicon: './src/assets/img/favicon.png',
         }),
         new CleanWebpackPlugin(),
         new EslingPlugin({ extensions: 'ts' }),

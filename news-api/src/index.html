@@ -8,16 +8,39 @@
     </head>
     <body>
         <header>
+          <div class="container">
+            <div class="logo">
+              <span class="logo__news">news</span>
+              <span>portal</span>
+            </div>
             <h1>News Portal</h1>
+          </div>
         </header>
         <main>
-            <div class="sources buttons"></div>
-            <div class="news"></div>
+          <div class="container main-content">
+            <div class="sources buttons main-content__item"></div>
+            <div class="news main-content__item"></div>
+          </div>
         </main>
         <footer>
-            <p class="copyright">
-                Copyright <a href="https://newsapi.org">NewsAPI</a>
-            </p>
+          <div class="container">
+            <div class="footer__item">
+              <a href="https://rs.school/js/" class="footer__link" title="Rolling Scopes School">
+                <img src="<%= require('./assets/img/logo-rss.png') %>" class="footer_image" alt="Rolling Scopes School Logo">
+              </a>
+            </div>
+            <div class="footer__item">
+              <a href="https://github.com/allaprischepa" class="footer__link footer__link_combined" title="GitHub">
+                <img src="<%= require('./assets/img/logo-github.png') %>" class="footer_image" alt="GitHub Logo">
+                <span>@allaprischepa</span>
+              </a>
+            </div>
+            <div class="footer_item">
+              <span class="copyright">
+                Copyright <a href="https://newsapi.org" class="footer__link" title="NewsAPI">NewsAPI</a>
+              </span>
+            </div>
+          </div>
         </footer>
 
         <template id="sourceItemTemp">
