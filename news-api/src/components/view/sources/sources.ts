@@ -1,5 +1,5 @@
 import { AlphabetMap, ISource, SourcesSelectors } from '../../../types/types';
-import { getElement } from '../../../utils/utils';
+import { getElement, retrieveClass } from '../../../utils/utils';
 import './sources.css';
 
 class Sources {
@@ -23,7 +23,7 @@ class Sources {
 
           if (!groups[char]) {
             groups[char] = document.createElement('div');
-            groups[char].classList.add(`group`);
+            groups[char].classList.add(retrieveClass(SourcesSelectors.group));
             groups[char].classList.add(`group-${char}`);
             groups[char].setAttribute('data-group', char);
           }
@@ -40,7 +40,7 @@ class Sources {
           const span = document.createElement('span');
           span.innerText = `${key}`;
           span.setAttribute('data-char', `${key}`);
-          span.classList.add('group-nav__item');
+          span.classList.add(retrieveClass(SourcesSelectors.groupNavItem));
           alphabet.append(span);
 
           span.addEventListener('click', (e) => {
@@ -55,12 +55,24 @@ class Sources {
           });
         });
 
-        alphabet.classList.add('group-nav');
+        alphabet.classList.add(retrieveClass(SourcesSelectors.groupNav));
         sources.append(alphabet);
       }
 
-      fragment.classList.add('group-container');
+      fragment.classList.add(retrieveClass(SourcesSelectors.groupContainer));
       sources.append(fragment);
+
+      // Add open button.
+      const handle = document.createElement('div');
+      handle.classList.add(retrieveClass(SourcesSelectors.handle));
+
+      handle.addEventListener('click', () => {
+        sources.classList.toggle('open');
+      });
+
+      sources.prepend(handle);
+
+      sources.classList.add('open');
     }
   }
 }

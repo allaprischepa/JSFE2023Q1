@@ -64,6 +64,11 @@ export enum SourcesSelectors {
   container = '.sources',
   item = '.source__item',
   itemName = '.source__item-name',
+  group = '.group',
+  groupNav = '.group-nav',
+  groupNavItem = '.group-nav__item',
+  groupContainer = '.group-container',
+  handle = '.sources__handle',
 }
 
 export type AlphabetMap = {

@@ -4,3 +4,7 @@ export function getElement<T extends HTMLElement = HTMLElement>(
 ): T | null {
   return parent.querySelector(selector);
 }
+
+export function retrieveClass(selector: string): string {
+  return selector.replace('.', '');
+}

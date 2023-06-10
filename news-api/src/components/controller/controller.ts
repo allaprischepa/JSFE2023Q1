@@ -1,4 +1,5 @@
-import { CallbackFunction } from '../../types/types';
+import { CallbackFunction, SourcesSelectors } from '../../types/types';
+import { getElement } from '../../utils/utils';
 import AppLoader from './appLoader';
 
 class AppController extends AppLoader {
@@ -8,7 +9,7 @@ class AppController extends AppLoader {
 
   public getNews(e: Event, callback: CallbackFunction): void {
     let target = e.target as Element;
-    const newsContainer = e.currentTarget as Element;
+    const newsContainer = e.currentTarget as HTMLElement;
 
     while (target !== newsContainer) {
       if (target.classList.contains('source__item')) {
@@ -16,6 +17,18 @@ class AppController extends AppLoader {
 
         if (newsContainer.getAttribute('data-source') !== sourceId) {
           newsContainer.setAttribute('data-source', sourceId);
+
+          // Remove previous active.
+          const active = getElement('.active', newsContainer);
+          active?.classList.remove('active');
+
+          // Add active for current.
+          target.classList.add('active');
+
+          // Close menu.
+          const handle = getElement(SourcesSelectors.handle, newsContainer);
+          if (handle?.style.display !== 'none') handle?.click();
+
           super.getResp(
             {
               endpoint: 'everything',

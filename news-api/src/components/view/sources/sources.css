@@ -1,12 +1,19 @@
 .sources {
+  flex: 0 0 auto;
+  position: sticky;
+  top: 50px;
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 250px;
   height: 70vh;
-  overflow-y: auto;
-  margin: 16px 0px;
+  box-sizing: border-box;
+  padding: 16px 10px;
   transition: 0.25s;
+}
+
+.sources__handle {
+  display: none;
 }
 
 .group-container {
@@ -17,29 +24,35 @@
   transition: 0.25s;
   gap: 15px;
 }
+
 .group-container::-webkit-scrollbar {
   width: 4px;
 }
+
 .group-container::-webkit-scrollbar-track {
   background: none;
 }
+
 .group-container::-webkit-scrollbar-thumb {
   background-color: #a3b8bf;
   border-radius: 2px;
 }
+
 .group::before {
   content: attr(data-group);
   color: #a3b8bf;
 }
+
 .group-nav {
   display: flex;
   flex-wrap: wrap;
   gap: 9px;
 }
+
 .group-nav__item {
   cursor: pointer;
 }
-.group-nav__item:hover,
+
 .group-nav__item:focus,
 .group-nav__item:active {
   font-weight: bold;
@@ -53,7 +66,6 @@
   cursor: pointer;
 }
 
-.source__item:hover,
 .source__item:focus,
 .source__item:active {
   font-weight: bold;
@@ -61,6 +73,74 @@
   transform: translateX(0.25em);
 }
 
+.source__item.active {
+  color: #69db7e;
+  font-weight: bold;
+}
+
 .source__item-name {
   white-space: nowrap;
+}
+
+@media (hover: hover) {
+
+  .group-nav__item:hover {
+    font-weight: bold;
+    color: #69db7e;
+  }
+
+  .source__item:hover {
+    font-weight: bold;
+    color: #69db7e;
+    transform: translateX(0.25em);
+  }
+
+}
+
+@media screen and (max-width: 899px) {
+
+  .sources {
+    position: fixed;
+    top: 0;
+    width: 280px;
+    left: -280px;
+    height: 100vh;
+    background-color: #17181c;
+    transition: left 0.3s;
+    padding: 32px 20px;
+    z-index: 999;
+  }
+
+  .sources__handle {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    right: -15px;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 100px;
+    background-color: #69db7e;
+    border-radius: 0 15px 15px 0;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sources .sources__handle::after {
+    content: '';
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid black;
+    border-right: none;
+  }
+
+  .sources.open {
+    left: 0;
+  }
+
+  .sources.open .sources__handle::after {
+    border-right: 10px solid black;
+    border-left: none;
+  }
+
 }
