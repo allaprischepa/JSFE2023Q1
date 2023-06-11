@@ -1,7 +1,4 @@
-export function getElement<T extends HTMLElement = HTMLElement>(
-  selector: string,
-  parent: HTMLElement | Document = document
-): T | null {
+export function getElement(selector: string, parent: HTMLElement | Document = document): HTMLElement | null {
   return parent.querySelector(selector);
 }
 

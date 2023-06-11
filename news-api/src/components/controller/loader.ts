@@ -1,10 +1,10 @@
-import { IOptions, IRequest, CallbackFunction, DataType } from '../../types/types';
+import { IOptions, IRequest, CallbackFunction } from '../../types/types';
 
 class Loader {
   private baseLink: string;
-  private options: IOptions;
+  private options: Partial<IOptions>;
 
-  constructor(baseLink: string, options: IOptions) {
+  constructor(baseLink: string, options: Partial<IOptions>) {
     this.baseLink = baseLink;
     this.options = options;
   }
@@ -29,7 +29,7 @@ class Loader {
   }
 
   private makeUrl(request: Partial<IRequest>): string {
-    const urlOptions: IOptions = { ...this.options, ...request.options };
+    const urlOptions: Partial<IOptions> = { ...this.options, ...request.options };
     let url = `${this.baseLink}${request.endpoint}?`;
 
     Object.keys(urlOptions).forEach((key: keyof IOptions): void => {
@@ -43,7 +43,7 @@ class Loader {
     fetch(this.makeUrl(request), { method })
       .then(this.errorHandler)
       .then((res) => res.json())
-      .then((data: DataType) => callback(data))
+      .then(callback)
       .catch((err: Error) => console.error(err));
   }
 }

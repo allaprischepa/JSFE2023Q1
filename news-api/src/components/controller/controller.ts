@@ -7,9 +7,9 @@ class AppController extends AppLoader {
     super.getResp({ endpoint: 'sources' }, callback);
   }
 
-  public getNews(e: Event, callback: CallbackFunction): void {
-    let target = e.target as Element;
-    const newsContainer = e.currentTarget as HTMLElement;
+  public getNews(event: Event, callback: CallbackFunction): void {
+    let target = event.target as Element;
+    const newsContainer = event.currentTarget as HTMLElement;
 
     while (target !== newsContainer) {
       if (target.classList.contains('source__item')) {

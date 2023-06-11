@@ -43,8 +43,8 @@ class Sources {
           span.classList.add(retrieveClass(SourcesSelectors.groupNavItem));
           alphabet.append(span);
 
-          span.addEventListener('click', (e) => {
-            const target = e.target as Element;
+          span.addEventListener('click', (event) => {
+            const target = event.target as Element;
             const groupId = target.getAttribute('data-char');
             const group = getElement(`.group-${groupId}`, fragment);
 

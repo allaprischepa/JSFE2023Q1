@@ -1,12 +1,12 @@
 export interface IOptions {
-  [key: string]: string | undefined;
-  apikey?: string;
-  sources?: string;
+  [key: string]: string;
+  apikey: string;
+  sources: string;
 }
 
 export interface IRequest {
   endpoint: string;
-  options: IOptions;
+  options: Partial<IOptions>;
 }
 
 export interface ISource {
@@ -19,8 +19,10 @@ export interface ISource {
   country: string;
 }
 
+type IArticleSource = Pick<ISource, 'id' | 'name'>;
+
 export interface IArticle {
-  source: { id: string; name: string };
+  source: IArticleSource;
   author: string;
   title: string;
   description: string;
@@ -38,13 +40,9 @@ export interface IDataNews extends Response {
   articles: IArticle[];
 }
 
-export type DataType = IDataNews | IDataSources | undefined;
-export type CallbackFunction = {
-  (data: DataType): void;
-  (data: IDataNews): void;
-  (data: IDataSources): void;
-  (data: undefined): void;
-};
+export type DataType = IDataNews | IDataSources;
+
+export type CallbackFunction = <T extends DataType>(data: T) => void;
 
 export enum NewsSelectors {
   itemTemplate = '#newsItemTemp',
