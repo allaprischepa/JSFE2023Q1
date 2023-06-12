@@ -1,13 +1,13 @@
-import { CallbackFunction, SourcesSelectors } from '../../types/types';
+import { CallbackFunction, IDataNews, IDataSources, SourcesSelectors } from '../../types/types';
 import { getElement } from '../../utils/utils';
 import AppLoader from './appLoader';
 
 class AppController extends AppLoader {
-  public getSources(callback: CallbackFunction): void {
+  public getSources(callback: CallbackFunction<IDataSources>): void {
     super.getResp({ endpoint: 'sources' }, callback);
   }
 
-  public getNews(event: Event, callback: CallbackFunction): void {
+  public getNews(event: Event, callback: CallbackFunction<IDataNews>): void {
     let target = event.target as Element;
     const newsContainer = event.currentTarget as HTMLElement;
 

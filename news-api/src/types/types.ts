@@ -42,7 +42,7 @@ export interface IDataNews extends Response {
 
 export type DataType = IDataNews | IDataSources;
 
-export type CallbackFunction = <T extends DataType>(data: T) => void;
+export type CallbackFunction<T extends DataType> = (data: T) => void;
 
 export enum NewsSelectors {
   itemTemplate = '#newsItemTemp',

@@ -1,4 +1,4 @@
-import { IOptions, IRequest, CallbackFunction } from '../../types/types';
+import { IOptions, IRequest, CallbackFunction, IDataSources, IDataNews } from '../../types/types';
 
 class Loader {
   private baseLink: string;
@@ -11,7 +11,7 @@ class Loader {
 
   protected getResp(
     request: Partial<IRequest>,
-    callback: CallbackFunction = (): void => {
+    callback: CallbackFunction<IDataNews> | CallbackFunction<IDataSources> = (): void => {
       console.error('No callback for GET response');
     }
   ): void {
@@ -39,7 +39,11 @@ class Loader {
     return url.slice(0, -1);
   }
 
-  private load(method: string, request: Partial<IRequest>, callback: CallbackFunction): void {
+  private load(
+    method: string,
+    request: Partial<IRequest>,
+    callback: CallbackFunction<IDataSources> | CallbackFunction<IDataNews>
+  ): void {
     fetch(this.makeUrl(request), { method })
       .then(this.errorHandler)
       .then((res) => res.json())
