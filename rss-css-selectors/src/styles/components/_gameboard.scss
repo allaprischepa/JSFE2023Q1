@@ -1,0 +1,35 @@
+@import '../abstracts/mixins';
+
+.gameboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.table {
+  @include woodTexture();
+  @include perspectiveTransform();
+
+  padding: 30px;
+  width: fit-content;
+  min-width: 300px;
+  box-shadow: 0 0 40px 10px rgba(0, 0, 0, 0.2);
+}
+
+.table__edge {
+  @include woodTexture();
+  @include perspectiveTransform(down);
+
+  position: relative;
+  height: 10px;
+  min-width: 300px;
+  filter: brightness(0.5);
+}
+
+.table__leg_left {
+  @include tableLeg(left);
+}
+
+.table__leg_right {
+  @include tableLeg(right);
+}

@@ -1,23 +1,13 @@
-import { Description } from '../description/description';
-import { Editor } from '../editor/editor';
-import { GameBoard } from '../gameboard/gameboard';
+import { Page } from '../page/page';
 
-class App {
-  private gameboard;
-  private editor;
-  private description;
+export class App {
+  private page;
 
   constructor() {
-    this.gameboard = new GameBoard();
-    this.editor = new Editor();
-    this.description = new Description();
+    this.page = new Page();
   }
 
   public start(): void {
-    this.gameboard.view();
-    this.editor.view();
-    this.description.view();
+    this.page.init();
   }
 }
-
-export default App;

@@ -1,0 +1,33 @@
+@mixin woodTexture() {
+  background: url('../assets/img/wood.jpg');
+}
+
+@mixin perspectiveTransform($direction: up) {
+  $angle: 20deg;
+  $origin: bottom;
+
+  @if $direction == down {
+    $angle: -20deg;
+    $origin: top;
+  }
+
+  transform: perspective(300px) rotateX($angle);
+  transform-origin: $origin;
+}
+
+@mixin tableLeg($side: left) {
+  $offset: 20px;
+
+  @include woodTexture();
+  position: absolute;
+  height: 10px;
+  width: 20px;
+  top: 10px;
+  filter: brightness(0.7);
+
+  @if $side == left {
+    left: $offset;
+  } @else {
+    right: $offset;
+  }
+}

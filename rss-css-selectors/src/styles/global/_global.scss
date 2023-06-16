@@ -1,0 +1,57 @@
+@import '../abstracts/variables';
+
+body {
+  background-color: $main-color;
+  font-family: 'Exo 2', 'Lato', 'Helvetica Neue', sans-serif;
+  color: $text-color;
+  padding: 0;
+  margin: 0;
+}
+
+h1 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+header,
+footer {
+  padding: 15px 15px;
+}
+
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 100px;
+}
+
+.footer__link {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.footer__icon {
+  height: 2em;
+  width: auto;
+  filter: invert(1);
+  opacity: 0.3;
+}
+
+.link__rss {
+  content: url('../assets/img/rs_school_js.svg');
+}
+
+.link__github {
+  content: url('../assets/img/logo-github.png');
+}
+
+.copyright::before {
+  content: '©';
+  margin-right: 0.5em;
+}
