@@ -1,0 +1,68 @@
+@import '../abstracts/variables';
+@import '../abstracts/keyframes';
+
+.editor {
+  display: flex;
+  width: 60%;
+  margin: auto;
+  border: 10px solid rgba(0, 0, 0, 0.7);
+  font-family: menlo, monospace;
+  font-size: 0.875rem;
+}
+
+.css-editor,
+.html-editor {
+  width: 100%;
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(0, 0, 0, 0.5);
+
+  .file-name {
+    opacity: 0.5;
+  }
+}
+
+.editor-area {
+
+  &.theme-light {
+    background: $edtr-bckgrnd-light;
+    color: $edtr-clr-light;
+  }
+
+  &.theme-dark {
+    background: $edtr-bckgrnd-dark;
+  }
+
+  .cm-activeLine,
+  .cm-activeLineGutter {
+    background: none;
+  }
+}
+
+.task-input-wrapper {
+  position: absolute;
+  top: 4px;
+  display: flex;
+  gap: 5px;
+  width: calc(100% - #{$tsk-inpt-margin-left} - #{$tsk-inpt-margin-right});
+  margin: 0px $tsk-inpt-margin-right 0 $tsk-inpt-margin-left;
+  z-index: $tsk-inpt-z-index;
+}
+
+.task-input {
+  flex: 1;
+  font-size: inherit;
+  line-height: 1.4;
+  background: none;
+  outline: none;
+  border: none;
+
+  &.blink {
+    animation: blinker 1s linear infinite;
+  }
+}

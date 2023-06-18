@@ -17,9 +17,11 @@
     "license": "ISC",
     "homepage": "",
     "devDependencies": {
+        "@codemirror/lang-html": "^6.4.4",
         "@typescript-eslint/eslint-plugin": "^5.59.11",
         "@typescript-eslint/parser": "^5.59.11",
         "clean-webpack-plugin": "^3.0.0",
+        "codemirror": "^6.0.1",
         "copy-webpack-plugin": "^7.0.0",
         "css-loader": "^5.1.0",
         "eslint": "^7.27.0",

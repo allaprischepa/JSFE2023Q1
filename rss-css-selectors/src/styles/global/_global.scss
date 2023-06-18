@@ -55,3 +55,9 @@ footer {
   content: '©';
   margin-right: 0.5em;
 }
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
