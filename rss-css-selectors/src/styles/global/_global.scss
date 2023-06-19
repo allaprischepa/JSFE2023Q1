@@ -1,6 +1,11 @@
 @import '../abstracts/variables';
 
+html {
+  overflow: hidden;
+}
+
 body {
+  display: flex;
   background-color: $main-color;
   font-family: 'Exo 2', 'Lato', 'Helvetica Neue', sans-serif;
   color: $text-color;
@@ -10,6 +15,10 @@ body {
 
 h1 {
   font-size: 1.2rem;
+  margin: 0;
+}
+
+h2 {
   margin: 0;
 }
 
@@ -57,7 +66,35 @@ footer {
 }
 
 .left {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 2em;
+  height: 100vh;
+  overflow-y: scroll;
+  justify-content: space-between;
+
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border: solid 4px transparent;
+    background-clip: padding-box;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1);
+    background-clip: padding-box;
+    border-radius: 4px;
+    border: solid 4px transparent;
+  }
+}
+
+.right {
+  width: 350px;
+  right: 0;
+  top: 0;
+  background: $main-color-dark;
 }

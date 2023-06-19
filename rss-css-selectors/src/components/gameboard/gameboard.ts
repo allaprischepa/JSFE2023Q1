@@ -46,4 +46,8 @@ export class GameBoard {
     wrapper.append(edge);
     this.board.append(wrapper);
   }
+
+  public getHeader(): Element {
+    return this.header;
+  }
 }

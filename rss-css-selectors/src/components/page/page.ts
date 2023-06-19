@@ -102,4 +102,16 @@ export class Page {
       }
     });
   }
+
+  public getGameboard(): GameBoard {
+    return this.gameboard;
+  }
+
+  public getEditor(): Editor {
+    return this.editor;
+  }
+
+  public getDescription(): Description {
+    return this.description;
+  }
 }
