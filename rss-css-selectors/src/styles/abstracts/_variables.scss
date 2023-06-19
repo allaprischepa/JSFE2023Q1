@@ -1,9 +1,12 @@
 $main-color: #2e2a23;
 $main-color-dark: #221e18;
 $text-color: rgba(255, 255, 255, 0.3);
+$text-color-grey: #aaa;
+$white-01: rgba(255, 255, 255, 0.1);
+$black-02: rgba(0, 0, 0, 0.2);
 
 $edtr-bckgrnd-light: #efefef;
-$edtr-clr-light: #aaa;
+$edtr-clr-light: $text-color-grey;
 $edtr-bckgrnd-dark: rgba(0, 0, 0, 0.3);
 
 $tsk-inpt-z-index: 300;

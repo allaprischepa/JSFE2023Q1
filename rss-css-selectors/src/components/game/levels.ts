@@ -4,8 +4,8 @@ export const levels: ILevel[] = [
   {
     taskHeader: 'Select the plates',
     selector: 'plate',
-    title: 'Select elements by their type',
-    subtitle: 'Type Selector',
+    title: 'Type Selector',
+    subtitle: 'Select elements by their type',
     syntax: 'A',
     help:
       'Selects all elements of type <strong>A</strong>. Type refers to the type of tag, so <tag>div</tag>, <tag>p</tag> and <tag>ul</tag> are all different element types.',

@@ -1,0 +1,84 @@
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.level-header {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.description-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.description-subtitle {
+  font-size: 1.1rem;
+  font-weight: 300;
+  opacity: 0.7;
+}
+
+.syntax {
+  font-size: 1.6rem;
+  font-weight: 200;
+  margin: 1rem 0 1.025rem 0;
+  opacity: .8;
+  background: rgba(255, 255, 255, 0.05);
+  display: inline-block;
+  padding: 0.26rem 0.5rem;
+  border-bottom: solid 2px $white-01;
+}
+
+.help {
+  line-height: 1.5;
+}
+
+.examples {
+  margin-top: 3.1rem;
+}
+
+.examples__title {
+  margin-bottom: 0.625rem;
+  font-weight: 600;
+}
+
+.example {
+  border-bottom: solid 1px $white-01;
+  padding: 0.625rem 0 0.75rem 0;
+  line-height: 1.7;
+
+  &:last-child {
+    border: none;
+  }
+}
+
+.examples strong,
+.examples tag,
+.help strong,
+.help tag {
+  color: $text-color-grey;
+  background: $white-01;
+  padding: 3px 6px 3px 6px;
+  margin: 0px 2px;
+  font-size: 0.82rem;
+  font-family: menlo, monospace;
+  font-weight: normal;
+}
+
+tag {
+
+  &:before {
+    content: "<";
+  }
+
+  &:after {
+    content: ">";
+  }
+
+}

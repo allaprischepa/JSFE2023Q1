@@ -9,7 +9,10 @@ export class Description {
 
   constructor() {
     const description = document.createElement('div');
+    const top = document.createElement('div');
+    const bottom = document.createElement('div');
     description.classList.add('description');
+    description.append(top, bottom);
 
     const header = document.createElement('h3');
     header.classList.add('level-header');
@@ -27,7 +30,7 @@ export class Description {
     help.classList.add('help');
 
     const examples = document.createElement('div');
-    const eTitle = document.createElement('h5');
+    const eTitle = document.createElement('h4');
     const eContainer = document.createElement('div');
     eTitle.textContent = 'Examples';
     examples.classList.add('examples');
@@ -35,7 +38,8 @@ export class Description {
     eContainer.classList.add('examples__container');
     examples.append(eTitle, eContainer);
 
-    description.append(header, title, subtitle, syntax, help, examples);
+    top.append(header);
+    bottom.append(title, subtitle, syntax, help, examples);
 
     this.description = description;
     this.header = header;
