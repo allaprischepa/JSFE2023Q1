@@ -7,10 +7,15 @@ export class Editor {
   private editor: Element;
   private cssEditor: EditorView;
   private htmlEditor: EditorView;
+  private input: HTMLInputElement;
+  private btn: Element;
 
   constructor() {
     this.editor = document.createElement('div');
     this.editor.classList.add('editor');
+
+    this.input = this.createInput();
+    this.btn = this.createBtn();
 
     this.cssEditor = this.initEditor('css');
     this.htmlEditor = this.initEditor('html');
@@ -59,7 +64,7 @@ export class Editor {
         parent: editorArea,
       });
 
-      const input = this.createCustomInput();
+      const input = this.createCustomInputWrapper();
       editor.dom.prepend(input);
     } else {
       editor = new EditorView({
@@ -93,22 +98,50 @@ export class Editor {
     });
   }
 
-  private createCustomInput(): Element {
-    const wrapper = document.createElement('div');
-    wrapper.classList.add('task-input-wrapper');
-
+  private createInput(): HTMLInputElement {
     const input = document.createElement('input');
     input.classList.add('task-input', 'blink');
     input.type = 'text';
     input.placeholder = 'Type in a CSS Selector';
 
+    return input;
+  }
+
+  private createBtn(): Element {
     const btn = document.createElement('button');
     btn.classList.add('task-input-btn');
     btn.textContent = 'enter';
 
-    wrapper.append(input);
-    wrapper.append(btn);
+    return btn;
+  }
+
+  private createCustomInputWrapper(): Element {
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('task-input-wrapper');
+
+    wrapper.append(this.input);
+    wrapper.append(this.btn);
 
     return wrapper;
+  }
+
+  public getEditorWrapperElement(): Element {
+    return this.editor;
+  }
+
+  public getCssEditor(): EditorView {
+    return this.cssEditor;
+  }
+
+  public getHtmlEditor(): EditorView {
+    return this.htmlEditor;
+  }
+
+  public getInput(): HTMLInputElement {
+    return this.input;
+  }
+
+  public getInputButton(): Element {
+    return this.btn;
   }
 }

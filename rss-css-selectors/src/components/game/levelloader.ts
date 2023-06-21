@@ -1,5 +1,6 @@
 import { ILevel } from '../../types/types';
 import { Description } from '../description/description';
+import { Editor } from '../editor/editor';
 import { GameBoard } from '../gameboard/gameboard';
 import { Page } from '../page/page';
 import { levels } from './levels';
@@ -7,10 +8,12 @@ import { levels } from './levels';
 export class LevelLoader {
   private gameboard: GameBoard;
   private description: Description;
+  private editor: Editor;
 
   constructor(page: Page) {
     this.gameboard = page.getGameboard();
     this.description = page.getDescription();
+    this.editor = page.getEditor();
   }
 
   public setLevel(level: number): void {
@@ -18,6 +21,8 @@ export class LevelLoader {
 
     this.setTaskHeader(data);
     this.setDescription(data, level);
+    this.setHtmlView(data);
+    this.setOnTable(data);
   }
 
   private setTaskHeader(data: ILevel): void {
@@ -70,5 +75,17 @@ export class LevelLoader {
       exampleWrapper.innerHTML = example;
       eContainer.append(exampleWrapper);
     });
+  }
+
+  private setHtmlView(data: ILevel): void {
+    const htmlEditor = this.editor.getHtmlEditor();
+    htmlEditor.dispatch({ changes: { from: 0, insert: `<div class="table">${data.htmlMarkup}</div>` } });
+
+    console.log(htmlEditor);
+  }
+
+  private setOnTable(data: ILevel): void {
+    const table = this.gameboard.getTable();
+    table.innerHTML = data.htmlMarkup;
   }
 }

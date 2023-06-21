@@ -14,8 +14,8 @@ export const levels: ILevel[] = [
       '<strong>p</strong> selects all <tag>p</tag> elements.',
     ],
     htmlMarkup: `
-    <plate/>
-    <plate/>
-    `,
+  <plate />
+  <plate />
+`,
   },
 ];

@@ -11,9 +11,9 @@
   @include woodTexture();
   @include perspectiveTransform();
 
-  padding: 30px;
+  padding: 1em 1em 1.1em 1em;
   width: fit-content;
-  min-width: 300px;
+  min-width: 200px;
   box-shadow: 0 0 40px 10px $black-02;
 }
 
@@ -23,7 +23,7 @@
 
   position: relative;
   height: 10px;
-  min-width: 300px;
+  min-width: 200px;
   filter: brightness(0.5);
 }
 
@@ -38,4 +38,12 @@
 .task__header {
   font-size: 2.9rem;
   font-weight: 400;
+}
+
+plate {
+  display: inline-block;
+  background-image: url('../assets/img/plate.png');
+  background-size: cover;
+  width: 100px;
+  height: 100px;
 }

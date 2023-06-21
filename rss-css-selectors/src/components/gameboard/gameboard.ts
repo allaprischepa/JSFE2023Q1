@@ -50,4 +50,8 @@ export class GameBoard {
   public getHeader(): Element {
     return this.header;
   }
+
+  public getTable(): Element {
+    return this.table;
+  }
 }
