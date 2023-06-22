@@ -79,13 +79,33 @@ export class LevelLoader {
 
   private setHtmlView(data: ILevel): void {
     const htmlEditor = this.editor.getHtmlEditor();
-    htmlEditor.dispatch({ changes: { from: 0, insert: `<div class="table">${data.htmlMarkup}</div>` } });
+    htmlEditor.dispatch({
+      changes: {
+        from: 0,
+        to: htmlEditor.state.doc.toString().length,
+        insert: `<div class="table">${data.htmlMarkup}</div>`,
+      },
+    });
 
-    console.log(htmlEditor);
+    this.editor.updateToMinNumberOfLines(htmlEditor);
   }
 
   private setOnTable(data: ILevel): void {
     const table = this.gameboard.getTable();
-    table.innerHTML = data.htmlMarkup;
+    table.innerHTML = this.prepareHtmlMarkup(data);
+  }
+
+  private prepareHtmlMarkup(data: ILevel): string {
+    const markup = data.htmlMarkup;
+    const selector = data.selector;
+    const replacedStr = markup.replace(/<([^/>\s]+)(\s*\/)?>/g, (match: string, tagName: string) => {
+      if (tagName === selector) {
+        return '<' + tagName + ' class="shake"></' + tagName + '>';
+      } else {
+        return '<' + tagName + '></' + tagName + '>';
+      }
+    });
+
+    return replacedStr;
   }
 }

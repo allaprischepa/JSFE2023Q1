@@ -3,3 +3,34 @@
     background-color: rgba(62, 203, 255, 0.3);
   }
 }
+
+@keyframes shaking {
+  0% {
+    transform: skewX(0deg) scaleY(1);
+    transform-origin: bottom;
+  }
+  10% {
+    transform: skewX(1deg) scaleY(1.05);
+    transform-origin: bottom;
+  }
+  30% {
+    transform: skewX(3deg) scaleY(1.1);
+    transform-origin: bottom;
+  }
+  50% {
+    transform: skewX(0deg) scaleY(1);
+    transform-origin: bottom;
+  }
+  70% {
+    transform: skewX(-3deg) scaleY(1.1);
+    transform-origin: bottom;
+  }
+  90% {
+    transform: scaleX(-1deg) scaleY(1.05);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: skewX(0deg) scaleY(1);
+    transform-origin: bottom;
+  }
+}
