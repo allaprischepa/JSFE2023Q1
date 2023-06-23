@@ -41,6 +41,11 @@
   .cm-activeLineGutter {
     background: none;
   }
+
+  .highlight,
+  .highlight * {
+    color: white;
+  }
 }
 
 .task-input-wrapper {

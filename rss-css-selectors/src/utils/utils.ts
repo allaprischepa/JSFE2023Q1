@@ -10,7 +10,6 @@ export function addClosingTag(str: string): string {
 
 export function addClassToSelector(str: string, selector: string, className: string): string {
   return str.replace(/<([a-z]+)>/g, (match: string, tagName: string) => {
-    console.log(tagName);
     if (tagName === selector) {
       return `<${tagName} class="${className}">`;
     }

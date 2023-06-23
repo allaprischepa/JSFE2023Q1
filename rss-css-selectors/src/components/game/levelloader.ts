@@ -5,6 +5,7 @@ import { GameBoard } from '../gameboard/gameboard';
 import { Page } from '../page/page';
 import { levels } from './levels';
 import { addClosingTag, addClassToSelector } from '../../utils/utils';
+import { EditorView } from 'codemirror';
 
 export class LevelLoader {
   private gameboard: GameBoard;
@@ -80,14 +81,9 @@ export class LevelLoader {
 
   private setHtmlView(data: ILevel): void {
     const htmlEditor = this.editor.getHtmlEditor();
-    htmlEditor.dispatch({
-      changes: {
-        from: 0,
-        to: htmlEditor.state.doc.toString().length,
-        insert: `<div class="table">\n${addClosingTag(data.htmlMarkup)}\n</div>`,
-      },
-    });
+    const newText = `<div class="table">\n${addClosingTag(data.htmlMarkup)}\n</div>`;
 
+    this.replaceFormattedText(htmlEditor, newText);
     this.editor.updateToMinNumberOfLines(htmlEditor);
   }
 
@@ -103,5 +99,15 @@ export class LevelLoader {
     replaced = addClassToSelector(replaced, selector, 'shake');
 
     return replaced;
+  }
+
+  private replaceFormattedText(editor: EditorView, text: string): void {
+    editor.dispatch({
+      changes: {
+        from: 0,
+        to: editor.state.doc.toString().length,
+        insert: text,
+      },
+    });
   }
 }

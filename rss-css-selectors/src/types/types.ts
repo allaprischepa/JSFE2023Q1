@@ -12,3 +12,7 @@ export interface ILevel {
   examples: string[];
   htmlMarkup: string;
 }
+
+export enum Selectors {
+  highlight = 'highlight',
+}
