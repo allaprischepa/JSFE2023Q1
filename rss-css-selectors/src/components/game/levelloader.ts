@@ -84,7 +84,7 @@ export class LevelLoader {
       changes: {
         from: 0,
         to: htmlEditor.state.doc.toString().length,
-        insert: `<div class="table">\n${data.htmlMarkup}\n</div>`,
+        insert: `<div class="table">\n${addClosingTag(data.htmlMarkup)}\n</div>`,
       },
     });
 
