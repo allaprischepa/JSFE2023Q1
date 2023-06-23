@@ -25,6 +25,10 @@ const baseConfig = {
                 filename: 'assets/images/[name][ext]',
               },
             },
+            {
+              test: /\.html$/,
+              use: 'html-loader',
+            }
         ],
     },
     resolve: {

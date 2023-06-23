@@ -1,39 +1,5 @@
 import { ILevel } from '../../types/types';
+import { level as level_1 } from './levels/level_1/index';
+import { level as level_2 } from './levels/level_2/index';
 
-export const levels: ILevel[] = [
-  {
-    taskHeader: 'Select the plates',
-    selector: 'plate',
-    title: 'Type Selector',
-    subtitle: 'Select elements by their type',
-    syntax: 'A',
-    help:
-      'Selects all elements of type <strong>A</strong>. Type refers to the type of tag, so <tag>div</tag>, <tag>p</tag> and <tag>ul</tag> are all different element types.',
-    examples: [
-      '<strong>div</strong> selects all <tag>div</tag> elements.',
-      '<strong>p</strong> selects all <tag>p</tag> elements.',
-    ],
-    htmlMarkup: `
-  <plate />
-  <plate />
-`,
-  },
-  {
-    taskHeader: 'Select the boards',
-    selector: 'board',
-    syntax: 'A',
-    title: 'Type Selector',
-    subtitle: 'Select elements by their type',
-    help:
-      'Selects all elements of type <strong>A</strong>. Type refers to the type of tag, so <tag>div</tag>, <tag>p</tag> and <tag>ul</tag> are all different element types.',
-    examples: [
-      '<strong>div</strong> selects all <tag>div</tag> elements.',
-      '<strong>p</strong> selects all <tag>p</tag> elements.',
-    ],
-    htmlMarkup: `
-  <board/>
-  <plate/>
-  <board/>
-`,
-  },
-];
+export const levels: ILevel[] = [level_1, level_2];

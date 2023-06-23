@@ -4,6 +4,7 @@ import { Editor } from '../editor/editor';
 import { GameBoard } from '../gameboard/gameboard';
 import { Page } from '../page/page';
 import { levels } from './levels';
+import { addClosingTag, addClassToSelector } from '../../utils/utils';
 
 export class LevelLoader {
   private gameboard: GameBoard;
@@ -83,7 +84,7 @@ export class LevelLoader {
       changes: {
         from: 0,
         to: htmlEditor.state.doc.toString().length,
-        insert: `<div class="table">${data.htmlMarkup}</div>`,
+        insert: `<div class="table">\n${data.htmlMarkup}\n</div>`,
       },
     });
 
@@ -98,14 +99,9 @@ export class LevelLoader {
   private prepareHtmlMarkup(data: ILevel): string {
     const markup = data.htmlMarkup;
     const selector = data.selector;
-    const replacedStr = markup.replace(/<([^/>\s]+)(\s*\/)?>/g, (match: string, tagName: string) => {
-      if (tagName === selector) {
-        return '<' + tagName + ' class="shake"></' + tagName + '>';
-      } else {
-        return '<' + tagName + '></' + tagName + '>';
-      }
-    });
+    let replaced = addClosingTag(markup);
+    replaced = addClassToSelector(replaced, selector, 'shake');
 
-    return replacedStr;
+    return replaced;
   }
 }
