@@ -15,4 +15,5 @@ export interface ILevel {
 
 export enum Selectors {
   highlight = 'highlight',
+  tremble = 'tremble',
 }

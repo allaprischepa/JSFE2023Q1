@@ -3,21 +3,23 @@ import { Editor } from '../editor/editor';
 import { Page } from '../page/page';
 import { GameStorage } from './gamestorage';
 import { LevelLoader } from './levelloader';
+import { levels } from './levels';
 
 export class Game {
   private loader: LevelLoader;
   private storage: GameStorage;
   private editor: Editor;
+  private level: number;
 
   constructor(page: Page) {
     this.loader = new LevelLoader(page);
     this.storage = new GameStorage();
     this.editor = page.getEditor();
+    this.level = this.storage.getCurrentLevel();
   }
 
   public play(): void {
-    const level = this.storage.getCurrentLevel();
-    this.loader.setLevel(level);
+    this.loader.setLevel(this.level);
     this.listenUserInput();
     this.listenHtmlViewEvents();
   }
@@ -45,7 +47,18 @@ export class Game {
   }
 
   private checkAnswer(str: string): void {
-    console.log(`Checking the answer: ${str}`);
+    const data = levels[this.level];
+    const rightAnswer = data.selector;
+
+    if (str === rightAnswer) {
+      console.log('Next level...');
+    } else {
+      const editorWrapper = this.editor.getEditorWrapperElement();
+      editorWrapper.classList.add(Selectors.tremble);
+      setTimeout(() => {
+        editorWrapper.classList.remove(Selectors.tremble);
+      }, 500);
+    }
   }
 
   private listenHtmlViewEvents(): void {
