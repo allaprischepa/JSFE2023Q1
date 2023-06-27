@@ -1,3 +1,5 @@
+import { Selectors } from '../../types/types';
+
 export class Description {
   private description: Element;
   private header: Element;
@@ -7,6 +9,8 @@ export class Description {
   private help: Element;
   private eContainer: Element;
   private state: Element;
+  private levelsList: Element;
+  private resetProgress: Element;
 
   constructor() {
     const description = document.createElement('div');
@@ -50,6 +54,14 @@ export class Description {
     const state = document.createElement('div');
     state.classList.add('state');
 
+    const levelsList = document.createElement('div');
+    levelsList.classList.add('levels-list');
+
+    const reset = document.createElement('a');
+    reset.classList.add(Selectors.resetProgress);
+    reset.innerText = 'Reset Progress';
+    state.append(levelsList, reset);
+
     this.description = description;
     this.header = header;
     this.title = title;
@@ -58,6 +70,8 @@ export class Description {
     this.help = help;
     this.eContainer = eContainer;
     this.state = state;
+    this.levelsList = levelsList;
+    this.resetProgress = reset;
   }
 
   public view(parent: Element = document.body): void {
@@ -89,11 +103,15 @@ export class Description {
     return this.eContainer;
   }
 
-  public getState(): Element {
-    return this.state;
+  public getLevelsList(): Element {
+    return this.levelsList;
   }
 
   public getDescription(): Element {
     return this.description;
+  }
+
+  public getResetProgressButton(): Element {
+    return this.resetProgress;
   }
 }

@@ -16,9 +16,16 @@ export interface ILevel {
 export enum Selectors {
   highlight = 'highlight',
   tremble = 'tremble',
+  levelItem = 'level__item',
+  resetProgress = 'reset-progress',
 }
 
 export interface ILevelState {
   key: string;
   passed: 0 | 1;
+}
+
+export enum Events {
+  loadlevel = 'loadlevel',
+  resetProgress = 'resetprogress',
 }

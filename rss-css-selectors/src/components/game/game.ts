@@ -1,4 +1,6 @@
-import { Selectors } from '../../types/types';
+import { Events, Selectors } from '../../types/types';
+import { getClassSelector } from '../../utils/utils';
+import { Description } from '../description/description';
 import { Editor } from '../editor/editor';
 import { GameBoard } from '../gameboard/gameboard';
 import { Page } from '../page/page';
@@ -11,6 +13,7 @@ export class Game {
   private storage: GameStorage;
   private editor: Editor;
   private gameboard: GameBoard;
+  private description: Description;
   private level: number;
 
   constructor(page: Page) {
@@ -18,6 +21,7 @@ export class Game {
     this.storage = new GameStorage();
     this.editor = page.getEditor();
     this.gameboard = page.getGameboard();
+    this.description = page.getDescription();
     this.level = this.storage.getCurrentLevel();
   }
 
@@ -25,6 +29,7 @@ export class Game {
     this.playLevel(this.level);
     this.listenUserInput();
     this.listenHtmlViewEvents();
+    this.listenResetProgress();
   }
 
   private listenUserInput(): void {
@@ -120,19 +125,48 @@ export class Game {
     const nextLevel = this.level + 1;
 
     if (levels[nextLevel]) {
-      this.storage.setCurrentLevel(nextLevel);
-      this.level = nextLevel;
-      this.playLevel(this.level);
+      this.playLevel(nextLevel);
     } else {
-      console.log('Find not passed level...');
+      const notPassedLevel = this.findNotPassedLevel();
+
+      if (levels[notPassedLevel]) {
+        this.playLevel(notPassedLevel);
+      } else {
+        this.clearInput();
+        this.showWinMessage();
+      }
     }
   }
 
   private playLevel(level: number): void {
-    const state = this.storage.getState(levels);
+    this.storage.setCurrentLevel(level);
+    this.level = level;
 
+    const state = this.storage.getState(levels);
+    const levelsList = this.description.getLevelsList();
+
+    this.clearInput();
     this.loader.setLevel(level);
     this.loader.setState(state, level);
+
+    const levelItems = levelsList.querySelectorAll(getClassSelector(Selectors.levelItem));
+
+    if (levelItems) {
+      levelItems.forEach((item) => {
+        item.addEventListener(Events.loadlevel, (event) => {
+          const target = event.target;
+
+          if (target instanceof Element) {
+            const dataLevel = target.getAttribute('data-level');
+            const levelNum = dataLevel ? +dataLevel : -1;
+
+            if (levels[levelNum]) {
+              this.playLevel(levelNum);
+            }
+          }
+        });
+      });
+    }
   }
 
   private markLevelAsPassed(level: number): void {
@@ -140,5 +174,36 @@ export class Game {
     const lvlID = `${data.selector}${data.htmlMarkup}`;
 
     this.storage.updateState(lvlID, 1);
+  }
+
+  private listenResetProgress(): void {
+    const reset = this.description.getResetProgressButton();
+
+    reset.addEventListener('click', () => {
+      this.storage.clear();
+      this.playLevel(0);
+    });
+  }
+
+  private findNotPassedLevel(): number {
+    const state = this.storage.getState(levels);
+
+    return state.findIndex((obj) => obj.passed === 0);
+  }
+
+  private clearInput(): void {
+    const input = this.editor.getInput();
+
+    input.value = '';
+    input.dispatchEvent(new Event('input'));
+  }
+
+  private showWinMessage(): void {
+    const table = this.gameboard.getTable();
+    const message = document.createElement('div');
+    message.classList.add('win-message');
+    message.innerHTML = '<span>You won!</span><span>Good job!</span>';
+
+    table.replaceChildren(message);
   }
 }

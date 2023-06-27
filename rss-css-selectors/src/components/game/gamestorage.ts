@@ -54,10 +54,20 @@ export class GameStorage {
       const state: ILevelState[] = JSON.parse(data);
       const index = state.findIndex((obj) => obj.key === lvlID);
 
-      if (index) {
+      if (index >= 0) {
         state[index]['passed'] = passed;
         this.setToStorage('state', JSON.stringify(state));
       }
     }
+  }
+
+  public clear(): void {
+    ['state', 'currentLevel'].forEach((str) => {
+      this.removeFromStorage(str);
+    });
+  }
+
+  public removeFromStorage(name: string): void {
+    localStorage.removeItem(`${this.storagePrefix}${name}`);
   }
 }

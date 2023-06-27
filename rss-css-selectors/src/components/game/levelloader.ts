@@ -1,4 +1,4 @@
-import { ILevel, ILevelState } from '../../types/types';
+import { Events, ILevel, ILevelState, Selectors } from '../../types/types';
 import { Description } from '../description/description';
 import { Editor } from '../editor/editor';
 import { GameBoard } from '../gameboard/gameboard';
@@ -112,14 +112,17 @@ export class LevelLoader {
   }
 
   public setState(state: ILevelState[], crrntLvl: number): void {
-    const stateElement = this.description.getState();
+    const levelsList = this.description.getLevelsList();
     const lvlDescription = this.description.getDescription();
+    levelsList.innerHTML = '';
 
     state.forEach((data, ind) => {
-      console.log(data.passed);
+      const levelloadEvent = new Event(Events.loadlevel);
+
       const lvlState = document.createElement('div');
-      lvlState.classList.add('state__item');
-      if (ind === crrntLvl) lvlState.classList.add('current');
+      lvlState.classList.add(Selectors.levelItem);
+      lvlState.setAttribute('data-level', `${ind}`);
+
       if (data.passed) lvlState.classList.add('passed');
 
       const checkMark = document.createElement('span');
@@ -128,14 +131,23 @@ export class LevelLoader {
       const text = document.createElement('span');
       text.innerText = `Level ${ind + 1}`;
 
-      const infoBtn = document.createElement('a');
-      infoBtn.classList.add('level-info');
-      infoBtn.addEventListener('click', () => {
-        lvlDescription.classList.add('open');
-      });
+      lvlState.append(checkMark, text);
 
-      lvlState.append(checkMark, text, infoBtn);
-      stateElement.append(lvlState);
+      if (ind === crrntLvl) {
+        const infoBtn = document.createElement('a');
+        lvlState.classList.add('current');
+
+        infoBtn.classList.add('level-info');
+        infoBtn.addEventListener('click', () => {
+          lvlDescription.classList.add('open');
+        });
+
+        lvlState.append(infoBtn);
+      } else {
+        lvlState.addEventListener('click', (event) => event.currentTarget?.dispatchEvent(levelloadEvent));
+      }
+
+      levelsList.append(lvlState);
     });
   }
 }
