@@ -30,6 +30,7 @@ export class Game {
     this.listenUserInput();
     this.listenHtmlViewEvents();
     this.listenResetProgress();
+    this.listenHelpButton();
   }
 
   private listenUserInput(): void {
@@ -205,5 +206,27 @@ export class Game {
     message.innerHTML = '<span>You won!</span><span>Good job!</span>';
 
     table.replaceChildren(message);
+  }
+
+  private listenHelpButton(): void {
+    const helpBtn = this.gameboard.getHelpButton();
+
+    helpBtn.addEventListener('click', () => this.printAnswer());
+  }
+
+  private printAnswer(): void {
+    const input = this.editor.getInput();
+    const data = levels[this.level];
+    const answer = data.selector;
+
+    input.value = '';
+    input.classList.remove('blink');
+    input.focus();
+
+    for (let i = 0; i < answer.length; i += 1) {
+      setTimeout(() => {
+        input.value += answer[i];
+      }, i * 400);
+    }
   }
 }

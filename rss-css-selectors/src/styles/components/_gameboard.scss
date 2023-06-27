@@ -75,3 +75,27 @@ board {
   font-size: 2.3rem;
   font-weight: bold;
 }
+
+.help-button {
+  height: 50px;
+  box-sizing: border-box;
+  padding: 10px 20px;
+  background-color: $pink-01;
+  border-bottom: 7px solid $green-01;
+  border-radius: 20px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  color: $black-03;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $pink-02;
+    color: $black-03;
+  }
+
+  &:active {
+    transform: translateY(7px);
+    border: none;
+  }
+}

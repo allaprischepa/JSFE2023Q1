@@ -2,6 +2,7 @@ export class GameBoard {
   private board: Element;
   private header: Element;
   private table: Element;
+  private helpButton: Element;
 
   constructor() {
     const board = document.createElement('div');
@@ -10,16 +11,22 @@ export class GameBoard {
     const header = document.createElement('h2');
     header.classList.add('task__header');
 
+    const helpBtn = document.createElement('a');
+    helpBtn.classList.add('help-button');
+    helpBtn.innerText = 'Help me';
+
     const table = document.createElement('div');
     table.classList.add('table');
 
     this.board = board;
     this.header = header;
     this.table = table;
+    this.helpButton = helpBtn;
   }
 
   public view(parent: Element = document.body): void {
     this.viewHeader();
+    this.viewHelpButton();
     this.viewTable();
 
     parent.append(this.board);
@@ -27,6 +34,10 @@ export class GameBoard {
 
   private viewHeader(): void {
     this.board.append(this.header);
+  }
+
+  private viewHelpButton(): void {
+    this.board.append(this.helpButton);
   }
 
   private viewTable(): void {
@@ -53,5 +64,9 @@ export class GameBoard {
 
   public getTable(): Element {
     return this.table;
+  }
+
+  public getHelpButton(): Element {
+    return this.helpButton;
   }
 }
