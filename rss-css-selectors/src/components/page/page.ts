@@ -36,7 +36,7 @@ export class Page {
 
   private viewHeader(parent: Element = document.body): void {
     const header = document.createElement('header');
-    header.innerHTML = '<h1>RSS CSS Selectors</h1>';
+    header.innerHTML = '<h1 class="site-name">RSS CSS Selectors</h1>';
 
     parent.append(header);
   }

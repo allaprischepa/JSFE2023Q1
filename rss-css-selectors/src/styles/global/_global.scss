@@ -102,3 +102,20 @@ footer {
   box-sizing: border-box;
   background-color: $main-color-dark;
 }
+
+.site-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+
+  &::before {
+  content: '';
+  background-image: url('../assets/img/watermelon.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: inline-block;
+  height: 2em;
+  width: 2em;
+  opacity: 0.7;
+  }
+}

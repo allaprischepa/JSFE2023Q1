@@ -44,7 +44,7 @@ const baseConfig = {
             template: path.resolve(__dirname, './src/index.html'),
             filename: 'index.html',
             inject: 'body',
-            // favicon: './src/assets/img/favicon.png',
+            favicon: './src/assets/img/watermelon.png',
         }),
         new CleanWebpackPlugin(),
         new EslingPlugin({ extensions: 'ts' }),
