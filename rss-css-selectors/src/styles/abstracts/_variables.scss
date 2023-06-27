@@ -1,10 +1,14 @@
 $main-color: #2e2a23;
-$main-color-dark: #221e18;
-$text-color: rgba(255, 255, 255, 0.3);
+$main-color-dark: #1b1813;
+$text-color: #64615c;
 $text-color-grey: #aaa;
 $white-01: rgba(255, 255, 255, 0.1);
+$white-02: rgba(255, 255, 255, 0.3);
 $black-02: rgba(0, 0, 0, 0.2);
 
+$edtr-border: #0e0d0a;
+$editr-color: #a2a1a0;
+$editr-bckgrnd: #171511;
 $edtr-bckgrnd-light: #efefef;
 $edtr-clr-light: $text-color-grey;
 $edtr-bckgrnd-dark: rgba(0, 0, 0, 0.3);
@@ -12,3 +16,7 @@ $edtr-bckgrnd-dark: rgba(0, 0, 0, 0.3);
 $tsk-inpt-z-index: 300;
 $tsk-inpt-margin-left: 40px;
 $tsk-inpt-margin-right: 5px;
+
+$dscrptn-color: #8a8a8a;
+$lvl-header-clr: #878685;
+$syntax-bckgrnd: rgba(255, 255, 255, 0.05);

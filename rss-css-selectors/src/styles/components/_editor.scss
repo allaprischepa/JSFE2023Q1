@@ -4,7 +4,7 @@
 .editor {
   display: flex;
   margin: 0 5vw;
-  border: 10px solid rgba(0, 0, 0, 0.7);
+  border: 10px solid $edtr-border;
   font-family: menlo, monospace;
   font-size: 0.875rem;
 }
@@ -18,8 +18,8 @@
   display: flex;
   justify-content: space-between;
   padding: 10px;
-  color: rgba(255, 255, 255, 0.6);
-  background-color: rgba(0, 0, 0, 0.5);
+  color: $editr-color;
+  background-color: $editr-bckgrnd;
 
   .file-name {
     opacity: 0.5;
@@ -73,4 +73,15 @@
 
 .tremble {
   animation: trembling 0.5s infinite;
+}
+
+.task-input-btn {
+  background: #d6d6d6;
+  border: 2px outset #ececec;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+
+  &:active {
+    border: 2px inset #ececec;
+  }
 }

@@ -1,15 +1,17 @@
+@import '../abstracts/variables';
+
 .description {
   display: flex;
   flex-direction: column;
   gap: 30px;
   padding: 20px;
-  color: rgba(255, 255, 255, 0.6);
+  color: $dscrptn-color;
 }
 
 .level-header {
   font-size: 1.6rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
+  color: $lvl-header-clr;
 }
 
 .description-title {
@@ -26,13 +28,13 @@
 
 .syntax {
   font-size: 1.6rem;
-  font-weight: 200;
+  font-weight: 400;
   margin: 1rem 0 1.025rem 0;
   opacity: .8;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
   display: inline-block;
   padding: 0.26rem 0.5rem;
-  border-bottom: solid 2px $white-01;
+  border-bottom: solid 2px $white-02;
 }
 
 .help {
@@ -64,7 +66,7 @@
 .help tag {
   color: $text-color-grey;
   background: $white-01;
-  padding: 3px 6px 3px 6px;
+  padding: 2px 4px 2px 4px;
   margin: 0px 2px;
   font-size: 0.82rem;
   font-family: menlo, monospace;
