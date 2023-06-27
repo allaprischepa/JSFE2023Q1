@@ -17,3 +17,8 @@ export enum Selectors {
   highlight = 'highlight',
   tremble = 'tremble',
 }
+
+export interface ILevelState {
+  key: string;
+  passed: 0 | 1;
+}

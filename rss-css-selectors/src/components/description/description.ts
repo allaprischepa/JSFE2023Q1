@@ -6,16 +6,22 @@ export class Description {
   private syntax: Element;
   private help: Element;
   private eContainer: Element;
+  private state: Element;
 
   constructor() {
     const description = document.createElement('div');
     const top = document.createElement('div');
     const bottom = document.createElement('div');
+    top.classList.add('description-top');
     description.classList.add('description');
     description.append(top, bottom);
 
     const header = document.createElement('h3');
     header.classList.add('level-header');
+
+    const close = document.createElement('span');
+    close.classList.add('description-close');
+    close.addEventListener('click', () => description.classList.remove('open'));
 
     const title = document.createElement('h4');
     title.classList.add('description-title');
@@ -38,8 +44,11 @@ export class Description {
     eContainer.classList.add('examples__container');
     examples.append(eTitle, eContainer);
 
-    top.append(header);
+    top.append(header, close);
     bottom.append(title, subtitle, syntax, help, examples);
+
+    const state = document.createElement('div');
+    state.classList.add('state');
 
     this.description = description;
     this.header = header;
@@ -48,10 +57,12 @@ export class Description {
     this.syntax = syntax;
     this.help = help;
     this.eContainer = eContainer;
+    this.state = state;
   }
 
   public view(parent: Element = document.body): void {
     parent.append(this.description);
+    parent.append(this.state);
   }
 
   public getHeader(): Element {
@@ -76,5 +87,13 @@ export class Description {
 
   public getExamplesContainer(): Element {
     return this.eContainer;
+  }
+
+  public getState(): Element {
+    return this.state;
+  }
+
+  public getDescription(): Element {
+    return this.description;
   }
 }

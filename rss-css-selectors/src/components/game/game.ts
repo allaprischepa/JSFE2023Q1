@@ -1,5 +1,6 @@
 import { Selectors } from '../../types/types';
 import { Editor } from '../editor/editor';
+import { GameBoard } from '../gameboard/gameboard';
 import { Page } from '../page/page';
 import { GameStorage } from './gamestorage';
 import { LevelLoader } from './levelloader';
@@ -9,17 +10,19 @@ export class Game {
   private loader: LevelLoader;
   private storage: GameStorage;
   private editor: Editor;
+  private gameboard: GameBoard;
   private level: number;
 
   constructor(page: Page) {
     this.loader = new LevelLoader(page);
     this.storage = new GameStorage();
     this.editor = page.getEditor();
+    this.gameboard = page.getGameboard();
     this.level = this.storage.getCurrentLevel();
   }
 
   public play(): void {
-    this.loader.setLevel(this.level);
+    this.playLevel(this.level);
     this.listenUserInput();
     this.listenHtmlViewEvents();
   }
@@ -46,12 +49,34 @@ export class Game {
     });
   }
 
-  private checkAnswer(str: string): void {
+  private checkAnswer(inputStr: string): void {
     const data = levels[this.level];
     const rightAnswer = data.selector;
+    const table = this.gameboard.getTable();
+    const reference = table.querySelectorAll(rightAnswer);
+    let checked = false;
 
-    if (str === rightAnswer) {
-      console.log('Next level...');
+    try {
+      const selected = table.querySelectorAll(inputStr);
+
+      if (selected.length === reference.length) {
+        const selectedArr = Array.from(selected);
+        const referenceArr = Array.from(reference);
+
+        checked = referenceArr.every((node, ind) => node.isSameNode(selectedArr[ind]));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    if (checked) {
+      this.markLevelAsPassed(this.level);
+      reference.forEach((node) => {
+        node.classList.add('fly');
+      });
+      setTimeout(() => {
+        this.playNext();
+      }, 500);
     } else {
       const editorWrapper = this.editor.getEditorWrapperElement();
       editorWrapper.classList.add(Selectors.tremble);
@@ -89,5 +114,31 @@ export class Game {
     htmlEditor.contentDOM.addEventListener('mouseout', () => {
       removeHighlighted();
     });
+  }
+
+  private playNext(): void {
+    const nextLevel = this.level + 1;
+
+    if (levels[nextLevel]) {
+      this.storage.setCurrentLevel(nextLevel);
+      this.level = nextLevel;
+      this.playLevel(this.level);
+    } else {
+      console.log('Find not passed level...');
+    }
+  }
+
+  private playLevel(level: number): void {
+    const state = this.storage.getState(levels);
+
+    this.loader.setLevel(level);
+    this.loader.setState(state, level);
+  }
+
+  private markLevelAsPassed(level: number): void {
+    const data = levels[level];
+    const lvlID = `${data.selector}${data.htmlMarkup}`;
+
+    this.storage.updateState(lvlID, 1);
   }
 }

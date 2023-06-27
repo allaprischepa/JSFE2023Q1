@@ -1,4 +1,4 @@
-import { ILevel } from '../../types/types';
+import { ILevel, ILevelState } from '../../types/types';
 import { Description } from '../description/description';
 import { Editor } from '../editor/editor';
 import { GameBoard } from '../gameboard/gameboard';
@@ -108,6 +108,34 @@ export class LevelLoader {
         to: editor.state.doc.toString().length,
         insert: text,
       },
+    });
+  }
+
+  public setState(state: ILevelState[], crrntLvl: number): void {
+    const stateElement = this.description.getState();
+    const lvlDescription = this.description.getDescription();
+
+    state.forEach((data, ind) => {
+      console.log(data.passed);
+      const lvlState = document.createElement('div');
+      lvlState.classList.add('state__item');
+      if (ind === crrntLvl) lvlState.classList.add('current');
+      if (data.passed) lvlState.classList.add('passed');
+
+      const checkMark = document.createElement('span');
+      checkMark.classList.add('checkmark');
+
+      const text = document.createElement('span');
+      text.innerText = `Level ${ind + 1}`;
+
+      const infoBtn = document.createElement('a');
+      infoBtn.classList.add('level-info');
+      infoBtn.addEventListener('click', () => {
+        lvlDescription.classList.add('open');
+      });
+
+      lvlState.append(checkMark, text, infoBtn);
+      stateElement.append(lvlState);
     });
   }
 }

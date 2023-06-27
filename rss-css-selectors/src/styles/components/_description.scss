@@ -1,11 +1,53 @@
 @import '../abstracts/variables';
 
 .description {
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 30px;
   padding: 20px;
+  height: 100vh;
+  box-sizing: border-box;
   color: $dscrptn-color;
+  background-color: $main-color-dark;
+
+  &.open {
+    display: flex;
+  }
+}
+
+.description-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.description-close {
+  position: relative;
+  display: flex;
+  width: 30px;
+  align-items: center;
+  cursor: pointer;
+
+  &::before,
+  &::after {
+    position: absolute;
+    display: inline-block;
+    content: '';
+    width: 100%;
+    height: 2px;
+    background-color: $dscrptn-color;
+    transform: rotate(45deg);
+    transform-origin: center;
+  }
+
+  &::after {
+    transform: rotate(-45deg);
+  }
+
+  &:hover::before,
+  &:hover::after {
+    background-color: $white-03;
+  }
+
 }
 
 .level-header {
@@ -84,3 +126,68 @@ tag {
   }
 
 }
+
+.state {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0px;
+  color: $dscrptn-color;
+  font-size: 1.2rem;
+}
+
+.state__item {
+  display: flex;
+  gap: 0.6em;
+  padding: 5px 20px;
+
+  &.current {
+    font-weight: bold;
+    color:$text-color-grey;
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.checkmark {
+  display: inline-block;
+  width: 0.4em;
+  height: 0.7em;
+  border-right: 3px solid;
+  border-bottom: 3px solid;
+  border-color: $dscrptn-color;
+  transform: rotate(45deg);
+  margin-right: 0.3em;
+
+  .passed & {
+    border-color: $green-01;
+  }
+}
+
+.level-info {
+  display: flex;
+  content: 'i';
+  font-size: 0.8em;
+  font-weight: 600;
+  border: 2px solid;
+  border-color: inherit;
+  width: 1em;
+  height: 1em;
+  border-radius: 1em;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  cursor: pointer;
+
+  &::before {
+    content: 'i';
+  }
+
+  &:hover {
+    color: $white-03;
+    border-color: $white-03;
+  }
+}
+
