@@ -54,13 +54,14 @@ export class Editor {
 
   private initEditorView(type: EditorType, editorArea: Element): EditorView {
     let editor: EditorView;
+    const commonExtensions = [basicSetup, EditorView.editable.of(false), EditorState.tabSize.of(2)];
 
     if (type === 'css') {
       const text = ['', '{', '\t/* Styles will be here */', '}'];
 
       editor = new EditorView({
         doc: text.join('\n'),
-        extensions: [basicSetup, EditorView.editable.of(false)],
+        extensions: commonExtensions,
         parent: editorArea,
       });
 
@@ -70,7 +71,7 @@ export class Editor {
       editor = new EditorView({
         state: EditorState.create({
           doc: '<div class="empty"></div>',
-          extensions: [basicSetup, html(), EditorView.editable.of(false), EditorView.darkTheme.of(true)],
+          extensions: [...commonExtensions, html(), EditorView.darkTheme.of(true)],
         }),
         parent: editorArea,
       });
