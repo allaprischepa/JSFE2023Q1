@@ -46,6 +46,15 @@
   .highlight * {
     color: white;
   }
+
+  .cm-foldGutter span {
+    display: none;
+  }
+
+  .cm-lineNumbers {
+    padding: 0 5px;
+  }
+
 }
 
 .task-input-wrapper {
