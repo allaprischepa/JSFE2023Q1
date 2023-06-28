@@ -1,5 +1,10 @@
 import { Events, Selectors } from '../../types/types';
-import { getClassSelector, getChildElementByTagNumber, findOpeningClosinTags } from '../../utils/utils';
+import {
+  getClassSelector,
+  getChildElementByTagNumber,
+  findOpeningClosinTags,
+  findLineWithParentTag,
+} from '../../utils/utils';
 import { Description } from '../description/description';
 import { Editor } from '../editor/editor';
 import { GameBoard } from '../gameboard/gameboard';
@@ -139,26 +144,40 @@ export class Game {
     htmlEditor.contentDOM.addEventListener('mousemove', (event) => {
       removeHighlighted();
       const pos = htmlEditor.posAtCoords({ x: event.clientX, y: event.clientY });
+      const linesToExclude = [1, splitedText.filter((str) => str.trim()).length];
 
       if (pos) {
         const line = htmlEditor.state.doc.lineAt(pos);
-        const lineText = line.text.trim();
 
-        if (lineText) {
-          const [openeningTag, closingTag] = findOpeningClosinTags(lineText);
-          console.log(`openeningTag: ${openeningTag}`);
-          console.log(`closingTag: ${closingTag}`);
+        if (!linesToExclude.includes(line.number)) {
+          const lineText = line.text.trim();
 
-          if (openeningTag) {
-            highlightCorrespondingTableElement(openeningTag, line.number);
+          if (lineText) {
+            const [openeningTag, closingTag] = findOpeningClosinTags(lineText);
 
-            if (closingTag) {
-              highlightEditorLines(line.number - 1);
-            } else {
-              console.log('Find line with closing tag...');
+            if (openeningTag) {
+              highlightCorrespondingTableElement(openeningTag, line.number);
+
+              if (closingTag) {
+                highlightEditorLines(line.number - 1);
+              } else {
+                // Find line with closing tag...
+                const searchedLine = findLineWithParentTag(openeningTag, editorText, line.number - 1, false);
+
+                if (searchedLine > 0) {
+                  highlightCorrespondingTableElement(openeningTag, line.number);
+                  highlightEditorLines(line.number - 1, searchedLine - 1);
+                }
+              }
+            } else if (closingTag) {
+              // Find line with opening tag...
+              const searchedLine = findLineWithParentTag(closingTag, editorText, line.number - 1);
+
+              if (searchedLine > 0) {
+                highlightCorrespondingTableElement(closingTag, searchedLine);
+                highlightEditorLines(searchedLine - 1, line.number - 1);
+              }
             }
-          } else if (closingTag) {
-            console.log('Find line with opening tag...');
           }
         }
       }

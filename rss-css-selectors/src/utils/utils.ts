@@ -82,3 +82,47 @@ export function getChildElementByTagNumber(parent: Element, tag: string, number 
 
   return children && children[number] ? children[number] : null;
 }
+
+export function findLineWithParentTag(tag: string, text: string, startFrom: number, opening = true): number {
+  const textLines = text.split('\n');
+  let resLine = -1;
+  const tagsStack: number[] = [];
+
+  if (textLines) {
+    if (opening) {
+      for (let i = startFrom - 1; i >= 0; i -= 1) {
+        const lineText = textLines[i];
+
+        if (lineText.includes(`</${tag}`)) {
+          tagsStack.push(i);
+        }
+
+        if (lineText.includes(`<${tag}`)) {
+          if (tagsStack.length) {
+            tagsStack.pop();
+          } else {
+            resLine = i + 1;
+          }
+        }
+      }
+    } else {
+      for (let i = startFrom + 1; i < textLines.length; i += 1) {
+        const lineText = textLines[i];
+
+        if (lineText.includes(`<${tag}`)) {
+          tagsStack.push(i);
+        }
+
+        if (lineText.includes(`</${tag}`)) {
+          if (tagsStack.length) {
+            tagsStack.pop();
+          } else {
+            resLine = i + 1;
+          }
+        }
+      }
+    }
+  }
+
+  return resLine;
+}
