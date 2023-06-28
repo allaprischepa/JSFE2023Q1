@@ -1,5 +1,5 @@
 import { Events, Selectors } from '../../types/types';
-import { getClassSelector } from '../../utils/utils';
+import { getClassSelector, getChildElementByTagNumber, findOpeningClosinTags } from '../../utils/utils';
 import { Description } from '../description/description';
 import { Editor } from '../editor/editor';
 import { GameBoard } from '../gameboard/gameboard';
@@ -95,10 +95,45 @@ export class Game {
   private listenHtmlViewEvents(): void {
     const htmlEditor = this.editor.getHtmlEditor();
     const highlight = Selectors.highlight;
-    const lineClass = 'cm-line';
+    const lineSelector = getClassSelector(Selectors.editorLine);
+    const editorText = htmlEditor.state.doc.toString();
+    const splitedText = editorText.split('\n');
+    const table = this.gameboard.getTable();
+
+    const range = (start: number, stop: number, step = 1): number[] =>
+      Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
+
     const removeHighlighted = (): void => {
-      const highlighted = htmlEditor.dom.querySelectorAll(`.${highlight}`);
-      highlighted.forEach((line) => line.classList.remove(highlight));
+      const highlightedOnEditor = htmlEditor.dom.querySelectorAll(`.${highlight}`);
+      const highlightedOnTable = table.querySelectorAll(`.${highlight}`);
+      [...highlightedOnEditor, ...highlightedOnTable].forEach((line) => line.classList.remove(highlight));
+    };
+
+    const highlightCorrespondingTableElement = (openeningTag: string, lineNumber: number): void => {
+      const aboveHtml = splitedText.slice(1, lineNumber - 1);
+      const num = aboveHtml.filter((str) => str.includes(`<${openeningTag}`)).length;
+
+      if (num >= 0) {
+        const elementFromTable = getChildElementByTagNumber(table, openeningTag, num);
+
+        if (elementFromTable) {
+          elementFromTable.classList.add(highlight);
+        }
+      }
+    };
+
+    const highlightEditorLines = (from: number, to?: number): void => {
+      const lines = htmlEditor.dom.querySelectorAll(lineSelector);
+
+      if (lines) {
+        if (to) {
+          range(from, to).forEach((num) => {
+            lines.item(num).classList.add(highlight);
+          });
+        } else {
+          lines.item(from).classList.add(highlight);
+        }
+      }
     };
 
     htmlEditor.contentDOM.addEventListener('mousemove', (event) => {
@@ -107,16 +142,28 @@ export class Game {
 
       if (pos) {
         const line = htmlEditor.state.doc.lineAt(pos);
-        const lineText = line.text;
-        const node = htmlEditor.domAtPos(pos);
-        const parent = node.node.parentElement;
+        const lineText = line.text.trim();
 
-        if (lineText && parent) {
-          const lineElement = parent.closest(`.${lineClass}`);
-          lineElement?.classList.add(highlight);
+        if (lineText) {
+          const [openeningTag, closingTag] = findOpeningClosinTags(lineText);
+          console.log(`openeningTag: ${openeningTag}`);
+          console.log(`closingTag: ${closingTag}`);
+
+          if (openeningTag) {
+            highlightCorrespondingTableElement(openeningTag, line.number);
+
+            if (closingTag) {
+              highlightEditorLines(line.number - 1);
+            } else {
+              console.log('Find line with closing tag...');
+            }
+          } else if (closingTag) {
+            console.log('Find line with opening tag...');
+          }
         }
       }
     });
+
     htmlEditor.contentDOM.addEventListener('mouseout', () => {
       removeHighlighted();
     });

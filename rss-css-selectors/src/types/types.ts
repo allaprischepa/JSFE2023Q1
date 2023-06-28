@@ -18,6 +18,7 @@ export enum Selectors {
   tremble = 'tremble',
   levelItem = 'level__item',
   resetProgress = 'reset-progress',
+  editorLine = 'cm-line',
 }
 
 export interface ILevelState {

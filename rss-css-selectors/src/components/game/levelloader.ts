@@ -4,7 +4,7 @@ import { Editor } from '../editor/editor';
 import { GameBoard } from '../gameboard/gameboard';
 import { Page } from '../page/page';
 import { levels } from './levels';
-import { addClosingTag, addClassToSelector } from '../../utils/utils';
+import { addClosingTag, addClassToSelector, getStructuredHtml } from '../../utils/utils';
 import { EditorView } from 'codemirror';
 
 export class LevelLoader {
@@ -81,7 +81,7 @@ export class LevelLoader {
 
   private setHtmlView(data: ILevel): void {
     const htmlEditor = this.editor.getHtmlEditor();
-    const newText = `<div class="table">\n${addClosingTag(data.htmlMarkup)}\n</div>`;
+    const newText = getStructuredHtml(`<div class="table">\n${addClosingTag(data.htmlMarkup)}\n</div>`);
 
     this.replaceFormattedText(htmlEditor, newText);
     this.editor.updateToMinNumberOfLines(htmlEditor);

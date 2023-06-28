@@ -55,6 +55,10 @@
     padding: 0 5px;
   }
 
+  .html-editor & .cm-line {
+    cursor: pointer;
+  }
+
 }
 
 .task-input-wrapper {
