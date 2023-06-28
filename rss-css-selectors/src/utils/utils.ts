@@ -126,3 +126,16 @@ export function findLineWithParentTag(tag: string, text: string, startFrom: numb
 
   return resLine;
 }
+
+export function getIndexOfCertainElement(arr: Element[], target: Element): number {
+  let index = -1;
+
+  arr.forEach((el, ind) => {
+    if (el.isSameNode(target)) {
+      index = ind;
+      return;
+    }
+  });
+
+  return index;
+}

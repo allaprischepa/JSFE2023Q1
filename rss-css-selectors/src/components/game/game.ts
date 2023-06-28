@@ -4,6 +4,7 @@ import {
   getChildElementByTagNumber,
   findOpeningClosinTags,
   findLineWithParentTag,
+  getIndexOfCertainElement,
 } from '../../utils/utils';
 import { Description } from '../description/description';
 import { Editor } from '../editor/editor';
@@ -37,6 +38,7 @@ export class Game {
     this.listenHtmlViewEvents();
     this.listenResetProgress();
     this.listenHelpButton();
+    this.listenTableEvents();
   }
 
   private listenUserInput(): void {
@@ -107,12 +109,6 @@ export class Game {
     const range = (start: number, stop: number, step = 1): number[] =>
       Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
 
-    const removeHighlighted = (): void => {
-      const highlightedOnEditor = htmlEditor.dom.querySelectorAll(`.${highlight}`);
-      const highlightedOnTable = table.querySelectorAll(`.${highlight}`);
-      [...highlightedOnEditor, ...highlightedOnTable].forEach((line) => line.classList.remove(highlight));
-    };
-
     const highlightCorrespondingTableElement = (openeningTag: string, lineNumber: number): void => {
       const editorText = htmlEditor.state.doc.toString();
       const splitedText = editorText.split('\n');
@@ -143,7 +139,7 @@ export class Game {
     };
 
     htmlEditor.contentDOM.addEventListener('mousemove', (event) => {
-      removeHighlighted();
+      this.removeHighlighted();
       const editorText = htmlEditor.state.doc.toString();
       const splitedText = editorText.split('\n');
       const pos = htmlEditor.posAtCoords({ x: event.clientX, y: event.clientY });
@@ -186,9 +182,7 @@ export class Game {
       }
     });
 
-    htmlEditor.contentDOM.addEventListener('mouseout', () => {
-      removeHighlighted();
-    });
+    htmlEditor.contentDOM.addEventListener('mouseout', () => this.removeHighlighted());
   }
 
   private playNext(): void {
@@ -301,5 +295,36 @@ export class Game {
         input.value += answer[i];
       }, i * 400);
     }
+  }
+
+  private listenTableEvents(): void {
+    const table = this.gameboard.getTable();
+
+    table.addEventListener('mouseover', (event) => {
+      this.removeHighlighted();
+      const target = event.target;
+
+      if (target instanceof Element) {
+        const tableElements = table.getElementsByTagName(target.tagName);
+        const index = getIndexOfCertainElement(Array.from(tableElements), target);
+
+        if (index >= 0) {
+          target.classList.add(Selectors.highlight);
+        }
+      }
+      console.log(event.target);
+    });
+
+    table.addEventListener('mouseout', () => this.removeHighlighted());
+  }
+
+  private removeHighlighted(): void {
+    const htmlEditor = this.editor.getHtmlEditor();
+    const highlight = Selectors.highlight;
+    const table = this.gameboard.getTable();
+
+    const highlightedOnEditor = htmlEditor.dom.querySelectorAll(`.${highlight}`);
+    const highlightedOnTable = table.querySelectorAll(`.${highlight}`);
+    [...highlightedOnEditor, ...highlightedOnTable].forEach((line) => line.classList.remove(highlight));
   }
 }
