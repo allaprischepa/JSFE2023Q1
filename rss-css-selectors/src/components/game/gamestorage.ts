@@ -57,6 +57,13 @@ export class GameStorage {
       if (index >= 0) {
         state[index]['passed'] = passed;
         this.setToStorage('state', JSON.stringify(state));
+      } else {
+        state.push({
+          key: lvlID,
+          passed: passed,
+        });
+
+        this.setToStorage('state', JSON.stringify(state));
       }
     }
   }
@@ -69,5 +76,21 @@ export class GameStorage {
 
   public removeFromStorage(name: string): void {
     localStorage.removeItem(`${this.storagePrefix}${name}`);
+  }
+
+  public updateStateForLevels(levels: ILevel[]): void {
+    const state = this.getState(levels);
+
+    const newState = levels.map((data) => {
+      const lvlID = `${data.selector}${data.htmlMarkup}`;
+      const levelState = state.find((st) => st.key === lvlID);
+
+      return {
+        key: lvlID,
+        passed: levelState ? levelState.passed : 0,
+      };
+    });
+
+    this.setToStorage('state', JSON.stringify(newState));
   }
 }

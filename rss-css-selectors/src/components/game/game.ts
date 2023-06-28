@@ -31,6 +31,7 @@ export class Game {
   }
 
   public play(): void {
+    this.storage.updateStateForLevels(levels);
     this.playLevel(this.level);
     this.listenUserInput();
     this.listenHtmlViewEvents();
@@ -101,8 +102,6 @@ export class Game {
     const htmlEditor = this.editor.getHtmlEditor();
     const highlight = Selectors.highlight;
     const lineSelector = getClassSelector(Selectors.editorLine);
-    const editorText = htmlEditor.state.doc.toString();
-    const splitedText = editorText.split('\n');
     const table = this.gameboard.getTable();
 
     const range = (start: number, stop: number, step = 1): number[] =>
@@ -115,6 +114,8 @@ export class Game {
     };
 
     const highlightCorrespondingTableElement = (openeningTag: string, lineNumber: number): void => {
+      const editorText = htmlEditor.state.doc.toString();
+      const splitedText = editorText.split('\n');
       const aboveHtml = splitedText.slice(1, lineNumber - 1);
       const num = aboveHtml.filter((str) => str.includes(`<${openeningTag}`)).length;
 
@@ -143,6 +144,8 @@ export class Game {
 
     htmlEditor.contentDOM.addEventListener('mousemove', (event) => {
       removeHighlighted();
+      const editorText = htmlEditor.state.doc.toString();
+      const splitedText = editorText.split('\n');
       const pos = htmlEditor.posAtCoords({ x: event.clientX, y: event.clientY });
       const linesToExclude = [1, splitedText.filter((str) => str.trim()).length];
 
@@ -189,7 +192,7 @@ export class Game {
   }
 
   private playNext(): void {
-    const nextLevel = this.level + 1;
+    const nextLevel = this.findNotPassedLevel(this.level);
 
     if (levels[nextLevel]) {
       this.playLevel(nextLevel);
@@ -199,6 +202,7 @@ export class Game {
       if (levels[notPassedLevel]) {
         this.playLevel(notPassedLevel);
       } else {
+        this.markLevelAsPassed(this.level);
         this.clearInput();
         this.showWinMessage();
       }
@@ -239,6 +243,9 @@ export class Game {
   private markLevelAsPassed(level: number): void {
     const data = levels[level];
     const lvlID = `${data.selector}${data.htmlMarkup}`;
+    const levelsList = this.description.getLevelsList();
+    const levelItem = levelsList.querySelector(`[data-level="${this.level}"]`);
+    levelItem?.classList.add(Selectors.passed);
 
     this.storage.updateState(lvlID, 1);
   }
@@ -252,10 +259,10 @@ export class Game {
     });
   }
 
-  private findNotPassedLevel(): number {
+  private findNotPassedLevel(startFrom = -1): number {
     const state = this.storage.getState(levels);
 
-    return state.findIndex((obj) => obj.passed === 0);
+    return state.findIndex((obj, ind) => obj.passed === 0 && ind > startFrom);
   }
 
   private clearInput(): void {

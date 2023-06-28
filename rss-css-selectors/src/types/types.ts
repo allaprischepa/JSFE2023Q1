@@ -19,6 +19,7 @@ export enum Selectors {
   levelItem = 'level__item',
   resetProgress = 'reset-progress',
   editorLine = 'cm-line',
+  passed = 'passed',
 }
 
 export interface ILevelState {

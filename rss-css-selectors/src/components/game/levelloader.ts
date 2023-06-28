@@ -116,14 +116,17 @@ export class LevelLoader {
     const lvlDescription = this.description.getDescription();
     levelsList.innerHTML = '';
 
-    state.forEach((data, ind) => {
+    levels.forEach((lvlData, ind) => {
+      const lvlID = `${lvlData.selector}${lvlData.htmlMarkup}`;
+      const data = state.filter((st) => st.key === lvlID).shift();
+
       const levelloadEvent = new Event(Events.loadlevel);
 
       const lvlState = document.createElement('div');
       lvlState.classList.add(Selectors.levelItem);
       lvlState.setAttribute('data-level', `${ind}`);
 
-      if (data.passed) lvlState.classList.add('passed');
+      if (data?.passed) lvlState.classList.add(Selectors.passed);
 
       const checkMark = document.createElement('span');
       checkMark.classList.add('checkmark');
