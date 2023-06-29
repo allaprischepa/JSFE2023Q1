@@ -1,3 +1,4 @@
+import { EditorView } from 'codemirror';
 import { Events, Selectors } from '../../types/types';
 import {
   getClassSelector,
@@ -5,6 +6,7 @@ import {
   findOpeningClosinTags,
   findLineWithParentTag,
   getIndexOfCertainElement,
+  findCorrespondingLine,
 } from '../../utils/utils';
 import { Description } from '../description/description';
 import { Editor } from '../editor/editor';
@@ -21,6 +23,8 @@ export class Game {
   private gameboard: GameBoard;
   private description: Description;
   private level: number;
+  private htmlEditor: EditorView;
+  private tableElement: Element;
 
   constructor(page: Page) {
     this.loader = new LevelLoader(page);
@@ -29,6 +33,8 @@ export class Game {
     this.gameboard = page.getGameboard();
     this.description = page.getDescription();
     this.level = this.storage.getCurrentLevel();
+    this.htmlEditor = this.editor.getHtmlEditor();
+    this.tableElement = this.gameboard.getTable();
   }
 
   public play(): void {
@@ -66,12 +72,11 @@ export class Game {
   private checkAnswer(inputStr: string): void {
     const data = levels[this.level];
     const rightAnswer = data.selector;
-    const table = this.gameboard.getTable();
-    const reference = table.querySelectorAll(rightAnswer);
+    const reference = this.tableElement.querySelectorAll(rightAnswer);
     let checked = false;
 
     try {
-      const selected = table.querySelectorAll(inputStr);
+      const selected = this.tableElement.querySelectorAll(inputStr);
 
       if (selected.length === reference.length) {
         const selectedArr = Array.from(selected);
@@ -101,88 +106,24 @@ export class Game {
   }
 
   private listenHtmlViewEvents(): void {
-    const htmlEditor = this.editor.getHtmlEditor();
-    const highlight = Selectors.highlight;
-    const lineSelector = getClassSelector(Selectors.editorLine);
-    const table = this.gameboard.getTable();
-
-    const range = (start: number, stop: number, step = 1): number[] =>
-      Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
-
-    const highlightCorrespondingTableElement = (openeningTag: string, lineNumber: number): void => {
-      const editorText = htmlEditor.state.doc.toString();
-      const splitedText = editorText.split('\n');
-      const aboveHtml = splitedText.slice(1, lineNumber - 1);
-      const num = aboveHtml.filter((str) => str.includes(`<${openeningTag}`)).length;
-
-      if (num >= 0) {
-        const elementFromTable = getChildElementByTagNumber(table, openeningTag, num);
-
-        if (elementFromTable) {
-          elementFromTable.classList.add(highlight);
-        }
-      }
-    };
-
-    const highlightEditorLines = (from: number, to?: number): void => {
-      const lines = htmlEditor.dom.querySelectorAll(lineSelector);
-
-      if (lines) {
-        if (to) {
-          range(from, to).forEach((num) => {
-            lines.item(num).classList.add(highlight);
-          });
-        } else {
-          lines.item(from).classList.add(highlight);
-        }
-      }
-    };
-
-    htmlEditor.contentDOM.addEventListener('mousemove', (event) => {
+    this.htmlEditor.contentDOM.addEventListener('mousemove', (event) => {
       this.removeHighlighted();
-      const editorText = htmlEditor.state.doc.toString();
+      const editorText = this.htmlEditor.state.doc.toString();
       const splitedText = editorText.split('\n');
-      const pos = htmlEditor.posAtCoords({ x: event.clientX, y: event.clientY });
+      const pos = this.htmlEditor.posAtCoords({ x: event.clientX, y: event.clientY });
       const linesToExclude = [1, splitedText.filter((str) => str.trim()).length];
 
       if (pos) {
-        const line = htmlEditor.state.doc.lineAt(pos);
+        const line = this.htmlEditor.state.doc.lineAt(pos);
 
         if (!linesToExclude.includes(line.number)) {
           const lineText = line.text.trim();
-
-          if (lineText) {
-            const [openeningTag, closingTag] = findOpeningClosinTags(lineText);
-
-            if (openeningTag) {
-              highlightCorrespondingTableElement(openeningTag, line.number);
-
-              if (closingTag) {
-                highlightEditorLines(line.number - 1);
-              } else {
-                // Find line with closing tag...
-                const searchedLine = findLineWithParentTag(openeningTag, editorText, line.number - 1, false);
-
-                if (searchedLine > 0) {
-                  highlightCorrespondingTableElement(openeningTag, line.number);
-                  highlightEditorLines(line.number - 1, searchedLine - 1);
-                }
-              }
-            } else if (closingTag) {
-              // Find line with opening tag...
-              const searchedLine = findLineWithParentTag(closingTag, editorText, line.number - 1);
-
-              if (searchedLine > 0) {
-                highlightCorrespondingTableElement(closingTag, searchedLine);
-                highlightEditorLines(searchedLine - 1, line.number - 1);
-              }
-            }
-          }
+          this.highlightEditorAndTable(lineText, line.number);
         }
       }
     });
 
-    htmlEditor.contentDOM.addEventListener('mouseout', () => this.removeHighlighted());
+    this.htmlEditor.contentDOM.addEventListener('mouseout', () => this.removeHighlighted());
   }
 
   private playNext(): void {
@@ -267,12 +208,11 @@ export class Game {
   }
 
   private showWinMessage(): void {
-    const table = this.gameboard.getTable();
     const message = document.createElement('div');
     message.classList.add('win-message');
     message.innerHTML = '<span>You won!</span><span>Good job!</span>';
 
-    table.replaceChildren(message);
+    this.tableElement.replaceChildren(message);
   }
 
   private listenHelpButton(): void {
@@ -298,33 +238,102 @@ export class Game {
   }
 
   private listenTableEvents(): void {
-    const table = this.gameboard.getTable();
-
-    table.addEventListener('mouseover', (event) => {
+    this.tableElement.addEventListener('mouseover', (event) => {
       this.removeHighlighted();
       const target = event.target;
 
       if (target instanceof Element) {
-        const tableElements = table.getElementsByTagName(target.tagName);
+        const currentTag = target.tagName.toLowerCase();
+        const tableElements = this.tableElement.getElementsByTagName(currentTag);
         const index = getIndexOfCertainElement(Array.from(tableElements), target);
+        const editorText = this.htmlEditor.state.doc.toString();
+        const splitedText = editorText.split('\n');
 
         if (index >= 0) {
-          target.classList.add(Selectors.highlight);
+          const lineNumber = findCorrespondingLine(editorText, currentTag, index);
+
+          if (lineNumber >= 0) {
+            const lineText = splitedText[lineNumber];
+            this.highlightEditorAndTable(lineText, lineNumber + 1);
+          }
         }
       }
-      console.log(event.target);
     });
 
-    table.addEventListener('mouseout', () => this.removeHighlighted());
+    this.tableElement.addEventListener('mouseout', () => this.removeHighlighted());
   }
 
   private removeHighlighted(): void {
-    const htmlEditor = this.editor.getHtmlEditor();
     const highlight = Selectors.highlight;
-    const table = this.gameboard.getTable();
 
-    const highlightedOnEditor = htmlEditor.dom.querySelectorAll(`.${highlight}`);
-    const highlightedOnTable = table.querySelectorAll(`.${highlight}`);
+    const highlightedOnEditor = this.htmlEditor.dom.querySelectorAll(`.${highlight}`);
+    const highlightedOnTable = this.tableElement.querySelectorAll(`.${highlight}`);
     [...highlightedOnEditor, ...highlightedOnTable].forEach((line) => line.classList.remove(highlight));
+  }
+
+  private highlightEditorAndTable(lineText: string, lineNumber: number): void {
+    const highlight = Selectors.highlight;
+    const lineSelector = getClassSelector(Selectors.editorLine);
+    const editorText = this.htmlEditor.state.doc.toString();
+
+    const range = (start: number, stop: number, step = 1): number[] =>
+      Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
+
+    const highlightCorrespondingTableElement = (openeningTag: string, lineNumber: number): void => {
+      const editorText = this.htmlEditor.state.doc.toString();
+      const splitedText = editorText.split('\n');
+      const aboveHtml = splitedText.slice(1, lineNumber - 1);
+      const num = aboveHtml.filter((str) => str.includes(`<${openeningTag}`)).length;
+
+      if (num >= 0) {
+        const elementFromTable = getChildElementByTagNumber(this.tableElement, openeningTag, num);
+
+        if (elementFromTable) {
+          elementFromTable.classList.add(highlight);
+        }
+      }
+    };
+
+    const highlightEditorLines = (from: number, to?: number): void => {
+      const lines = this.htmlEditor.dom.querySelectorAll(lineSelector);
+
+      if (lines) {
+        if (to) {
+          range(from, to).forEach((num) => {
+            lines.item(num).classList.add(highlight);
+          });
+        } else {
+          lines.item(from).classList.add(highlight);
+        }
+      }
+    };
+
+    if (lineText) {
+      const [openeningTag, closingTag] = findOpeningClosinTags(lineText);
+
+      if (openeningTag) {
+        highlightCorrespondingTableElement(openeningTag, lineNumber);
+
+        if (closingTag) {
+          highlightEditorLines(lineNumber - 1);
+        } else {
+          // Find line with closing tag...
+          const searchedLine = findLineWithParentTag(openeningTag, editorText, lineNumber - 1, false);
+
+          if (searchedLine > 0) {
+            highlightCorrespondingTableElement(openeningTag, lineNumber);
+            highlightEditorLines(lineNumber - 1, searchedLine - 1);
+          }
+        }
+      } else if (closingTag) {
+        // Find line with opening tag...
+        const searchedLine = findLineWithParentTag(closingTag, editorText, lineNumber - 1);
+
+        if (searchedLine > 0) {
+          highlightCorrespondingTableElement(closingTag, searchedLine);
+          highlightEditorLines(searchedLine - 1, lineNumber - 1);
+        }
+      }
+    }
   }
 }

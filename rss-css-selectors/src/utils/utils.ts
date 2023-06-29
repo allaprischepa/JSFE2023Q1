@@ -139,3 +139,18 @@ export function getIndexOfCertainElement(arr: Element[], target: Element): numbe
 
   return index;
 }
+
+export function findCorrespondingLine(text: string, tagName: string, index: number): number {
+  let count = -1;
+  const splitedText = text.split('\n');
+
+  for (let i = 0; i < splitedText.length; i += 1) {
+    const lineText = splitedText[i];
+    if (lineText.includes(`<${tagName}`)) {
+      count += 1;
+      if (count === index) return i;
+    }
+  }
+
+  return -1;
+}
