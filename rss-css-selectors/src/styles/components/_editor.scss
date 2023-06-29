@@ -3,10 +3,13 @@
 
 .editor {
   display: flex;
-  margin: 0 5vw;
+  margin: 0 auto;
   border: 10px solid $edtr-border;
   font-family: menlo, monospace;
   font-size: 0.875rem;
+  width: 95%;
+  box-sizing: border-box;
+  max-width: 1300px;
 }
 
 .css-editor,

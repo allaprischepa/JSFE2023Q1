@@ -86,7 +86,7 @@ export class Editor {
     return type === 'css' ? 'light' : 'dark';
   }
 
-  public updateToMinNumberOfLines(editor: EditorView, minNumOfLines = 20): void {
+  public updateToMinNumberOfLines(editor: EditorView, minNumOfLines = 15): void {
     const currentNumOfLines = editor.state.doc.lines;
     const currentStr = editor.state.doc.toString();
 
