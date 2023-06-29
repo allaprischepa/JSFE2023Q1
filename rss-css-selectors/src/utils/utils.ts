@@ -9,13 +9,13 @@ export function addClosingTag(str: string): string {
 }
 
 export function addClassToSelector(str: string, selector: string, className: string): string {
-  return str.replace(/<([a-z]+)>/g, (match: string, tagName: string) => {
-    if (tagName === selector) {
-      return `<${tagName} class="${className}">`;
-    }
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = str;
+  const elements = tempDiv.querySelectorAll(selector);
 
-    return match;
-  });
+  elements.forEach((elem) => elem.classList.add(className));
+
+  return tempDiv.innerHTML;
 }
 
 export function getStructuredHtml(minifiedHtml: string): string {
