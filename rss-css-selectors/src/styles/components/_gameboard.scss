@@ -111,3 +111,17 @@ watermelon {
     border: none;
   }
 }
+
+.tooltip {
+  display: none;
+  position: absolute;
+  width: fit-content;
+  white-space: nowrap;
+  padding: 10px;
+  font-size: 1.1rem;
+  background-color: aliceblue;
+
+  &.show {
+    display: block;
+  }
+}

@@ -4,7 +4,7 @@ import { Editor } from '../editor/editor';
 import { GameBoard } from '../gameboard/gameboard';
 import { Page } from '../page/page';
 import { levels } from './levels';
-import { addClosingTag, addClassToSelector, getStructuredHtml } from '../../utils/utils';
+import { addClosingTag, addClassToSelector, getStructuredHtml, addAttributeWithElementHtml } from '../../utils/utils';
 import { EditorView } from 'codemirror';
 
 export class LevelLoader {
@@ -96,6 +96,7 @@ export class LevelLoader {
     const markup = data.htmlMarkup;
     const selector = data.selector;
     let replaced = addClosingTag(markup);
+    replaced = addAttributeWithElementHtml(replaced);
     replaced = addClassToSelector(replaced, selector, 'shake');
 
     return replaced;

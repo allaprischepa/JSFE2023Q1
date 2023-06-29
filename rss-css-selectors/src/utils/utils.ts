@@ -8,6 +8,30 @@ export function addClosingTag(str: string): string {
   });
 }
 
+export function addAttributeWithElementHtml(str: string): string {
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = str;
+  const elements = tempDiv.querySelectorAll('*');
+
+  elements.forEach((elem) => {
+    const tag = elem.tagName.toLowerCase();
+    const attrs: string[] = [];
+
+    if (elem.attributes) {
+      for (let i = 0; i < elem.attributes.length; i += 1) {
+        const attribute = elem.attributes[i];
+        attrs.push(`${attribute.name}="${attribute.value}"`);
+      }
+    }
+
+    const htmlStructure = `<${tag}${attrs.length ? ` ${attrs.join(' ')}` : ''}><${tag}>`;
+
+    elem.setAttribute('data-tooltip', htmlStructure);
+  });
+
+  return tempDiv.innerHTML;
+}
+
 export function addClassToSelector(str: string, selector: string, className: string): string {
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = str;

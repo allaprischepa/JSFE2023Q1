@@ -265,16 +265,20 @@ export class Game {
 
   private removeHighlighted(): void {
     const highlight = Selectors.highlight;
+    const tooltip = this.gameboard.getTooltip();
 
     const highlightedOnEditor = this.htmlEditor.dom.querySelectorAll(`.${highlight}`);
     const highlightedOnTable = this.tableElement.querySelectorAll(`.${highlight}`);
     [...highlightedOnEditor, ...highlightedOnTable].forEach((line) => line.classList.remove(highlight));
+
+    tooltip.classList.remove('show');
   }
 
   private highlightEditorAndTable(lineText: string, lineNumber: number): void {
     const highlight = Selectors.highlight;
     const lineSelector = getClassSelector(Selectors.editorLine);
     const editorText = this.htmlEditor.state.doc.toString();
+    const tooltip = this.gameboard.getTooltip();
 
     const range = (start: number, stop: number, step = 1): number[] =>
       Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
@@ -290,6 +294,24 @@ export class Game {
 
         if (elementFromTable) {
           elementFromTable.classList.add(highlight);
+          const tooltipData = elementFromTable.getAttribute('data-tooltip');
+
+          if (tooltipData) {
+            tooltip.textContent = tooltipData;
+            tooltip.classList.add('show');
+
+            if (tooltip instanceof HTMLElement && elementFromTable instanceof HTMLElement) {
+              const rect = this.tableElement.getBoundingClientRect();
+              const elemWidth = elementFromTable.offsetWidth;
+              const tooltipWidth = tooltip.offsetWidth;
+
+              const top = Math.floor(rect.top + elementFromTable.offsetTop - 60);
+              const left = Math.floor(rect.left + elementFromTable.offsetLeft + elemWidth / 2 - tooltipWidth / 2);
+
+              tooltip.style.top = `${top}px`;
+              tooltip.style.left = `${left}px`;
+            }
+          }
         }
       }
     };

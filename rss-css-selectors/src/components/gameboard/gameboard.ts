@@ -3,6 +3,7 @@ export class GameBoard {
   private header: Element;
   private table: Element;
   private helpButton: Element;
+  private tooltip: Element;
 
   constructor() {
     const board = document.createElement('div');
@@ -18,10 +19,14 @@ export class GameBoard {
     const table = document.createElement('div');
     table.classList.add('table');
 
+    const tooltip = document.createElement('div');
+    tooltip.classList.add('tooltip');
+
     this.board = board;
     this.header = header;
     this.table = table;
     this.helpButton = helpBtn;
+    this.tooltip = tooltip;
   }
 
   public view(parent: Element = document.body): void {
@@ -30,6 +35,7 @@ export class GameBoard {
     this.viewTable();
 
     parent.append(this.board);
+    document.body.append(this.tooltip);
   }
 
   private viewHeader(): void {
@@ -68,5 +74,9 @@ export class GameBoard {
 
   public getHelpButton(): Element {
     return this.helpButton;
+  }
+
+  public getTooltip(): Element {
+    return this.tooltip;
   }
 }
