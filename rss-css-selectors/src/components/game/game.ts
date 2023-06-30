@@ -7,6 +7,7 @@ import {
   findLineWithParentTag,
   getIndexOfCertainElement,
   findCorrespondingLine,
+  compareNodeLists,
 } from '../../utils/utils';
 import { Description } from '../description/description';
 import { Editor } from '../editor/editor';
@@ -77,13 +78,7 @@ export class Game {
 
     try {
       const selected = this.tableElement.querySelectorAll(inputStr);
-
-      if (selected.length === reference.length) {
-        const selectedArr = Array.from(selected);
-        const referenceArr = Array.from(reference);
-
-        checked = referenceArr.every((node, ind) => node.isSameNode(selectedArr[ind]));
-      }
+      checked = compareNodeLists(selected, reference);
     } catch (err) {
       console.error(err);
     }

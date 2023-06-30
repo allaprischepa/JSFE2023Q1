@@ -179,3 +179,16 @@ export function findCorrespondingLine(text: string, tagName: string, index: numb
 
   return -1;
 }
+
+export function compareNodeLists(selected: NodeListOf<Element>, reference: NodeListOf<Element>): boolean {
+  let checked = false;
+
+  if (selected.length === reference.length) {
+    const selectedArr = Array.from(selected);
+    const referenceArr = Array.from(reference);
+
+    checked = referenceArr.every((node, ind) => node.isSameNode(selectedArr[ind]));
+  }
+
+  return checked;
+}
