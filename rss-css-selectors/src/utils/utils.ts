@@ -3,8 +3,8 @@ export function getClassSelector(val: string): string {
 }
 
 export function addClosingTag(str: string): string {
-  return str.replace(/<([a-z]+)(\s*)?\/>/g, (match: string, tagName: string) => {
-    return `<${tagName}></${tagName}>`;
+  return str.replace(/<(\w+)(\s[^>]+)?\/>/g, (match: string, tagName: string, attrs: string) => {
+    return `<${tagName}${attrs ? attrs : ''}></${tagName}>`;
   });
 }
 
@@ -24,7 +24,7 @@ export function addAttributeWithElementHtml(str: string): string {
       }
     }
 
-    const htmlStructure = `<${tag}${attrs.length ? ` ${attrs.join(' ')}` : ''}><${tag}>`;
+    const htmlStructure = `<${tag}${attrs.length ? ` ${attrs.join(' ')}` : ''}></${tag}>`;
 
     elem.setAttribute('data-tooltip', htmlStructure);
   });
@@ -57,7 +57,7 @@ export function getStructuredHtml(minifiedHtml: string): string {
     const previousUnclosedTag = tagStack[tagStack.length - 1];
 
     if (openingTag) {
-      if (openingTag !== previousUnclosedTag) indentLevel += 1;
+      indentLevel = tagStack.length;
       const indent = '\t'.repeat(indentLevel);
 
       tagStack.push(openingTag);
@@ -69,14 +69,13 @@ export function getStructuredHtml(minifiedHtml: string): string {
       const matches = lastSavedString.match(/<(\w+)(?:\s[^>]+)?[^>]*>/);
       const lastSavedTag = matches ? matches[1] : undefined;
 
-      if (lastSavedTag === closingTag) {
+      if (lastSavedTag === closingTag && !lastSavedString.includes(`</${lastSavedTag}>`)) {
         resStack[resStack.length - 1] += `</${closingTag}>`;
       } else {
+        indentLevel = tagStack.length - 1;
         const indent = '\t'.repeat(indentLevel);
         resStack.push(`${indent}</${closingTag}>`);
       }
-
-      indentLevel -= 1;
 
       if (closingTag === previousUnclosedTag) {
         tagStack.pop();
@@ -126,6 +125,7 @@ export function findLineWithParentTag(tag: string, text: string, startFrom: numb
             tagsStack.pop();
           } else {
             resLine = i + 1;
+            break;
           }
         }
       }
@@ -142,6 +142,7 @@ export function findLineWithParentTag(tag: string, text: string, startFrom: numb
             tagsStack.pop();
           } else {
             resLine = i + 1;
+            break;
           }
         }
       }
