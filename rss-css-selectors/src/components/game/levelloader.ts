@@ -13,9 +13,15 @@ export class LevelLoader {
   private editor: Editor;
 
   constructor(page: Page) {
-    this.gameboard = page.getGameboard();
-    this.description = page.getDescription();
-    this.editor = page.getEditor();
+    [this.gameboard, this.description, this.editor] = this.init(page);
+  }
+
+  private init(page: Page): [GameBoard, Description, Editor] {
+    const gameboard = page.getGameboard();
+    const description = page.getDescription();
+    const editor = page.getEditor();
+
+    return [gameboard, description, editor];
   }
 
   public setLevel(level: number): void {

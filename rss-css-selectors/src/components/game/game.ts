@@ -28,14 +28,29 @@ export class Game {
   private tableElement: Element;
 
   constructor(page: Page) {
-    this.loader = new LevelLoader(page);
-    this.storage = new GameStorage();
-    this.editor = page.getEditor();
-    this.gameboard = page.getGameboard();
-    this.description = page.getDescription();
-    this.level = this.storage.getCurrentLevel();
-    this.htmlEditor = this.editor.getHtmlEditor();
-    this.tableElement = this.gameboard.getTable();
+    [
+      this.loader,
+      this.storage,
+      this.editor,
+      this.gameboard,
+      this.description,
+      this.level,
+      this.htmlEditor,
+      this.tableElement,
+    ] = this.init(page);
+  }
+
+  private init(page: Page): [LevelLoader, GameStorage, Editor, GameBoard, Description, number, EditorView, Element] {
+    const loader = new LevelLoader(page);
+    const storage = new GameStorage();
+    const editor = page.getEditor();
+    const gameboard = page.getGameboard();
+    const description = page.getDescription();
+    const level = storage.getCurrentLevel();
+    const htmlEditor = editor.getHtmlEditor();
+    const tableElement = gameboard.getTable();
+
+    return [loader, storage, editor, gameboard, description, level, htmlEditor, tableElement];
   }
 
   public play(): void {

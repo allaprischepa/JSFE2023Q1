@@ -13,6 +13,21 @@ export class Description {
   private resetProgress: Element;
 
   constructor() {
+    [
+      this.description,
+      this.header,
+      this.title,
+      this.subtitle,
+      this.syntax,
+      this.help,
+      this.eContainer,
+      this.state,
+      this.levelsList,
+      this.resetProgress,
+    ] = this.init();
+  }
+
+  private init(): Element[] {
     const description = document.createElement('div');
     const top = document.createElement('div');
     const bottom = document.createElement('div');
@@ -62,16 +77,7 @@ export class Description {
     reset.innerText = 'Reset Progress';
     state.append(levelsList, reset);
 
-    this.description = description;
-    this.header = header;
-    this.title = title;
-    this.subtitle = subtitle;
-    this.syntax = syntax;
-    this.help = help;
-    this.eContainer = eContainer;
-    this.state = state;
-    this.levelsList = levelsList;
-    this.resetProgress = reset;
+    return [description, header, title, subtitle, syntax, help, eContainer, state, levelsList, reset];
   }
 
   public view(parent: Element = document.body): void {

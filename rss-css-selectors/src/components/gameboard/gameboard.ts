@@ -6,6 +6,10 @@ export class GameBoard {
   private tooltip: Element;
 
   constructor() {
+    [this.board, this.header, this.table, this.helpButton, this.tooltip] = this.init();
+  }
+
+  private init(): Element[] {
     const board = document.createElement('div');
     board.classList.add('gameboard');
 
@@ -22,11 +26,7 @@ export class GameBoard {
     const tooltip = document.createElement('div');
     tooltip.classList.add('tooltip');
 
-    this.board = board;
-    this.header = header;
-    this.table = table;
-    this.helpButton = helpBtn;
-    this.tooltip = tooltip;
+    return [board, header, table, helpBtn, tooltip];
   }
 
   public view(parent: Element = document.body): void {

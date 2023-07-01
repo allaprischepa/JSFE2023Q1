@@ -4,25 +4,27 @@ import { GameBoard } from '../gameboard/gameboard';
 import { PageSide } from './pageside/pageside';
 
 export class Page {
-  private leftSide;
-  private rightSide;
-  private gameboard;
-  private editor;
-  private description;
+  private leftSide: PageSide;
+  private rightSide: PageSide;
+  private gameboard: GameBoard;
+  private editor: Editor;
+  private description: Description;
 
   constructor() {
-    this.leftSide = new PageSide('left');
-    this.rightSide = new PageSide('right');
-    this.gameboard = new GameBoard();
-    this.editor = new Editor();
-    this.description = new Description();
+    [this.leftSide, this.rightSide, this.gameboard, this.editor, this.description] = this.init();
   }
 
-  public init(): void {
-    this.view();
+  private init(): [PageSide, PageSide, GameBoard, Editor, Description] {
+    const leftSide = new PageSide('left');
+    const rightSide = new PageSide('right');
+    const gameboard = new GameBoard();
+    const editor = new Editor();
+    const description = new Description();
+
+    return [leftSide, rightSide, gameboard, editor, description];
   }
 
-  private view(): void {
+  public view(): void {
     const leftSide = this.leftSide.element;
     const rightSide = this.rightSide.element;
 
