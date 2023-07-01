@@ -20,6 +20,7 @@ export enum Selectors {
   resetProgress = 'reset-progress',
   editorLine = 'cm-line',
   passed = 'passed',
+  footerContent = 'footerContent',
 }
 
 export interface ILevelState {

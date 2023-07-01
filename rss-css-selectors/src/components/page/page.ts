@@ -1,3 +1,4 @@
+import { Selectors } from '../../types/types';
 import { Description } from '../description/description';
 import { Editor } from '../editor/editor';
 import { GameBoard } from '../gameboard/gameboard';
@@ -51,58 +52,16 @@ export class Page {
   }
 
   private addFooterLinks(footer: Element): void {
-    [1, 2, 3].forEach((item) => {
-      const footerItem = document.createElement('div');
-      footerItem.classList.add('footer__item');
+    const template = document.getElementById(Selectors.footerContent);
 
-      let itemChild = null;
-      let itemChild2 = null;
+    if (template && template instanceof HTMLTemplateElement) {
+      const content = template.content;
 
-      switch (item) {
-        case 1:
-          itemChild = document.createElement('a');
-          itemChild.href = 'https://rs.school/js/';
-          itemChild.classList.add('footer__link');
-          itemChild.title = 'Rolling Scopes School';
-          itemChild.target = '_blank';
-
-          itemChild2 = document.createElement('span');
-          itemChild2.classList.add('footer__icon', 'link__rss');
-
-          itemChild.append(itemChild2);
-
-          break;
-
-        case 2:
-          itemChild = document.createElement('a');
-          itemChild.href = 'https://github.com/allaprischepa';
-          itemChild.classList.add('footer__link');
-          itemChild.title = 'GitHub';
-          itemChild.target = '_blank';
-
-          itemChild2 = document.createElement('span');
-          itemChild2.classList.add('footer__icon', 'link__github');
-
-          itemChild.append(itemChild2);
-          itemChild.append(document.createTextNode('@allaprischepa'));
-
-          break;
-
-        case 3:
-          itemChild = document.createElement('span');
-          itemChild.classList.add('copyright');
-          itemChild.textContent = '2023';
-
-          break;
-
-        default:
+      if (content) {
+        const footerLinks = content.childNodes;
+        if (footerLinks) footer.append(...footerLinks);
       }
-
-      if (itemChild) {
-        footerItem.append(itemChild);
-        footer.append(footerItem);
-      }
-    });
+    }
   }
 
   public getGameboard(): GameBoard {
