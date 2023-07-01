@@ -97,7 +97,6 @@ footer {
   box-sizing: border-box;
   background-color: $main-color-dark;
   z-index: $right-side-z-index;
-  overflow-y: auto;
 }
 
 .site-name {
@@ -153,15 +152,15 @@ footer {
 }
 
 .close-rs-btn-wrapper {
+  height: 25px;
   align-self: flex-end;
 }
 
 .close-rs-btn {
+  display: none;
   align-self: end;
   margin-right: 15px;
-  display: none;
   position: relative;
-  display: flex;
   width: 25px;
   height: 25px;
   align-items: center;

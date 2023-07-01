@@ -106,3 +106,18 @@
     border: 2px inset #ececec;
   }
 }
+
+@media screen and (max-width: 749px) {
+
+  .editor {
+    flex-direction: column;
+  }
+
+  .css-editor {
+    .editor-area {
+      max-height: 100px;
+      overflow: hidden;
+    }
+  }
+
+}
