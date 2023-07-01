@@ -31,3 +31,12 @@
     right: $offset;
   }
 }
+
+@mixin elementOnTable($size: 100px) {
+  display: inline-grid;
+  place-items: center;
+  background-size: cover;
+  width: $size;
+  height: $size;
+  filter: drop-shadow(3px 3px 5px rgb(133, 133, 133));
+}

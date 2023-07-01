@@ -258,7 +258,7 @@ export class Game {
     for (let i = 0; i < answer.length; i += 1) {
       setTimeout(() => {
         input.value += answer[i];
-      }, i * 400);
+      }, i * 150);
     }
   }
 
