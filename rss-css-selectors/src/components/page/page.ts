@@ -41,6 +41,14 @@ export class Page {
     const header = document.createElement('header');
     header.innerHTML = '<h1 class="site-name">RSS CSS Selectors</h1>';
 
+    const openRightSide = document.createElement('div');
+    openRightSide.classList.add('open-rs-btn');
+    openRightSide.innerHTML = '<div></div><div></div><div></div>';
+    openRightSide.addEventListener('click', () => {
+      this.rightSide.element.classList.add('open');
+    });
+    header.append(openRightSide);
+
     parent.append(header);
   }
 

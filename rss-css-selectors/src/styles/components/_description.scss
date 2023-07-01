@@ -1,14 +1,17 @@
 @import '../abstracts/variables';
 
 .description {
+  position: absolute;
+  top: 0;
+  bottom: 0;
   display: none;
   flex-direction: column;
   gap: 30px;
-  padding: 20px;
-  height: 100vh;
+  padding: 10px 20px;
   box-sizing: border-box;
   color: $dscrptn-color;
   background-color: $main-color-dark;
+  z-index: $description-z-index;
 
   &.open {
     display: flex;
@@ -23,9 +26,10 @@
 .description-close {
   position: relative;
   display: flex;
-  width: 30px;
+  width: 25px;
   align-items: center;
   cursor: pointer;
+  align-self: center;
 
   &::before,
   &::after {
@@ -131,9 +135,8 @@ tag {
   flex-direction: column;
   justify-content: space-between;
   font-size: 1.2rem;
-  height: 100vh;
+  height: 100%;
   box-sizing: border-box;
-  padding: 20px 0px;
 }
 
 .levels-list {

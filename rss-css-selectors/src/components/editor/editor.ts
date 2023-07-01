@@ -2,6 +2,7 @@ import { basicSetup, EditorView } from 'codemirror';
 import { html } from '@codemirror/lang-html';
 import { EditorState } from '@codemirror/state';
 import { EditorThemeType, EditorType } from '../../types/types';
+import { css } from '@codemirror/lang-css';
 
 export class Editor {
   private editor: Element;
@@ -60,14 +61,19 @@ export class Editor {
 
   private initEditorView(type: EditorType, editorArea: Element, input?: HTMLInputElement, btn?: Element): EditorView {
     let editor: EditorView;
-    const commonExtensions = [basicSetup, EditorView.editable.of(false), EditorState.tabSize.of(2)];
+    const commonExtensions = [
+      basicSetup,
+      EditorView.editable.of(false),
+      EditorState.tabSize.of(2),
+      EditorView.lineWrapping,
+    ];
 
     if (type === 'css') {
-      const text = ['', '{', '\t/* Styles will be here */', '}'];
+      const text = ['', '{', '\t/* Styles will be here */', '}', '', 'footer {', '\tdisplay: flex;', '}'];
 
       editor = new EditorView({
         doc: text.join('\n'),
-        extensions: commonExtensions,
+        extensions: [...commonExtensions, css()],
         parent: editorArea,
       });
 

@@ -28,3 +28,6 @@ $tsk-inpt-margin-right: 5px;
 $dscrptn-color: #8a8a8a;
 $lvl-header-clr: #878685;
 $syntax-bckgrnd: rgba(255, 255, 255, 0.05);
+
+$right-side-z-index: 305;
+$description-z-index: $right-side-z-index + 1;
