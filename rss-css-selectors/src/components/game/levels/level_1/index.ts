@@ -1,5 +1,5 @@
 import { ILevel } from '../../../../types/types';
-import { default as data } from './level.json';
+import { data } from './level';
 import { default as markup } from './markup.html';
 
-export const level: ILevel = Object.assign({}, data, { htmlMarkup: markup });
+export const level: ILevel = { ...data, htmlMarkup: markup };
