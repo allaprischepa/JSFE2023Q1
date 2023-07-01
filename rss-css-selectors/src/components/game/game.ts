@@ -238,10 +238,12 @@ export class Game {
     const data = levels[level];
     const lvlID = `${data.selector}${data.htmlMarkup}`;
     const levelsList = this.description.getLevelsList();
-    const levelItem = levelsList.querySelector(`[data-level="${level}"]`);
-    levelItem?.classList.add(Selectors.withHelp);
+    const levelItem = levelsList.querySelector(`[data-level="${level}"]:not(${getClassSelector(Selectors.passed)})`);
 
-    this.storage.updateStateWithHelp(lvlID);
+    if (levelItem) {
+      levelItem.classList.add(Selectors.withHelp);
+      this.storage.updateStateWithHelp(lvlID);
+    }
   }
 
   private printAnswer(): void {
@@ -328,8 +330,16 @@ export class Game {
               const elemWidth = elementFromTable.offsetWidth;
               const tooltipWidth = tooltip.offsetWidth;
 
+              let offsetLeft = elementFromTable.offsetLeft;
+              let parent = elementFromTable.offsetParent;
+
+              while (parent !== this.tableElement) {
+                offsetLeft += parent && parent instanceof HTMLElement ? parent.offsetLeft : 0;
+                parent = parent && parent instanceof HTMLElement ? parent.offsetParent : null;
+              }
+
               const top = Math.floor(rect.top + elementFromTable.offsetTop - 60);
-              const left = Math.floor(rect.left + elementFromTable.offsetLeft + elemWidth / 2 - tooltipWidth / 2);
+              const left = Math.floor(rect.left + offsetLeft + elemWidth / 2 - tooltipWidth / 2);
 
               tooltip.style.top = `${top}px`;
               tooltip.style.left = `${left}px`;
