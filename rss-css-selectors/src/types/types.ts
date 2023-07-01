@@ -20,12 +20,14 @@ export enum Selectors {
   resetProgress = 'reset-progress',
   editorLine = 'cm-line',
   passed = 'passed',
+  withHelp = 'with-help',
   footerContent = 'footerContent',
 }
 
 export interface ILevelState {
   key: string;
   passed: 0 | 1;
+  withHelp?: 0 | 1;
 }
 
 export enum Events {

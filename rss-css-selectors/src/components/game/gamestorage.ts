@@ -68,6 +68,29 @@ export class GameStorage {
     }
   }
 
+  public updateStateWithHelp(lvlID: string): void {
+    const data = this.getFromStorage('state');
+    const withHelp = 1;
+
+    if (data) {
+      const state: ILevelState[] = JSON.parse(data);
+      const index = state.findIndex((obj) => obj.key === lvlID);
+
+      if (index >= 0) {
+        state[index]['withHelp'] = withHelp;
+        this.setToStorage('state', JSON.stringify(state));
+      } else {
+        state.push({
+          key: lvlID,
+          passed: 0,
+          withHelp: withHelp,
+        });
+
+        this.setToStorage('state', JSON.stringify(state));
+      }
+    }
+  }
+
   public clear(): void {
     ['state', 'currentLevel'].forEach((str) => {
       this.removeFromStorage(str);
@@ -88,6 +111,7 @@ export class GameStorage {
       return {
         key: lvlID,
         passed: levelState ? levelState.passed : 0,
+        withHelp: levelState?.withHelp,
       };
     });
 

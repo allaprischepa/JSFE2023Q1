@@ -228,7 +228,20 @@ export class Game {
   private listenHelpButton(): void {
     const helpBtn = this.gameboard.getHelpButton();
 
-    helpBtn.addEventListener('click', () => this.printAnswer());
+    helpBtn.addEventListener('click', () => {
+      this.printAnswer();
+      this.markLevelWithHelp(this.level);
+    });
+  }
+
+  private markLevelWithHelp(level: number): void {
+    const data = levels[level];
+    const lvlID = `${data.selector}${data.htmlMarkup}`;
+    const levelsList = this.description.getLevelsList();
+    const levelItem = levelsList.querySelector(`[data-level="${level}"]`);
+    levelItem?.classList.add(Selectors.withHelp);
+
+    this.storage.updateStateWithHelp(lvlID);
   }
 
   private printAnswer(): void {

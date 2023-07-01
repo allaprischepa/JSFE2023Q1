@@ -134,6 +134,7 @@ export class LevelLoader {
       lvlState.setAttribute('data-level', `${ind}`);
 
       if (data?.passed) lvlState.classList.add(Selectors.passed);
+      if (data?.withHelp) lvlState.classList.add(Selectors.withHelp);
 
       const checkMark = document.createElement('span');
       checkMark.classList.add('checkmark');
@@ -159,5 +160,14 @@ export class LevelLoader {
 
       levelsList.append(lvlState);
     });
+
+    const annotation = document.createElement('div');
+    annotation.classList.add('annotation');
+    annotation.innerHTML = `
+      <div class="annotation__item passed"><span class="checkmark"></span>level passed</div>
+      <div class="annotation__item passed with-help"><span class="checkmark"></span>level passed with help</div>
+    `;
+
+    levelsList.append(annotation);
   }
 }
