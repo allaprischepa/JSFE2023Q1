@@ -12,6 +12,8 @@
   color: $dscrptn-color;
   background-color: $main-color-dark;
   z-index: $description-z-index;
+  max-height: 100vh;
+  overflow-y: auto;
 
   &.open {
     display: flex;
@@ -227,4 +229,12 @@ tag {
 .annotation__item {
   display: flex;
   gap: 5px;
+}
+
+.decription-opened {
+  overflow: unset;
+
+  .state {
+    display: none;
+  }
 }

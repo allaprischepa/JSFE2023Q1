@@ -97,6 +97,7 @@ footer {
   box-sizing: border-box;
   background-color: $main-color-dark;
   z-index: $right-side-z-index;
+  overflow-y: scroll;
 }
 
 .site-name {

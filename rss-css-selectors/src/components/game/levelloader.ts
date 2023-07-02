@@ -150,7 +150,10 @@ export class LevelLoader {
 
         infoBtn.classList.add('level-info');
         infoBtn.addEventListener('click', () => {
+          const parent = lvlDescription.parentElement;
           lvlDescription.classList.add('open');
+
+          if (parent) parent.classList.add('decription-opened');
         });
 
         lvlState.append(infoBtn);

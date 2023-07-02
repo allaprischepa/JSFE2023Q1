@@ -177,6 +177,10 @@ export class Game {
             const levelNum = dataLevel ? +dataLevel : -1;
 
             if (levels[levelNum]) {
+              const description = this.description.getDescription();
+              const parent = description.parentElement;
+
+              if (parent) parent.classList.remove('open');
               this.playLevel(levelNum);
             }
           }
@@ -199,6 +203,10 @@ export class Game {
     const reset = this.description.getResetProgressButton();
 
     reset.addEventListener('click', () => {
+      const description = this.description.getDescription();
+      const parent = description.parentElement;
+
+      if (parent) parent.classList.remove('open');
       this.storage.clear();
       this.playLevel(0);
     });

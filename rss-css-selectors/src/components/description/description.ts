@@ -40,7 +40,12 @@ export class Description {
 
     const close = document.createElement('span');
     close.classList.add('description-close');
-    close.addEventListener('click', () => description.classList.remove('open'));
+    close.addEventListener('click', () => {
+      const parent = description.parentElement;
+      description.classList.remove('open');
+
+      if (parent) parent.classList.remove('decription-opened');
+    });
 
     const title = document.createElement('h4');
     title.classList.add('description-title');
