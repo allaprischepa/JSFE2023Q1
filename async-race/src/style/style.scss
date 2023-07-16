@@ -1,0 +1,56 @@
+$color-main: #fff;
+$color-additional-1: #ec0033;
+$color-additional-2: #00a876;
+$color-additional-3: #bdf400;
+$font-color-main: #555;
+$font-color-additional-1: #bbb;
+$font-color-additional-2: #888;
+
+$border: 1px solid #ddd;
+
+body {
+  background: $color-main;
+  color: $font-color-main;
+}
+
+.tab {
+  display: inline-block;
+  padding: 10px 25px;
+  font-weight: 600;
+  text-align: center;
+  color: $font-color-additional-1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: $font-color-main;
+  }
+}
+
+.tab_input {
+  display: none;
+}
+
+.tab_content {
+  display: none;
+  padding: 20px;
+}
+
+@for $i from 0 through 1 {
+  #tab_input-#{$i}:checked ~ main #tab_content-#{$i} {
+    display:block
+  }
+
+  #tab_input-#{$i}:checked ~ nav #tab-#{$i} {
+    background: $color-additional-1;
+    color: $font-color-main;
+    color: $color-main;
+  }
+}
+
+.car_image {
+  -webkit-mask: url(../assets/img/car.svg) no-repeat center / contain;
+  mask: url(../assets/img/car.svg) no-repeat center / contain;
+  width: 100px;
+  height: 60px;
+}

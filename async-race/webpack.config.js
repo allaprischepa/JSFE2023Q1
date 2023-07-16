@@ -42,8 +42,11 @@ const config = {
                 use: [stylesHandler, 'css-loader', 'sass-loader'],
             },
             {
-                test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
-                type: 'asset',
+                test: /\.(svg|png|jpg|gif)$/i,
+                type: 'asset/resource',
+                generator: {
+                  filename: 'assets/images/[name][ext]',
+                },
             },
         ],
     },
@@ -59,6 +62,7 @@ module.exports = () => {
 
     } else {
         config.mode = 'development';
+        config.devtool = 'inline-source-map';
     }
     return config;
 };

@@ -3,12 +3,16 @@ module.exports = {
         "browser": true,
         "es2021": true
     },
-    "extends": "eslint-config-airbnb-base",
+    "extends": [
+      "airbnb-base",
+      "airbnb-typescript/base",
+    ],
     "overrides": [
     ],
     "parserOptions": {
         "ecmaVersion": "latest",
-        "sourceType": "module"
+        "sourceType": "module",
+        "project": "./tsconfig.json",
     },
     "rules": {
     }
