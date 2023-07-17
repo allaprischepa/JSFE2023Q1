@@ -1,4 +1,5 @@
 import { ICar } from '../../../types/types';
+import CarItem from '../car/carItem';
 import View from '../view';
 
 export default class GarageView extends View {
@@ -19,32 +20,24 @@ export default class GarageView extends View {
 
   private getTable(): Element {
     const table = document.createElement('div');
+    table.classList.add('table-garage');
 
-    const response = this.client.getData();
-    response
-      .then((res) => res.json())
-      .then((data: ICar[]) => {
-        data.forEach((carData) => {
-          const carElement = GarageView.getCarElement(carData);
-          table.append(carElement);
-        });
-      });
+    const cars = this.client.getCars();
+    cars.then((data: ICar[]) => GarageView.addTracksWithCar(data, table));
 
     return table;
   }
 
-  static getCarElement(carData: ICar): Element {
-    const car = document.createElement('div');
-    car.classList.add('car');
-    car.id = `${carData.id}`;
-    car.setAttribute('data-color', carData.color);
+  static addTracksWithCar(cars: ICar[], parent: Element): void {
+    if (cars.length) {
+      cars.forEach((carData) => {
+        const carElement = CarItem.getCarElement(carData);
+        const track = document.createElement('div');
+        track.classList.add('track');
 
-    const carImage = document.createElement('div');
-    carImage.classList.add('car_image');
-    carImage.style.backgroundColor = carData.color;
-
-    car.append(carImage);
-
-    return car;
+        track.append(carElement);
+        parent.append(track);
+      });
+    }
   }
 }

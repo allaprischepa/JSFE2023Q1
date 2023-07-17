@@ -9,7 +9,7 @@ export default abstract class View {
 
   constructor(type: string) {
     this.viewType = type;
-    this.viewClient = new APIClient(type);
+    this.viewClient = new APIClient();
     this.viewContent = this.getViewContent();
   }
 

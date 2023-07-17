@@ -8,6 +8,10 @@ $font-color-additional-2: #888;
 
 $border: 1px solid #ddd;
 
+:root {
+  --car-width: calc(6vw + 30px);
+}
+
 body {
   background: $color-main;
   color: $font-color-main;
@@ -33,7 +37,7 @@ body {
 
 .tab_content {
   display: none;
-  padding: 20px;
+  padding: 20px 0;
 }
 
 @for $i from 0 through 1 {
@@ -51,6 +55,23 @@ body {
 .car_image {
   -webkit-mask: url(../assets/img/car.svg) no-repeat center / contain;
   mask: url(../assets/img/car.svg) no-repeat center / contain;
-  width: 100px;
-  height: 60px;
+  width: var(--car-width);
+  height: calc(var(--car-width) / 3);
+}
+
+.table-winners {
+  width: fit-content;
+  counter-reset: winners-counter;
+  border-collapse: collapse;
+
+  th,
+  td {
+    border: 1px solid;
+    padding: 5px 15px;
+    text-align: center;
+  }
+
+  & .car_image {
+    --car-width: 80px;
+  }
 }
