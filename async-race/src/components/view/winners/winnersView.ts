@@ -57,7 +57,7 @@ export default class WinnersView extends View {
 
           switch (key) {
             case 'image':
-              elem.append(CarItem.getCarElement(carItem));
+              elem.append(CarItem.getCarImage(carItem));
               break;
             case 'name':
             case 'wins':

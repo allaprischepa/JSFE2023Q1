@@ -11,3 +11,7 @@ export interface IWinner {
 }
 
 export type IWinnerCar = ICar & IWinner;
+
+export interface IQueryParams {
+  [index: string]: string;
+}

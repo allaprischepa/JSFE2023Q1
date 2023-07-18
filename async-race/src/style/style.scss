@@ -71,6 +71,11 @@ body {
     text-align: center;
   }
 
+  .num::before {
+    counter-increment: winners-counter;
+    content: counter(winners-counter);
+  }
+
   & .car_image {
     --car-width: 80px;
   }
