@@ -3,62 +3,203 @@ import CarItem from '../car/carItem';
 import View from '../view';
 
 export default class GarageView extends View {
+  private table: Element;
+
+  private pageLimit = 10;
+
+  private page: number;
+
   constructor() {
     super('garage');
+
+    this.page = 1;
+    this.table = GarageView.getTable();
   }
 
   public getViewContent(): Element {
     const content = document.createElement('div');
     content.classList.add(`${this.type}-content`);
 
-    const table = this.getTable();
+    this.fillTable(this.page);
     const control = this.getControlElement();
 
-    content.append(control, table);
+    content.append(control, this.table);
 
     return content;
   }
 
-  private getTable(): Element {
+  private fillTable(page: number): void {
+    const tableInfo = this.table.querySelector('.table-info');
+    const tableItems = this.table.querySelector('.table-items');
+
+    tableInfo.innerHTML = '';
+    tableItems.innerHTML = '';
+
+    const result = this.client.getCars(page);
+    result.then((data) => {
+      if (data) {
+        this.addTableInfo(data.total, tableInfo);
+        GarageView.addTracksWithCar(data.cars, tableItems);
+      }
+    });
+  }
+
+  private updateTable(page: number): void {
+    const tableInfo = this.table.querySelector('.table-info');
+    const tableItems = this.table.querySelector('.table-items');
+
+    const result = this.client.getCars(page);
+    result.then((data) => {
+      if (data) {
+        this.updateTableInfo(data.total, tableInfo);
+        GarageView.updateTableItems(data.cars, tableItems);
+      }
+    });
+  }
+
+  static getTable(): Element {
     const table = document.createElement('div');
     table.classList.add('table-garage');
 
-    const result = this.client.getCars();
-    result.then((data) => {
-      if (data) {
-        console.log(data.total);
-        GarageView.addTracksWithCar(data.cars, table);
-      }
-    });
+    const tableInfo = document.createElement('div');
+    tableInfo.classList.add('table-info');
+
+    const tableItems = document.createElement('div');
+    tableItems.classList.add('table-items');
+
+    table.append(tableInfo, tableItems);
 
     return table;
   }
 
-  static addTracksWithCar(cars: ICar[], parent: Element): void {
+  private addTableInfo(total: string, parent: Element): void {
+    const totalAmount = document.createElement('div');
+    totalAmount.classList.add('total-amount');
+    totalAmount.innerHTML = `<strong>Total: </strong><span class="amount">${total}</span>`;
+
+    const pager = this.getPager(+total);
+
+    parent.append(totalAmount, pager);
+  }
+
+  private getPager(total: number): Element {
+    const pager = document.createElement('div');
+    const prev = document.createElement('div');
+    const current = document.createElement('div');
+    const next = document.createElement('div');
+
+    pager.classList.add('pager');
+    prev.classList.add('prev', 'pager_item');
+    current.classList.add('current', 'pager_item');
+    next.classList.add('next', 'pager_item');
+
+    this.calculatePager(total, prev, current, next);
+
+    prev.addEventListener('click', (event) => {
+      event.preventDefault();
+
+      this.page -= 1;
+      this.updateTable(this.page);
+    });
+    next.addEventListener('click', () => {
+      this.page += 1;
+      this.updateTable(this.page);
+    });
+
+    pager.append(prev, current, next);
+
+    return pager;
+  }
+
+  private calculatePager(total: number, prev: Element, current: Element, next: Element): void {
+    const currentElement = current;
+    const lastPage = Math.ceil(total / this.pageLimit);
+
+    if (this.page > lastPage) this.page = lastPage;
+    const currentPage = this.page;
+
+    if (currentElement instanceof HTMLElement) currentElement.innerText = `${currentPage}`;
+
+    prev.classList.remove('inactive');
+    next.classList.remove('inactive');
+
+    if ((currentPage - 1) <= 0) prev.classList.add('inactive');
+    if ((currentPage + 1) > lastPage) next.classList.add('inactive');
+  }
+
+  private updateTableInfo(total: string, parent: Element): void {
+    const amount = parent.querySelector('.amount');
+    const pager = parent.querySelector('.pager');
+    const prev = pager.querySelector('.prev');
+    const current = pager.querySelector('.current');
+    const next = pager.querySelector('.next');
+
+    if (amount instanceof HTMLElement) amount.innerText = total;
+    this.calculatePager(+total, prev, current, next);
+  }
+
+  static updateTableItems(cars: ICar[], parent: Element): void {
+    const tableItemsElement = parent;
+
     if (cars.length) {
-      cars.forEach((carData) => {
-        const tableItem = document.createElement('div');
-        tableItem.classList.add('table_item');
+      const ids = cars.map((carData) => carData.id);
+      GarageView.removeItemsNotInList(ids, tableItemsElement);
+      GarageView.addNewItems(cars, tableItemsElement);
+    } else {
+      tableItemsElement.innerHTML = '';
+    }
+  }
 
-        const name = document.createElement('div');
-        name.innerText = carData.name;
+  static removeItemsNotInList(ids: number[], parent: Element): void {
+    const tableItems = parent.querySelectorAll('.table_item');
 
-        const removeBtn = document.createElement('button');
-        removeBtn.addEventListener('click', () => { console.log('remove'); });
-
-        const editBtn = document.createElement('button');
-        editBtn.addEventListener('click', () => { console.log('edit'); });
-
-        const carElement = CarItem.getCarElement(carData);
-        const track = document.createElement('div');
-        track.classList.add('track');
-
-        track.append(carElement);
-
-        tableItem.append(name, editBtn, removeBtn, track);
-        parent.append(tableItem);
+    if (tableItems.length) {
+      tableItems.forEach((tableItem) => {
+        const itemID = tableItem.getAttribute('data-item-id');
+        if (!ids.includes(+itemID)) tableItem.remove();
       });
     }
+  }
+
+  static addNewItems(cars: ICar[], parent: Element): void {
+    if (cars.length) {
+      cars.forEach((carData) => {
+        const selector = `.table_item[data-item-id="${carData.id}"]`;
+        const tableItem = parent.querySelector(selector);
+
+        if (!tableItem) GarageView.addSingleTrackWithCar(carData, parent);
+      });
+    }
+  }
+
+  static addTracksWithCar(cars: ICar[], parent: Element): void {
+    if (cars.length) {
+      cars.forEach((carData) => GarageView.addSingleTrackWithCar(carData, parent));
+    }
+  }
+
+  static addSingleTrackWithCar(carData: ICar, parent: Element): void {
+    const tableItem = document.createElement('div');
+    tableItem.classList.add('table_item');
+    tableItem.setAttribute('data-item-id', `${carData.id}`);
+
+    const name = document.createElement('div');
+    name.innerText = carData.name;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.addEventListener('click', () => { console.log('remove'); });
+
+    const editBtn = document.createElement('button');
+    editBtn.addEventListener('click', () => { console.log('edit'); });
+
+    const carElement = CarItem.getCarElement(carData);
+    const track = document.createElement('div');
+    track.classList.add('track');
+
+    track.append(carElement);
+
+    tableItem.append(name, editBtn, removeBtn, track);
+    parent.append(tableItem);
   }
 
   private getControlElement(): Element {
@@ -96,7 +237,6 @@ export default class GarageView extends View {
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       this.client.createCar(carName.value, carColor.value);
-      console.log('clicked');
     });
 
     form.append(carName, carColor, button);
@@ -112,7 +252,10 @@ export default class GarageView extends View {
     button.classList.add('generate-cars');
     button.innerText = 'Generate cars';
 
-    button.addEventListener('click', () => this.client.generateCars());
+    button.addEventListener('click', () => {
+      this.client.generateCars();
+      this.updateTable(this.page);
+    });
 
     generateCars.append(button);
 

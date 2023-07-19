@@ -80,3 +80,46 @@ body {
     --car-width: 80px;
   }
 }
+
+.pager {
+  display: flex;
+  gap: 5px;
+}
+
+.pager_item {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  &.current {
+    background-color: darken($color-additional-3, 3);
+    pointer-events: none;
+  }
+
+  &.prev,
+  &.next {
+    border: 2px solid $color-additional-3;
+
+    &:hover {
+      background-color: $color-additional-3;
+    }
+  }
+
+  &.prev::after {
+    content: '<';
+  }
+
+  &.next::after {
+    content: '>';
+  }
+
+  &.inactive {
+    border-color: $font-color-additional-1;
+    pointer-events: none;
+  }
+}
