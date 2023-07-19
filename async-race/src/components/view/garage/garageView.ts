@@ -245,7 +245,8 @@ export default class GarageView extends View {
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
-      this.client.createCar(carName.value, carColor.value);
+      const result = this.client.createCar(carName.value, carColor.value);
+      result.then(() => this.updateTable(this.page));
     });
 
     form.append(carName, carColor, button);
@@ -262,8 +263,8 @@ export default class GarageView extends View {
     button.innerText = 'Generate cars';
 
     button.addEventListener('click', () => {
-      this.client.generateCars();
-      this.updateTable(this.page);
+      const result = this.client.generateCars();
+      result.then(() => this.updateTable(this.page));
     });
 
     generateCars.append(button);

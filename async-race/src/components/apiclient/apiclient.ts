@@ -86,20 +86,24 @@ export default class APIClient {
       });
   }
 
-  public generateCars(amount = 100): void {
+  public generateCars(amount = 100) {
+    const promises = [];
+
     for (let i = 1; i <= amount; i += 1) {
       const carName = CarItem.generateRandomName();
       const carColor = CarItem.generateRandomColor();
 
-      this.createSingleCar(carName, carColor);
+      promises.push(this.createSingleCar(carName, carColor));
     }
+
+    return Promise.all(promises);
   }
 
-  public createCar(carName: string, carColor: string): void {
-    this.createSingleCar(carName, carColor);
+  public createCar(carName: string, carColor: string) {
+    return this.createSingleCar(carName, carColor);
   }
 
-  private createSingleCar(carName: string, carColor: string): void {
+  private createSingleCar(carName: string, carColor: string) {
     const path = this.paths.garage;
     const requestObj = { name: carName, color: carColor };
     const options = {
@@ -110,6 +114,6 @@ export default class APIClient {
       body: JSON.stringify(requestObj),
     };
 
-    this.load(path, options);
+    return this.load(path, options);
   }
 }
