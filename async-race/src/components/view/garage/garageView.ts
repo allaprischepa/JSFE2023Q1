@@ -155,7 +155,7 @@ export default class GarageView extends View {
 
     if (tableItems.length) {
       tableItems.forEach((tableItem) => {
-        const itemID = tableItem.getAttribute('data-item-id');
+        const itemID = tableItem.getAttribute('data-id');
         if (!ids.includes(+itemID)) tableItem.remove();
       });
     }
@@ -164,7 +164,7 @@ export default class GarageView extends View {
   static addNewItems(cars: ICar[], parent: Element): void {
     if (cars.length) {
       cars.forEach((carData) => {
-        const selector = `.table_item[data-item-id="${carData.id}"]`;
+        const selector = `.table_item[data-id="${carData.id}"]`;
         const tableItem = parent.querySelector(selector);
 
         if (!tableItem) GarageView.addSingleTrackWithCar(carData, parent);
@@ -181,24 +181,31 @@ export default class GarageView extends View {
   static addSingleTrackWithCar(carData: ICar, parent: Element): void {
     const tableItem = document.createElement('div');
     tableItem.classList.add('table_item');
-    tableItem.setAttribute('data-item-id', `${carData.id}`);
+    tableItem.setAttribute('data-id', `${carData.id}`);
+
+    const carInfo = document.createElement('div');
+    carInfo.classList.add('car-info');
 
     const name = document.createElement('div');
+    name.classList.add('car_name');
     name.innerText = carData.name;
 
     const removeBtn = document.createElement('button');
+    removeBtn.classList.add('button', 'car_remove');
     removeBtn.addEventListener('click', () => { console.log('remove'); });
 
     const editBtn = document.createElement('button');
+    editBtn.classList.add('button', 'car_edit');
     editBtn.addEventListener('click', () => { console.log('edit'); });
 
     const carElement = CarItem.getCarElement(carData);
     const track = document.createElement('div');
     track.classList.add('track');
 
+    carInfo.append(name, editBtn, removeBtn);
     track.append(carElement);
 
-    tableItem.append(name, editBtn, removeBtn, track);
+    tableItem.append(carInfo, track);
     parent.append(tableItem);
   }
 
@@ -219,6 +226,7 @@ export default class GarageView extends View {
     const createCar = document.createElement('div');
 
     const form = document.createElement('form');
+    form.classList.add('create-car-form');
 
     const carName = document.createElement('input');
     carName.setAttribute('type', 'text');
@@ -226,11 +234,12 @@ export default class GarageView extends View {
     carName.setAttribute('placeholder', 'Name');
 
     const carColor = document.createElement('input');
+    carColor.classList.add('input-type-color');
     carColor.setAttribute('type', 'color');
     carColor.setAttribute('required', 'required');
 
     const button = document.createElement('input');
-    button.classList.add('create-car');
+    button.classList.add('button', 'create-car');
     button.setAttribute('type', 'submit');
     button.setAttribute('value', 'Create');
 
@@ -249,7 +258,7 @@ export default class GarageView extends View {
     const generateCars = document.createElement('div');
 
     const button = document.createElement('button');
-    button.classList.add('generate-cars');
+    button.classList.add('button', 'generate-cars');
     button.innerText = 'Generate cars';
 
     button.addEventListener('click', () => {
@@ -264,13 +273,14 @@ export default class GarageView extends View {
 
   static getRaceControlsElement(): Element {
     const raceControls = document.createElement('div');
+    raceControls.classList.add('race-controls');
 
     const buttonStart = document.createElement('button');
-    buttonStart.classList.add('race-start');
+    buttonStart.classList.add('button', 'race-start');
     buttonStart.innerText = 'Start race';
 
     const buttonReset = document.createElement('button');
-    buttonReset.classList.add('race-reset');
+    buttonReset.classList.add('button', 'race-reset');
     buttonReset.innerText = 'Reset';
 
     raceControls.append(buttonStart, buttonReset);

@@ -5,20 +5,18 @@ export default class CarItem {
   static getCarElement(carData: ICar): Element {
     const car = document.createElement('div');
     car.classList.add('car');
-    car.setAttribute('data-id', `${carData.id}`);
-    car.setAttribute('data-color', carData.color);
 
-    const carImage = CarItem.getCarImage(carData);
+    const carImage = CarItem.getCarImage(carData.color);
 
     car.append(carImage);
 
     return car;
   }
 
-  static getCarImage(carData: ICar) {
+  static getCarImage(color: string) {
     const carImage = document.createElement('div');
     carImage.classList.add('car_image');
-    carImage.style.backgroundColor = carData.color;
+    carImage.style.backgroundColor = color;
 
     return carImage;
   }

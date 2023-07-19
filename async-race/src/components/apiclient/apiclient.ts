@@ -77,7 +77,7 @@ export default class APIClient {
     const endpoint = `${this.baseURL}${path}`;
 
     return fetch(endpoint, options)
-      .then((res) => { console.log(res); return res.json(); })
+      .then((res) => res.json())
       .then((data: T) => data)
       .catch((error) => {
         console.log(error);

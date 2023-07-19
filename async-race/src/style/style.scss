@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope&display=swap');
+
 $color-main: #fff;
 $color-additional-1: #ec0033;
 $color-additional-2: #00a876;
@@ -9,17 +11,56 @@ $font-color-additional-2: #888;
 $border: 1px solid #ddd;
 
 :root {
-  --car-width: calc(6vw + 30px);
+  --car-width: calc(2vw + 50px);
+}
+
+@mixin pagerControl($type) {
+  display: block;
+  content: '';
+  background-image: url('../assets/img/chevron-' + #{$type} + '.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 40%;
+  height: 35%;
 }
 
 body {
   background: $color-main;
   color: $font-color-main;
+  font-family: 'Manrope', sans-serif;
+}
+
+.button {
+  display: inline-block;
+  outline: 0;
+  border: 1px solid $color-additional-2;
+  font-weight: 600;
+  background: $color-main;
+  padding: 0 8px 1px;
+  border-radius: 4px;
+  height: 30px;
+  transition: all 0.1s linear;
+  cursor: pointer;
+
+  &:hover{
+      box-shadow: 0 1px 3px 0 $color-additional-2;
+      background: darken($color-main, 3);
+  }
+}
+
+.input-type-color {
+  align-self: center;
+}
+
+nav {
+  display: flex;
+  gap: 5px;
 }
 
 .tab {
   display: inline-block;
   padding: 10px 25px;
+  box-sizing: border-box;
   font-weight: 600;
   text-align: center;
   color: $font-color-additional-1;
@@ -27,6 +68,7 @@ body {
   transition: all 0.2s ease;
 
   &:hover {
+    box-shadow: 0 1px 2px 0 $color-additional-1;
     color: $font-color-main;
   }
 }
@@ -52,6 +94,64 @@ body {
   }
 }
 
+.garage-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.race-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.create-car-form {
+  display: flex;
+  gap: 8px;
+}
+
+.table-garage {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .table-info {
+    display: flex;
+    gap: 50px;
+    align-items: center;
+    justify-content: end;
+  }
+
+  .table-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .table_item {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+
+}
+
+.car-info {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.track {
+  border-bottom: 2px dashed;
+}
+
 .car_image {
   -webkit-mask: url(../assets/img/car.svg) no-repeat center / contain;
   mask: url(../assets/img/car.svg) no-repeat center / contain;
@@ -63,6 +163,10 @@ body {
   width: fit-content;
   counter-reset: winners-counter;
   border-collapse: collapse;
+
+  thead {
+    font-weight: 600;
+  }
 
   th,
   td {
@@ -97,29 +201,54 @@ body {
   cursor: pointer;
 
   &.current {
-    background-color: darken($color-additional-3, 3);
+    background-color: $color-additional-2;
+    color: $color-main;
+    font-weight: 600;
     pointer-events: none;
   }
 
   &.prev,
   &.next {
-    border: 2px solid $color-additional-3;
+    border: 1px solid $color-additional-2;
 
     &:hover {
-      background-color: $color-additional-3;
+      box-shadow: 0 1px 3px 0 $color-additional-2;
+      background: darken($color-main, 6);
     }
   }
 
   &.prev::after {
-    content: '<';
+    @include pagerControl(left);
   }
 
   &.next::after {
-    content: '>';
+    @include pagerControl(right);
   }
 
   &.inactive {
     border-color: $font-color-additional-1;
     pointer-events: none;
   }
+}
+
+.car_remove,
+.car_edit {
+  width: 25px;
+  height: 25px;
+  padding: 0;
+
+  &::after {
+    display: block;
+    content: '';
+    background-image: url('../assets/img/pencil.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 60%;
+    height: 70%;
+    margin: auto;
+  }
+}
+
+.car_remove::after {
+  background-image: url('../assets/img/trash.svg');
 }
