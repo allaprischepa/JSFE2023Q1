@@ -21,7 +21,7 @@ export default class APIClient {
       _page: `${page}`,
       _limit: `${limit}`,
     };
-    // const cars = await this.load<ICar[]>(path);
+
     const response = this.request(path, query);
     const result = response
       .then((res) => {
@@ -33,12 +33,25 @@ export default class APIClient {
     return result;
   }
 
-  public async getWinners() {
+  public async getWinners(page = 0, limit = 10) {
     const path = this.paths.winners;
-    const winners = await this.load<IWinner[]>(path);
-    const cars = winners ? await this.getCarWinners(winners) : [];
+    const query: IQueryParams = {
+      _page: `${page}`,
+      _limit: `${limit}`,
+    };
 
-    return cars;
+    const response = this.request(path, query);
+    const result = response
+      .then((res) => {
+        const totalAmount = res.headers.get('X-Total-Count');
+        return res.json().then(async (data: IWinner[]) => {
+          const carsArr = await this.getCarWinners(data);
+          return { total: totalAmount, cars: carsArr };
+        });
+      })
+      .catch((error) => { console.log(error); });
+
+    return result;
   }
 
   private async getCarWinners(winners: IWinner[]) {
@@ -108,6 +121,29 @@ export default class APIClient {
     const requestObj = { name: carName, color: carColor };
     const options = {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestObj),
+    };
+
+    return this.load(path, options);
+  }
+
+  public removeCar(id: number) {
+    const path = `${this.paths.garage}/${id}`;
+    const options = {
+      method: 'Delete',
+    };
+
+    return this.load<null>(path, options);
+  }
+
+  public updateCar(id: number, carName: string, carColor: string) {
+    const path = `${this.paths.garage}/${id}`;
+    const requestObj = { name: carName, color: carColor };
+    const options = {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },

@@ -3,29 +3,46 @@ import CarItem from '../car/carItem';
 import View from '../view';
 
 export default class WinnersView extends View {
+  private table: HTMLTableElement;
+
+  private pageLimit = 10;
+
+  private page: number;
+
   constructor() {
     super('winners');
+
+    this.page = 1;
+    this.table = WinnersView.getTable();
   }
 
   public getViewContent(): Element {
     const content = document.createElement('div');
     content.classList.add(`${this.type}-content`);
 
-    const table = this.getTable();
+    this.fillTable(this.page);
+    content.append(this.table);
 
-    content.append(table);
+    WinnersView.listenUpdateEvent();
 
     return content;
   }
 
-  private getTable(): Element {
+  static getTable(): HTMLTableElement {
     const table = document.createElement('table');
     table.classList.add('table-winners');
 
-    const winners = this.client.getWinners();
-    winners.then((data: IWinnerCar[]) => WinnersView.addTableItems(data, table));
-
     return table;
+  }
+
+  private fillTable(page: number): void {
+    const result = this.client.getWinners(page, this.pageLimit);
+    result.then((data) => {
+      if (data) {
+        console.log(data.total);
+        WinnersView.addTableItems(data.cars, this.table);
+      }
+    });
   }
 
   static addTableItems(carItems: IWinnerCar[], table: HTMLTableElement): void {
@@ -70,5 +87,9 @@ export default class WinnersView extends View {
         });
       });
     }
+  }
+
+  static listenUpdateEvent() {
+    document.addEventListener('updateWinners', () => { console.log('update winners'); });
   }
 }

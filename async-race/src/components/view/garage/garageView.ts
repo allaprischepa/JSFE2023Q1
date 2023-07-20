@@ -5,7 +5,7 @@ import View from '../view';
 export default class GarageView extends View {
   private table: Element;
 
-  private pageLimit = 10;
+  private pageLimit = 7;
 
   private page: number;
 
@@ -35,11 +35,11 @@ export default class GarageView extends View {
     tableInfo.innerHTML = '';
     tableItems.innerHTML = '';
 
-    const result = this.client.getCars(page);
+    const result = this.client.getCars(page, this.pageLimit);
     result.then((data) => {
       if (data) {
         this.addTableInfo(data.total, tableInfo);
-        GarageView.addTracksWithCar(data.cars, tableItems);
+        this.addTracksWithCar(data.cars, tableItems);
       }
     });
   }
@@ -48,11 +48,11 @@ export default class GarageView extends View {
     const tableInfo = this.table.querySelector('.table-info');
     const tableItems = this.table.querySelector('.table-items');
 
-    const result = this.client.getCars(page);
+    const result = this.client.getCars(page, this.pageLimit);
     result.then((data) => {
       if (data) {
         this.updateTableInfo(data.total, tableInfo);
-        GarageView.updateTableItems(data.cars, tableItems);
+        this.updateTableItems(data.cars, tableItems);
       }
     });
   }
@@ -115,16 +115,20 @@ export default class GarageView extends View {
     const currentElement = current;
     const lastPage = Math.ceil(total / this.pageLimit);
 
-    if (this.page > lastPage) this.page = lastPage;
-    const currentPage = this.page;
+    if (this.page > lastPage) {
+      this.page = lastPage;
+      this.updateTable(this.page);
+    } else {
+      const currentPage = this.page;
 
-    if (currentElement instanceof HTMLElement) currentElement.innerText = `${currentPage}`;
+      if (currentElement instanceof HTMLElement) currentElement.innerText = `${currentPage}`;
 
-    prev.classList.remove('inactive');
-    next.classList.remove('inactive');
+      prev.classList.remove('inactive');
+      next.classList.remove('inactive');
 
-    if ((currentPage - 1) <= 0) prev.classList.add('inactive');
-    if ((currentPage + 1) > lastPage) next.classList.add('inactive');
+      if ((currentPage - 1) <= 0) prev.classList.add('inactive');
+      if ((currentPage + 1) > lastPage) next.classList.add('inactive');
+    }
   }
 
   private updateTableInfo(total: string, parent: Element): void {
@@ -138,13 +142,13 @@ export default class GarageView extends View {
     this.calculatePager(+total, prev, current, next);
   }
 
-  static updateTableItems(cars: ICar[], parent: Element): void {
+  private updateTableItems(cars: ICar[], parent: Element): void {
     const tableItemsElement = parent;
 
     if (cars.length) {
       const ids = cars.map((carData) => carData.id);
       GarageView.removeItemsNotInList(ids, tableItemsElement);
-      GarageView.addNewItems(cars, tableItemsElement);
+      this.addNewItems(cars, tableItemsElement);
     } else {
       tableItemsElement.innerHTML = '';
     }
@@ -161,24 +165,24 @@ export default class GarageView extends View {
     }
   }
 
-  static addNewItems(cars: ICar[], parent: Element): void {
+  private addNewItems(cars: ICar[], parent: Element): void {
     if (cars.length) {
       cars.forEach((carData) => {
         const selector = `.table_item[data-id="${carData.id}"]`;
         const tableItem = parent.querySelector(selector);
 
-        if (!tableItem) GarageView.addSingleTrackWithCar(carData, parent);
+        if (!tableItem) this.addSingleTrackWithCar(carData, parent);
       });
     }
   }
 
-  static addTracksWithCar(cars: ICar[], parent: Element): void {
+  private addTracksWithCar(cars: ICar[], parent: Element): void {
     if (cars.length) {
-      cars.forEach((carData) => GarageView.addSingleTrackWithCar(carData, parent));
+      cars.forEach((carData) => this.addSingleTrackWithCar(carData, parent));
     }
   }
 
-  static addSingleTrackWithCar(carData: ICar, parent: Element): void {
+  private addSingleTrackWithCar(carData: ICar, parent: Element): void {
     const tableItem = document.createElement('div');
     tableItem.classList.add('table_item');
     tableItem.setAttribute('data-id', `${carData.id}`);
@@ -190,15 +194,12 @@ export default class GarageView extends View {
     name.classList.add('car_name');
     name.innerText = carData.name;
 
-    const removeBtn = document.createElement('button');
-    removeBtn.classList.add('button', 'car_remove');
-    removeBtn.addEventListener('click', () => { console.log('remove'); });
+    const removeBtn = this.getRemoveCarButton(carData);
 
-    const editBtn = document.createElement('button');
-    editBtn.classList.add('button', 'car_edit');
-    editBtn.addEventListener('click', () => { console.log('edit'); });
+    const editBtn = this.getEditCarButton(carData);
 
     const carElement = CarItem.getCarElement(carData);
+
     const track = document.createElement('div');
     track.classList.add('track');
 
@@ -287,5 +288,89 @@ export default class GarageView extends View {
     raceControls.append(buttonStart, buttonReset);
 
     return raceControls;
+  }
+
+  private getRemoveCarButton(carData: ICar): Element {
+    const btnWrapper = document.createElement('div');
+    btnWrapper.classList.add('car_remove-container');
+
+    const removeBtn = document.createElement('button');
+    removeBtn.classList.add('button', 'car_remove');
+
+    removeBtn.addEventListener('click', () => {
+      const res = this.client.removeCar(carData.id);
+      res.then(() => {
+        this.updateTable(this.page);
+        GarageView.generateUpdateWinnersEvent();
+      });
+    });
+
+    btnWrapper.append(removeBtn);
+
+    return btnWrapper;
+  }
+
+  private getEditCarButton(carData: ICar): Element {
+    const btnWrapper = document.createElement('div');
+    btnWrapper.classList.add('car_edit-container');
+
+    const form = document.createElement('form');
+    form.classList.add('edit-car-form');
+
+    const carName = document.createElement('input');
+    carName.setAttribute('type', 'text');
+    carName.setAttribute('required', 'required');
+    carName.setAttribute('value', carData.name);
+
+    const carColor = document.createElement('input');
+    carColor.classList.add('input-type-color');
+    carColor.setAttribute('type', 'color');
+    carColor.setAttribute('required', 'required');
+    carColor.setAttribute('value', carData.color);
+
+    const submit = document.createElement('input');
+    submit.classList.add('button');
+    submit.setAttribute('type', 'submit');
+    submit.setAttribute('value', 'ok');
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      form.classList.remove('show');
+      const result = this.client.updateCar(carData.id, carName.value, carColor.value);
+      result.then((carDataUpdated: ICar) => {
+        this.updateTableItem(carDataUpdated);
+        GarageView.generateUpdateWinnersEvent();
+      });
+    });
+
+    form.append(carName, carColor, submit);
+
+    const editBtn = document.createElement('button');
+    editBtn.classList.add('button', 'car_edit');
+    editBtn.addEventListener('click', () => {
+      form.classList.toggle('show');
+      form.reset();
+    });
+
+    btnWrapper.append(form, editBtn);
+
+    return btnWrapper;
+  }
+
+  private updateTableItem(carData: ICar): void {
+    const selector = `.table_item[data-id="${carData.id}"]`;
+    const tableItem = this.table.querySelector(selector);
+
+    if (tableItem) {
+      const name = tableItem.querySelector('.car_name');
+      const carImage = tableItem.querySelector('.car_image');
+
+      if (name instanceof HTMLElement) name.innerText = carData.name;
+      carImage.replaceWith(CarItem.getCarImage(carData.color));
+    }
+  }
+
+  static generateUpdateWinnersEvent(): void {
+    document.dispatchEvent(new Event('updateWinners'));
   }
 }

@@ -10,6 +10,8 @@ $font-color-additional-2: #888;
 
 $border: 1px solid #ddd;
 
+$edit-form-z-index: 299;
+
 :root {
   --car-width: calc(2vw + 50px);
 }
@@ -50,6 +52,8 @@ body {
 
 .input-type-color {
   align-self: center;
+  width: 30px;
+  height: 30px;
 }
 
 nav {
@@ -181,7 +185,7 @@ nav {
   }
 
   & .car_image {
-    --car-width: 80px;
+    --car-width: 60px;
   }
 }
 
@@ -228,6 +232,43 @@ nav {
   &.inactive {
     border-color: $font-color-additional-1;
     pointer-events: none;
+  }
+}
+
+.car_edit-container {
+  display: flex;
+  gap: 5px;
+  position: relative;
+}
+
+.edit-car-form {
+  display: none;
+  position: absolute;
+  top: 35px;
+  padding: 8px;
+  gap: 5px;
+  background-color: $color-main;
+  border: 2px solid $color-additional-2;
+  border-radius: 5px;
+  z-index: $edit-form-z-index;
+
+  &.show {
+    display: flex;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 15px;
+    width: 0;
+    height: 0;
+    border: 12px solid transparent;
+    border-bottom-color: $color-additional-2;
+    border-top: 0;
+    border-left: 0;
+    margin-left: -6px;
+    margin-top: -12px;
   }
 }
 
