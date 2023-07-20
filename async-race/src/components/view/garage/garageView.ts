@@ -320,13 +320,13 @@ export default class GarageView extends View {
     const carName = document.createElement('input');
     carName.setAttribute('type', 'text');
     carName.setAttribute('required', 'required');
-    carName.setAttribute('value', carData.name);
+    carName.defaultValue = carData.name;
 
     const carColor = document.createElement('input');
     carColor.classList.add('input-type-color');
     carColor.setAttribute('type', 'color');
     carColor.setAttribute('required', 'required');
-    carColor.setAttribute('value', carData.color);
+    carColor.defaultValue = carData.color;
 
     const submit = document.createElement('input');
     submit.classList.add('button');
@@ -338,6 +338,8 @@ export default class GarageView extends View {
       form.classList.remove('show');
       const result = this.client.updateCar(carData.id, carName.value, carColor.value);
       result.then((carDataUpdated: ICar) => {
+        carName.defaultValue = carName.value;
+        carColor.defaultValue = carColor.value;
         this.updateTableItem(carDataUpdated);
         GarageView.generateUpdateWinnersEvent();
       });
