@@ -14,6 +14,7 @@ $edit-form-z-index: 299;
 
 :root {
   --car-width: calc(2vw + 50px);
+  --car-height: calc(var(--car-width) / 3)
 }
 
 @mixin pagerControl($type) {
@@ -153,14 +154,28 @@ nav {
 }
 
 .track {
+  position: relative;
   border-bottom: 2px dashed;
+  height: var(--car-height);
+
+  &::after {
+    $size: calc(var(--car-width) * 0.6);
+    position: absolute;
+    right: var(--car-width);
+    bottom: 0;
+    content: '';
+    background-image: url('../assets/img/flag.png');
+    background-size: cover;
+    height: $size;
+    width: $size;
+  }
 }
 
 .car_image {
   -webkit-mask: url(../assets/img/car.svg) no-repeat center / contain;
   mask: url(../assets/img/car.svg) no-repeat center / contain;
   width: var(--car-width);
-  height: calc(var(--car-width) / 3);
+  height: var(--car-height);
 }
 
 .table-winners {
@@ -175,7 +190,7 @@ nav {
   th,
   td {
     border: 1px solid;
-    padding: 5px 15px;
+    padding: 5px 1vw;
     text-align: center;
   }
 
@@ -185,7 +200,7 @@ nav {
   }
 
   & .car_image {
-    --car-width: 60px;
+    --car-width: 50px;
   }
 }
 

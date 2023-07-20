@@ -203,7 +203,7 @@ export default class GarageView extends View {
     const track = document.createElement('div');
     track.classList.add('track');
 
-    carInfo.append(name, editBtn, removeBtn);
+    carInfo.append(editBtn, removeBtn, name);
     track.append(carElement);
 
     tableItem.append(carInfo, track);
