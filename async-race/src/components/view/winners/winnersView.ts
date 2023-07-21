@@ -1,74 +1,91 @@
 import { IWinnerCar } from '../../../types/types';
+import { createElement } from '../../../utils/utils';
 import CarItem from '../car/carItem';
 import View from '../view';
 
 export default class WinnersView extends View {
-  private table: HTMLTableElement;
+  public table: Element;
 
-  private pageLimit = 10;
+  public pageLimit = 1;
 
-  private page: number;
+  public page: number;
+
+  private rows = {
+    num: '№',
+    image: 'Image',
+    name: 'Name',
+    wins: 'Wins',
+    time: 'Best time (sec)',
+  };
 
   constructor() {
     super('winners');
 
     this.page = 1;
-    this.table = WinnersView.getTable();
+    this.table = this.getTable();
   }
 
   public getViewContent(): Element {
-    const content = document.createElement('div');
-    content.classList.add(`${this.type}-content`);
+    const content = createElement('div', [`${this.type}-content`]);
 
     this.fillTable(this.page);
     content.append(this.table);
 
-    WinnersView.listenUpdateEvent();
+    this.listenUpdateEvent();
 
     return content;
   }
 
-  static getTable(): HTMLTableElement {
-    const table = document.createElement('table');
-    table.classList.add('table-winners');
-
-    return table;
-  }
-
-  private fillTable(page: number): void {
+  public fillTableContent(page: number, tableInfo: Element, tableItems: Element): void {
     const result = this.client.getWinners(page, this.pageLimit);
     result.then((data) => {
       if (data) {
-        console.log(data.total);
-        WinnersView.addTableItems(data.cars, this.table);
+        this.addTableInfo(data.total, tableInfo);
+        this.addTableItems(data.cars, tableItems);
       }
     });
   }
 
-  static addTableItems(carItems: IWinnerCar[], table: HTMLTableElement): void {
-    const tableHead = table.createTHead();
-    const tableBody = table.createTBody();
-    const tableHeadRow = tableHead.insertRow();
-    tableHead.classList.add('table_head');
-    const rows = {
-      num: '№',
-      image: 'Image',
-      name: 'Name',
-      wins: 'Wins',
-      time: 'Best time (sec)',
-    };
-
-    Object.values(rows).forEach((val) => {
-      const elem = tableHeadRow.insertCell();
-      elem.innerText = val;
+  public updateTableContent(page: number, tableInfo: Element, tableItems: Element): void {
+    const result = this.client.getWinners(page, this.pageLimit);
+    result.then((data) => {
+      if (data) {
+        this.updateTableInfo(data.total, tableInfo);
+        this.addTableItems(data.cars, tableItems);
+      }
     });
+  }
+
+  private addTableItems(carItems: IWinnerCar[], table: Element): void {
+    if (!(table instanceof HTMLTableElement)) return;
+
+    this.fillTableHead(table);
+    this.fillTableBody(table, carItems);
+  }
+
+  private fillTableHead(table: HTMLTableElement): void {
+    if (!table.tHead) {
+      const tableHead = table.createTHead();
+      const tableHeadRow = tableHead.insertRow();
+      tableHead.classList.add('table_head');
+
+      Object.values(this.rows).forEach((val) => {
+        const elem = tableHeadRow.insertCell();
+        elem.innerText = val;
+      });
+    }
+  }
+
+  private fillTableBody(table: HTMLTableElement, carItems: IWinnerCar[]): void {
+    const tableBody = table.tBodies.item(0) || table.createTBody();
+    tableBody.innerHTML = '';
 
     if (carItems.length) {
       carItems.forEach((carItem: IWinnerCar) => {
         const tableRow = tableBody.insertRow();
         tableRow.classList.add('table_row');
 
-        Object.keys(rows).forEach((key) => {
+        Object.keys(this.rows).forEach((key) => {
           const elem = tableRow.insertCell();
           elem.classList.add(`${key}`);
 
@@ -89,7 +106,9 @@ export default class WinnersView extends View {
     }
   }
 
-  static listenUpdateEvent() {
-    document.addEventListener('updateWinners', () => { console.log('update winners'); });
+  private listenUpdateEvent(): void {
+    document.addEventListener('updateWinners', () => {
+      this.fillTable(this.page);
+    });
   }
 }

@@ -1,4 +1,4 @@
-import capitalize from '../../utils/utils';
+import { capitalize, createElement } from '../../utils/utils';
 import GarageView from '../view/garage/garageView';
 import WinnersView from '../view/winners/winnersView';
 
@@ -13,28 +13,18 @@ export default class App {
   }
 
   public start():void {
-    const nav = document.createElement('nav');
-    const main = document.createElement('main');
+    const nav = createElement('nav');
+    const main = createElement('main');
 
     this.tabs.forEach((tab, ind) => {
-      const input = document.createElement('input');
-      input.classList.add('tab_input');
-      input.setAttribute('type', 'radio');
-      input.name = 'tabs';
-      input.id = `tab_input-${ind}`;
-      if (ind === 0) input.checked = true;
+      const input = createElement('input', ['tab_input'], { type: 'radio', name: 'tabs', id: `tab_input-${ind}` });
+      const label = createElement('label', ['tab'], { for: input.id, id: `tab-${ind}` });
+      const article = createElement('article', ['tab_content'], { id: `tab_content-${ind}` });
 
-      const label = document.createElement('label');
-      label.classList.add('tab');
-      label.setAttribute('for', input.id);
-      label.id = `tab-${ind}`;
+      if (ind === 0 && input instanceof HTMLInputElement) input.checked = true;
       label.innerText = capitalize(tab.type);
 
-      const article = document.createElement('article');
-      article.classList.add('tab_content');
-      article.id = `tab_content-${ind}`;
       article.append(tab.content);
-
       document.body.append(input);
       nav.append(label);
       main.append(article);

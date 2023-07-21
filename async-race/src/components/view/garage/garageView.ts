@@ -1,24 +1,24 @@
-import { ICar } from '../../../types/types';
+import { Attributes, ICar } from '../../../types/types';
+import { createElement } from '../../../utils/utils';
 import CarItem from '../car/carItem';
 import View from '../view';
 
 export default class GarageView extends View {
-  private table: Element;
+  public table: Element;
 
-  private pageLimit = 7;
+  public pageLimit = 7;
 
-  private page: number;
+  public page: number;
 
   constructor() {
     super('garage');
 
     this.page = 1;
-    this.table = GarageView.getTable();
+    this.table = this.getTable();
   }
 
   public getViewContent(): Element {
-    const content = document.createElement('div');
-    content.classList.add(`${this.type}-content`);
+    const content = createElement('div', [`${this.type}-content`]);
 
     this.fillTable(this.page);
     const control = this.getControlElement();
@@ -28,13 +28,7 @@ export default class GarageView extends View {
     return content;
   }
 
-  private fillTable(page: number): void {
-    const tableInfo = this.table.querySelector('.table-info');
-    const tableItems = this.table.querySelector('.table-items');
-
-    tableInfo.innerHTML = '';
-    tableItems.innerHTML = '';
-
+  public fillTableContent(page: number, tableInfo: Element, tableItems: Element): void {
     const result = this.client.getCars(page, this.pageLimit);
     result.then((data) => {
       if (data) {
@@ -44,10 +38,7 @@ export default class GarageView extends View {
     });
   }
 
-  private updateTable(page: number): void {
-    const tableInfo = this.table.querySelector('.table-info');
-    const tableItems = this.table.querySelector('.table-items');
-
+  public updateTableContent(page: number, tableInfo: Element, tableItems: Element): void {
     const result = this.client.getCars(page, this.pageLimit);
     result.then((data) => {
       if (data) {
@@ -55,91 +46,6 @@ export default class GarageView extends View {
         this.updateTableItems(data.cars, tableItems);
       }
     });
-  }
-
-  static getTable(): Element {
-    const table = document.createElement('div');
-    table.classList.add('table-garage');
-
-    const tableInfo = document.createElement('div');
-    tableInfo.classList.add('table-info');
-
-    const tableItems = document.createElement('div');
-    tableItems.classList.add('table-items');
-
-    table.append(tableInfo, tableItems);
-
-    return table;
-  }
-
-  private addTableInfo(total: string, parent: Element): void {
-    const totalAmount = document.createElement('div');
-    totalAmount.classList.add('total-amount');
-    totalAmount.innerHTML = `<strong>Total: </strong><span class="amount">${total}</span>`;
-
-    const pager = this.getPager(+total);
-
-    parent.append(totalAmount, pager);
-  }
-
-  private getPager(total: number): Element {
-    const pager = document.createElement('div');
-    const prev = document.createElement('div');
-    const current = document.createElement('div');
-    const next = document.createElement('div');
-
-    pager.classList.add('pager');
-    prev.classList.add('prev', 'pager_item');
-    current.classList.add('current', 'pager_item');
-    next.classList.add('next', 'pager_item');
-
-    this.calculatePager(total, prev, current, next);
-
-    prev.addEventListener('click', (event) => {
-      event.preventDefault();
-
-      this.page -= 1;
-      this.updateTable(this.page);
-    });
-    next.addEventListener('click', () => {
-      this.page += 1;
-      this.updateTable(this.page);
-    });
-
-    pager.append(prev, current, next);
-
-    return pager;
-  }
-
-  private calculatePager(total: number, prev: Element, current: Element, next: Element): void {
-    const currentElement = current;
-    const lastPage = Math.ceil(total / this.pageLimit);
-
-    if (this.page > lastPage) {
-      this.page = lastPage;
-      this.updateTable(this.page);
-    } else {
-      const currentPage = this.page;
-
-      if (currentElement instanceof HTMLElement) currentElement.innerText = `${currentPage}`;
-
-      prev.classList.remove('inactive');
-      next.classList.remove('inactive');
-
-      if ((currentPage - 1) <= 0) prev.classList.add('inactive');
-      if ((currentPage + 1) > lastPage) next.classList.add('inactive');
-    }
-  }
-
-  private updateTableInfo(total: string, parent: Element): void {
-    const amount = parent.querySelector('.amount');
-    const pager = parent.querySelector('.pager');
-    const prev = pager.querySelector('.prev');
-    const current = pager.querySelector('.current');
-    const next = pager.querySelector('.next');
-
-    if (amount instanceof HTMLElement) amount.innerText = total;
-    this.calculatePager(+total, prev, current, next);
   }
 
   private updateTableItems(cars: ICar[], parent: Element): void {
@@ -183,25 +89,15 @@ export default class GarageView extends View {
   }
 
   private addSingleTrackWithCar(carData: ICar, parent: Element): void {
-    const tableItem = document.createElement('div');
-    tableItem.classList.add('table_item');
-    tableItem.setAttribute('data-id', `${carData.id}`);
-
-    const carInfo = document.createElement('div');
-    carInfo.classList.add('car-info');
-
-    const name = document.createElement('div');
-    name.classList.add('car_name');
-    name.innerText = carData.name;
-
+    const tableItem = createElement('div', ['table_item'], { 'data-id': `${carData.id}` });
+    const carInfo = createElement('div', ['car-info']);
+    const name = createElement('div', ['car_name']);
     const removeBtn = this.getRemoveCarButton(carData);
-
     const editBtn = this.getEditCarButton(carData);
-
     const carElement = CarItem.getCarElement(carData);
+    const track = createElement('div', ['track']);
 
-    const track = document.createElement('div');
-    track.classList.add('track');
+    name.innerText = carData.name;
 
     carInfo.append(editBtn, removeBtn, name);
     track.append(carElement);
@@ -211,8 +107,7 @@ export default class GarageView extends View {
   }
 
   private getControlElement(): Element {
-    const control = document.createElement('div');
-    control.classList.add('control');
+    const control = createElement('div', ['control']);
 
     const createCar = this.getCreateCarElement();
     const generateCars = this.getGenerateCarsElement();
@@ -224,30 +119,33 @@ export default class GarageView extends View {
   }
 
   private getCreateCarElement(): Element {
-    const createCar = document.createElement('div');
+    const carNamesAttrs: Attributes = {
+      type: 'text',
+      required: 'required',
+      placeholder: 'Name',
+    };
+    const carColorAttributes: Attributes = {
+      type: 'color',
+      required: 'required',
+    };
+    const buttonAttributes: Attributes = {
+      type: 'submit',
+      value: 'Create',
+    };
 
-    const form = document.createElement('form');
-    form.classList.add('create-car-form');
-
-    const carName = document.createElement('input');
-    carName.setAttribute('type', 'text');
-    carName.setAttribute('required', 'required');
-    carName.setAttribute('placeholder', 'Name');
-
-    const carColor = document.createElement('input');
-    carColor.classList.add('input-type-color');
-    carColor.setAttribute('type', 'color');
-    carColor.setAttribute('required', 'required');
-
-    const button = document.createElement('input');
-    button.classList.add('button', 'create-car');
-    button.setAttribute('type', 'submit');
-    button.setAttribute('value', 'Create');
+    const createCar = createElement('div');
+    const form = createElement('form', ['create-car-form']);
+    const carName = createElement('input', [], carNamesAttrs);
+    const carColor = createElement('input', ['input-type-color'], carColorAttributes);
+    const button = createElement('input', ['button', 'create-car'], buttonAttributes);
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
-      const result = this.client.createCar(carName.value, carColor.value);
-      result.then(() => this.updateTable(this.page));
+
+      if (carName instanceof HTMLInputElement && carColor instanceof HTMLInputElement) {
+        const result = this.client.createCar(carName.value, carColor.value);
+        result.then(() => this.updateTable(this.page));
+      }
     });
 
     form.append(carName, carColor, button);
@@ -257,10 +155,8 @@ export default class GarageView extends View {
   }
 
   private getGenerateCarsElement(): Element {
-    const generateCars = document.createElement('div');
-
-    const button = document.createElement('button');
-    button.classList.add('button', 'generate-cars');
+    const generateCars = createElement('div');
+    const button = createElement('button', ['button', 'generate-cars']);
     button.innerText = 'Generate cars';
 
     button.addEventListener('click', () => {
@@ -274,15 +170,11 @@ export default class GarageView extends View {
   }
 
   static getRaceControlsElement(): Element {
-    const raceControls = document.createElement('div');
-    raceControls.classList.add('race-controls');
+    const raceControls = createElement('div', ['race-controls']);
+    const buttonStart = createElement('button', ['button', 'race-start']);
+    const buttonReset = createElement('button', ['button', 'race-reset']);
 
-    const buttonStart = document.createElement('button');
-    buttonStart.classList.add('button', 'race-start');
     buttonStart.innerText = 'Start race';
-
-    const buttonReset = document.createElement('button');
-    buttonReset.classList.add('button', 'race-reset');
     buttonReset.innerText = 'Reset';
 
     raceControls.append(buttonStart, buttonReset);
@@ -291,11 +183,8 @@ export default class GarageView extends View {
   }
 
   private getRemoveCarButton(carData: ICar): Element {
-    const btnWrapper = document.createElement('div');
-    btnWrapper.classList.add('car_remove-container');
-
-    const removeBtn = document.createElement('button');
-    removeBtn.classList.add('button', 'car_remove');
+    const btnWrapper = createElement('div', ['car_remove-container']);
+    const removeBtn = createElement('button', ['button', 'car_remove']);
 
     removeBtn.addEventListener('click', () => {
       const res = this.client.removeCar(carData.id);
@@ -311,52 +200,49 @@ export default class GarageView extends View {
   }
 
   private getEditCarButton(carData: ICar): Element {
-    const btnWrapper = document.createElement('div');
-    btnWrapper.classList.add('car_edit-container');
+    const btnWrapper = createElement('div', ['car_edit-container']);
+    const editBtn = createElement('button', ['button', 'car_edit']);
+    const form = this.getEditCarForm(carData);
 
-    const form = document.createElement('form');
-    form.classList.add('edit-car-form');
-
-    const carName = document.createElement('input');
-    carName.setAttribute('type', 'text');
-    carName.setAttribute('required', 'required');
-    carName.defaultValue = carData.name;
-
-    const carColor = document.createElement('input');
-    carColor.classList.add('input-type-color');
-    carColor.setAttribute('type', 'color');
-    carColor.setAttribute('required', 'required');
-    carColor.defaultValue = carData.color;
-
-    const submit = document.createElement('input');
-    submit.classList.add('button');
-    submit.setAttribute('type', 'submit');
-    submit.setAttribute('value', 'ok');
-
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      form.classList.remove('show');
-      const result = this.client.updateCar(carData.id, carName.value, carColor.value);
-      result.then((carDataUpdated: ICar) => {
-        carName.defaultValue = carName.value;
-        carColor.defaultValue = carColor.value;
-        this.updateTableItem(carDataUpdated);
-        GarageView.generateUpdateWinnersEvent();
-      });
-    });
-
-    form.append(carName, carColor, submit);
-
-    const editBtn = document.createElement('button');
-    editBtn.classList.add('button', 'car_edit');
     editBtn.addEventListener('click', () => {
       form.classList.toggle('show');
-      form.reset();
+      if (form instanceof HTMLFormElement) form.reset();
     });
 
     btnWrapper.append(form, editBtn);
 
     return btnWrapper;
+  }
+
+  private getEditCarForm(carData: ICar): Element {
+    const form = createElement('form', ['edit-car-form']);
+    const carName = createElement('input', [], { type: 'text', required: 'required' });
+    const carColor = createElement('input', ['input-type-color'], { type: 'color', required: 'required' });
+    const submit = createElement('input', ['button'], { type: 'submit', value: 'ok' });
+
+    if (carName instanceof HTMLInputElement) carName.defaultValue = carData.name;
+    if (carColor instanceof HTMLInputElement) carColor.defaultValue = carData.color;
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      form.classList.remove('show');
+
+      if (carName instanceof HTMLInputElement && carColor instanceof HTMLInputElement) {
+        const result = this.client.updateCar(carData.id, carName.value, carColor.value);
+
+        result.then((carDataUpdated: ICar) => {
+          carName.defaultValue = carName.value;
+          carColor.defaultValue = carColor.value;
+
+          this.updateTableItem(carDataUpdated);
+          GarageView.generateUpdateWinnersEvent();
+        });
+      }
+    });
+
+    form.append(carName, carColor, submit);
+
+    return form;
   }
 
   private updateTableItem(carData: ICar): void {

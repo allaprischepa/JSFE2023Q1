@@ -3,6 +3,7 @@ import {
   IQueryParams,
   IWinner,
   IWinnerCar,
+  TableContentObj,
 } from '../../types/types';
 import CarItem from '../view/car/carItem';
 
@@ -15,7 +16,7 @@ export default class APIClient {
     winners: '/winners',
   };
 
-  public async getCars(page = 0, limit = 10) {
+  public async getCars(page = 0, limit = 10): Promise<void | TableContentObj<ICar>> {
     const path = this.paths.garage;
     const query: IQueryParams = {
       _page: `${page}`,
@@ -33,7 +34,7 @@ export default class APIClient {
     return result;
   }
 
-  public async getWinners(page = 0, limit = 10) {
+  public async getWinners(page = 0, limit = 10): Promise<void | TableContentObj<IWinnerCar>> {
     const path = this.paths.winners;
     const query: IQueryParams = {
       _page: `${page}`,
@@ -54,7 +55,7 @@ export default class APIClient {
     return result;
   }
 
-  private async getCarWinners(winners: IWinner[]) {
+  private async getCarWinners(winners: IWinner[]): Promise<IWinnerCar[]> {
     const results = winners.map(async (winner: IWinner, ind: number) => {
       const car = await this.getCar(winner.id);
       const res: IWinnerCar = { ...winners[ind], name: car?.name || 'Name', color: car?.color || '#000' };
@@ -65,14 +66,21 @@ export default class APIClient {
     return Promise.all(results);
   }
 
-  public async getCar(id: number) {
+  public async getCar(id: number): Promise<ICar> {
     const path = `${this.paths.garage}/${id}`;
     const car = await this.load<ICar>(path);
 
     return car;
   }
 
-  private request(path: string, query: IQueryParams = {}, options = {}) {
+  public async getWinner(id: number): Promise<IWinner> {
+    const path = `${this.paths.winners}/${id}`;
+    const car = await this.load<IWinner>(path);
+
+    return car;
+  }
+
+  private request(path: string, query: IQueryParams = {}, options = {}): Promise<Response> {
     const queryStr = APIClient.getQueryString(query);
     const endpoint = `${this.baseURL}${path}${queryStr}`;
 
@@ -99,7 +107,7 @@ export default class APIClient {
       });
   }
 
-  public generateCars(amount = 100) {
+  public generateCars(amount = 100): Promise<ICar[]> {
     const promises = [];
 
     for (let i = 1; i <= amount; i += 1) {
@@ -112,7 +120,7 @@ export default class APIClient {
     return Promise.all(promises);
   }
 
-  public createCar(carName: string, carColor: string) {
+  public createCar(carName: string, carColor: string): Promise<ICar> {
     return this.createSingleCar(carName, carColor);
   }
 
@@ -127,19 +135,33 @@ export default class APIClient {
       body: JSON.stringify(requestObj),
     };
 
-    return this.load(path, options);
+    return this.load<ICar>(path, options);
   }
 
-  public removeCar(id: number) {
+  public removeCar(id: number): Promise<void> {
     const path = `${this.paths.garage}/${id}`;
     const options = {
-      method: 'Delete',
+      method: 'DELETE',
     };
 
-    return this.load<null>(path, options);
+    const winner = this.getWinner(id);
+    winner.then((data: IWinner) => {
+      if (data?.id) this.removeWinner(data.id);
+    });
+
+    return this.load<void>(path, options);
   }
 
-  public updateCar(id: number, carName: string, carColor: string) {
+  public removeWinner(id: number): Promise<void> {
+    const path = `${this.paths.winners}/${id}`;
+    const options = {
+      method: 'DELETE',
+    };
+
+    return this.load<void>(path, options);
+  }
+
+  public updateCar(id: number, carName: string, carColor: string): Promise<ICar> {
     const path = `${this.paths.garage}/${id}`;
     const requestObj = { name: carName, color: carColor };
     const options = {
@@ -150,6 +172,6 @@ export default class APIClient {
       body: JSON.stringify(requestObj),
     };
 
-    return this.load(path, options);
+    return this.load<ICar>(path, options);
   }
 }

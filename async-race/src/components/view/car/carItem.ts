@@ -1,11 +1,10 @@
 import { ICar } from '../../../types/types';
+import { createElement } from '../../../utils/utils';
 import brands from './brands';
 
 export default class CarItem {
   static getCarElement(carData: ICar): Element {
-    const car = document.createElement('div');
-    car.classList.add('car');
-
+    const car = createElement('div', ['car']);
     const carImage = CarItem.getCarImage(carData.color);
 
     car.append(carImage);
@@ -14,8 +13,7 @@ export default class CarItem {
   }
 
   static getCarImage(color: string) {
-    const carImage = document.createElement('div');
-    carImage.classList.add('car_image');
+    const carImage = createElement('div', ['car_image']);
     carImage.style.backgroundColor = color;
 
     return carImage;

@@ -179,29 +179,43 @@ nav {
 }
 
 .table-winners {
-  width: fit-content;
-  counter-reset: winners-counter;
-  border-collapse: collapse;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: max-content;
 
-  thead {
-    font-weight: 600;
+  .table-info {
+    display: flex;
+    gap: 50px;
+    align-items: center;
   }
 
-  th,
-  td {
-    border: 1px solid;
-    padding: 5px 1vw;
-    text-align: center;
+  .table-items {
+    width: fit-content;
+    counter-reset: winners-counter;
+    border-collapse: collapse;
+
+    thead {
+      font-weight: 600;
+    }
+
+    th,
+    td {
+      border: 1px solid;
+      padding: 5px 1vw;
+      text-align: center;
+    }
+
+    .num::before {
+      counter-increment: winners-counter;
+      content: counter(winners-counter);
+    }
+
+    & .car_image {
+      --car-width: 50px;
+    }
   }
 
-  .num::before {
-    counter-increment: winners-counter;
-    content: counter(winners-counter);
-  }
-
-  & .car_image {
-    --car-width: 50px;
-  }
 }
 
 .pager {
