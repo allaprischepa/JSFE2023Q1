@@ -4,12 +4,12 @@ $color-main: #fff;
 $color-additional-1: #ec0033;
 $color-additional-2: #00a876;
 $color-additional-3: #eeffe8;
-$color-start: rgb(241, 85, 85);
-$color-stop: rgb(66, 188, 66);
+$color-start: rgb(66, 188, 66);
+$color-stop: rgb(241, 85, 85);
 $font-color-main: #555;
 $font-color-additional-1: #bbb;
 $font-color-additional-2: #888;
-$color-inactive: #bbb;
+$color-inactive: #dbdbdb;
 
 $edit-form-z-index: 299;
 
@@ -74,6 +74,12 @@ body {
       box-shadow: 0 1px 3px 0 $color-additional-2;
       background: darken($color-main, 3);
   }
+
+  &.inactive {
+    background-color: $color-inactive;
+    pointer-events: none;
+  }
+
 }
 
 .input-type-color {
@@ -391,4 +397,33 @@ nav {
 
 .engine-stop {
   @include engineButton(stop);
+}
+
+.race-started {
+
+  .button:not(.race-reset) {
+    pointer-events: none;
+  }
+
+  .garage-content .pager {
+    pointer-events: none;
+  }
+
+  .engine-start,
+  .engine-stop {
+    pointer-events: none;
+  }
+
+}
+
+.drive-started {
+
+  .button:not(.race-reset) {
+    pointer-events: none;
+  }
+
+  .garage-content .pager {
+    pointer-events: none;
+  }
+
 }

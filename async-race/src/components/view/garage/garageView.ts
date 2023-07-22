@@ -1,29 +1,45 @@
-import { Attributes, DriveIndicators, ICar } from '../../../types/types';
-import { createElement } from '../../../utils/utils';
+import {
+  Attributes,
+  DriveIndicators,
+  DriveMode,
+  ICar,
+  Racer,
+} from '../../../types/types';
+import { createElement, toSeconds } from '../../../utils/utils';
 import CarItem from '../car/carItem';
 import View from '../view';
 
 export default class GarageView extends View {
   public table: Element;
 
+  private control: Element;
+
   public pageLimit = 7;
 
   public page: number;
+
+  private racers: Racer[] = [];
+
+  private winnerID = 0;
+
+  private raceStarted = false;
 
   constructor() {
     super('garage');
 
     this.page = 1;
     this.table = this.getTable();
+    this.control = this.getControlElement();
   }
 
   public getViewContent(): Element {
     const content = createElement('div', [`${this.type}-content`]);
 
     this.fillTable(this.page);
-    const control = this.getControlElement();
 
-    content.append(control, this.table);
+    content.append(this.control, this.table);
+
+    this.listenEvents();
 
     return content;
   }
@@ -112,7 +128,7 @@ export default class GarageView extends View {
 
     const createCar = this.getCreateCarElement();
     const generateCars = this.getGenerateCarsElement();
-    const raceControls = GarageView.getRaceControlsElement();
+    const raceControls = this.getRaceControlsElement();
 
     control.append(createCar, generateCars, raceControls);
 
@@ -170,13 +186,16 @@ export default class GarageView extends View {
     return generateCars;
   }
 
-  static getRaceControlsElement(): Element {
+  private getRaceControlsElement(): Element {
     const raceControls = createElement('div', ['controls_item', 'race-controls']);
     const buttonStart = createElement('button', ['button', 'race-start']);
     const buttonReset = createElement('button', ['button', 'race-reset']);
 
     buttonStart.innerText = 'Start race';
     buttonReset.innerText = 'Reset';
+
+    buttonStart.addEventListener('click', () => this.startRace(buttonStart, buttonReset));
+    buttonReset.addEventListener('click', () => this.resetRace());
 
     raceControls.append(buttonStart, buttonReset);
 
@@ -276,38 +295,135 @@ export default class GarageView extends View {
 
   private engineStart(carData: ICar, car: Element, start: Element, stop: Element) {
     const response = this.client.startEngine(carData.id);
-    start.classList.toggle('inactive');
+    start.classList.add('inactive');
 
     response.then((data: DriveIndicators) => {
-      stop.classList.toggle('inactive');
+      stop.classList.remove('inactive');
+      document.dispatchEvent(new CustomEvent('engineStart'));
+
       const time = data.distance / data.velocity;
-      const effect = new KeyframeEffect(
-        car,
-        { left: ['0', `calc(100% - ${car.clientWidth}px)`] },
-        { duration: time, fill: 'forwards' },
-      );
+      const carAnimation = this.createCarAnimation(carData, car, time);
+      this.racers.push({ id: carData.id, animation: carAnimation });
 
-      const animation = new Animation(effect);
+      carAnimation.play();
 
-      animation.play();
+      const drive = this.client.drive(carData.id);
+      drive.then((driveData: DriveMode) => {
+        if (!driveData?.success) {
+          const racer = this.racers.find((obj) => obj.id === carData.id);
+          if (racer) racer.broken = true;
 
-      animation.addEventListener('finish', () => {
-        console.log('finished:', car);
+          carAnimation.pause();
+          document.dispatchEvent(new CustomEvent('engineBroken'));
+        }
       });
     });
   }
 
+  private createCarAnimation(carData: ICar, car: Element, time: number) {
+    const effect = new KeyframeEffect(
+      car,
+      { left: ['0', `calc(100% - ${car.clientWidth}px)`] },
+      { duration: time, fill: 'forwards' },
+    );
+
+    const carAnimation = new Animation(effect);
+
+    carAnimation.addEventListener('finish', () => {
+      if (this.raceStarted && !this.winnerID) {
+        this.winnerID = carData.id;
+        this.stopRace(carData, toSeconds(time));
+      }
+    });
+
+    return carAnimation;
+  }
+
   private engineStop(carData: ICar, car: Element, start: Element, stop: Element) {
     const response = this.client.stopEngine(carData.id);
-    stop.classList.toggle('inactive');
+    stop.classList.add('inactive');
 
     response.then(() => {
-      start.classList.toggle('inactive');
-      car.getAnimations().forEach((animation) => animation.cancel());
+      start.classList.remove('inactive');
+      const animation = this.getAnimation(carData);
+      if (animation instanceof Animation) animation.cancel();
+
+      document.dispatchEvent(new CustomEvent('engineStop'));
     });
+  }
+
+  private getAnimation(carData: ICar): Animation {
+    let animation = null;
+    const index = this.racers.findIndex((obj) => obj.id === carData.id);
+
+    if (index !== -1) {
+      animation = this.racers[index].animation;
+      this.racers.splice(index, 1);
+    }
+
+    return animation;
+  }
+
+  private startRace(start: Element, reset: Element): void {
+    this.winnerID = 0;
+    this.raceStarted = true;
+    [start, reset].forEach((el) => el.classList.add('inactive'));
+
+    document.body.classList.add('race-started');
+    this.table.querySelectorAll('.engine-start').forEach((el) => { if (el instanceof HTMLElement) el.click(); });
+  }
+
+  private stopRace(carData: ICar, time: number): void {
+    this.winnerID = 0;
+    this.raceStarted = false;
+    this.activateResetButton();
+
+    if (carData) {
+      this.client.createWinner(carData.id, time)
+        .then(GarageView.generateUpdateWinnersEvent);
+    }
+  }
+
+  private resetRace(): void {
+    this.table.querySelectorAll('.engine-stop').forEach((el) => { if (el instanceof HTMLElement) el.click(); });
   }
 
   static generateUpdateWinnersEvent(): void {
     document.dispatchEvent(new Event('updateWinners'));
+  }
+
+  private listenEvents(): void {
+    document.addEventListener('engineStart', () => {
+      this.inactivateStartButton();
+      document.body.classList.add('drive-started');
+    });
+
+    document.addEventListener('engineStop', () => {
+      if (!this.racers.length) {
+        this.activateStartButton();
+        document.body.classList.remove('race-started', 'drive-started');
+      }
+    });
+
+    document.addEventListener('engineBroken', () => {
+      if (this.racers.every((obj) => obj.broken)) {
+        this.stopRace(null, 0);
+      }
+    });
+  }
+
+  private inactivateStartButton(): void {
+    const buttonStart = this.control.querySelector('.race-start');
+    if (buttonStart) buttonStart.classList.add('inactive');
+  }
+
+  private activateStartButton(): void {
+    const buttonStart = this.control.querySelector('.race-start');
+    if (buttonStart) buttonStart.classList.remove('inactive');
+  }
+
+  private activateResetButton(): void {
+    const buttonReset = this.control.querySelector('.race-reset');
+    if (buttonReset) buttonReset.classList.remove('inactive');
   }
 }

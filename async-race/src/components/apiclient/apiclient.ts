@@ -1,5 +1,6 @@
 import {
   DriveIndicators,
+  DriveMode,
   ICar,
   IQueryParams,
   IWinner,
@@ -190,7 +191,20 @@ export default class APIClient {
     };
     const options = { method: 'PATCH' };
 
-    return this.load<DriveIndicators>(path, query, options);
+    const response = this.request(path, query, options);
+    const result = response
+      .then((res) => {
+        if (!res.ok) return { success: false };
+        return res.json();
+      })
+      .then((data: DriveMode) => data)
+      .catch((error) => {
+        console.log(error);
+
+        return null;
+      });
+
+    return result;
   }
 
   private startStopEngine(carID: number, start = true) {
@@ -202,5 +216,41 @@ export default class APIClient {
     const options = { method: 'PATCH' };
 
     return this.load<DriveIndicators>(path, query, options);
+  }
+
+  public async createWinner(id: number, time: number) {
+    const winner = await this.getWinner(id);
+
+    if (winner.id) return this.updateWinner(id, winner.wins + 1, Math.min(winner.time, time));
+
+    return this.createNewWinner(id, 1, time);
+  }
+
+  private updateWinner(id: number, carWins: number, carTime: number) {
+    const path = `${this.paths.winners}/${id}`;
+    const requestObj = { wins: carWins, time: carTime };
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestObj),
+    };
+
+    return this.load<IWinner>(path, {}, options);
+  }
+
+  private createNewWinner(carID: number, carWins: number, carTime: number) {
+    const path = this.paths.winners;
+    const requestObj = { id: carID, wins: carWins, time: carTime };
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestObj),
+    };
+
+    return this.load<IWinner>(path, {}, options);
   }
 }

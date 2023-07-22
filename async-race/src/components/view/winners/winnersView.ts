@@ -6,7 +6,7 @@ import View from '../view';
 export default class WinnersView extends View {
   public table: Element;
 
-  public pageLimit = 1;
+  public pageLimit = 10;
 
   public page: number;
 

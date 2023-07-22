@@ -29,3 +29,13 @@ export type DriveIndicators = {
   velocity: number,
   distance: number,
 };
+
+export type DriveMode = {
+  success: boolean,
+};
+
+export type Racer = {
+  id: number,
+  animation: Animation,
+  broken?: boolean,
+};
