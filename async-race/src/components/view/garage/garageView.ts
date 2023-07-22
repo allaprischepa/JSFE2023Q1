@@ -1,4 +1,4 @@
-import { Attributes, ICar } from '../../../types/types';
+import { Attributes, DriveIndicators, ICar } from '../../../types/types';
 import { createElement } from '../../../utils/utils';
 import CarItem from '../car/carItem';
 import View from '../view';
@@ -96,13 +96,14 @@ export default class GarageView extends View {
     const editBtn = this.getEditCarButton(carData);
     const carElement = CarItem.getCarElement(carData);
     const track = createElement('div', ['track']);
+    const engineControls = this.getEngineControls(carData, carElement);
 
     name.innerText = carData.name;
 
     carInfo.append(editBtn, removeBtn, name);
     track.append(carElement);
 
-    tableItem.append(carInfo, track);
+    tableItem.append(carInfo, engineControls, track);
     parent.append(tableItem);
   }
 
@@ -256,6 +257,54 @@ export default class GarageView extends View {
       if (name instanceof HTMLElement) name.innerText = carData.name;
       carImage.replaceWith(CarItem.getCarImage(carData.color));
     }
+  }
+
+  private getEngineControls(carData: ICar, car: Element): Element {
+    const wrapper = createElement('div', ['engine-controls']);
+    const start = createElement('a', ['engine-start']);
+    const stop = createElement('a', ['engine-stop', 'inactive']);
+
+    if (car) {
+      start.addEventListener('click', () => this.engineStart(carData, car, start, stop));
+      stop.addEventListener('click', () => this.engineStop(carData, car, start, stop));
+    }
+
+    wrapper.append(start, stop);
+
+    return wrapper;
+  }
+
+  private engineStart(carData: ICar, car: Element, start: Element, stop: Element) {
+    const response = this.client.startEngine(carData.id);
+    start.classList.toggle('inactive');
+
+    response.then((data: DriveIndicators) => {
+      stop.classList.toggle('inactive');
+      const time = data.distance / data.velocity;
+      const effect = new KeyframeEffect(
+        car,
+        { left: ['0', `calc(100% - ${car.clientWidth}px)`] },
+        { duration: time, fill: 'forwards' },
+      );
+
+      const animation = new Animation(effect);
+
+      animation.play();
+
+      animation.addEventListener('finish', () => {
+        console.log('finished:', car);
+      });
+    });
+  }
+
+  private engineStop(carData: ICar, car: Element, start: Element, stop: Element) {
+    const response = this.client.stopEngine(carData.id);
+    stop.classList.toggle('inactive');
+
+    response.then(() => {
+      start.classList.toggle('inactive');
+      car.getAnimations().forEach((animation) => animation.cancel());
+    });
   }
 
   static generateUpdateWinnersEvent(): void {

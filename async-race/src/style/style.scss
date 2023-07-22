@@ -4,11 +4,12 @@ $color-main: #fff;
 $color-additional-1: #ec0033;
 $color-additional-2: #00a876;
 $color-additional-3: #bdf400;
+$color-start: rgb(241, 85, 85);
+$color-stop: rgb(66, 188, 66);
 $font-color-main: #555;
 $font-color-additional-1: #bbb;
 $font-color-additional-2: #888;
-
-$border: 1px solid #ddd;
+$color-inactive: #bbb;
 
 $edit-form-z-index: 299;
 
@@ -25,6 +26,30 @@ $edit-form-z-index: 299;
   background-repeat: no-repeat;
   width: 40%;
   height: 35%;
+}
+
+@mixin engineButton($type) {
+  $color: $color-start;
+
+  @if ($type == 'stop') { $color: $color-stop; }
+
+  display: block;
+  $size: 20px;
+  -webkit-mask: url(../assets/img/#{$type}.svg) no-repeat center / contain;
+  mask: url(../assets/img/#{$type}.svg) no-repeat center / contain;
+  width: $size;
+  height: $size;
+  background-color: $color;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &.inactive {
+    background-color: $color-inactive;
+    pointer-events: none;
+  }
 }
 
 body {
@@ -147,12 +172,12 @@ nav {
   .table-items {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
 
     .table_item {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 5px;
     }
   }
 
@@ -166,8 +191,10 @@ nav {
 
 .track {
   position: relative;
+  display: flex;
   border-bottom: 2px dashed;
-  height: var(--car-height);
+  min-height: var(--car-height);
+  padding-top: 10px;
 
   &::after {
     $size: calc(var(--car-width) * 0.6);
@@ -180,6 +207,10 @@ nav {
     height: $size;
     width: $size;
   }
+}
+
+.car {
+  position: absolute;
 }
 
 .car_image {
@@ -262,7 +293,7 @@ nav {
   }
 
   &.inactive {
-    border-color: $font-color-additional-1;
+    border-color: $color-inactive;
     pointer-events: none;
   }
 }
@@ -309,6 +340,7 @@ nav {
   width: 25px;
   height: 25px;
   padding: 0;
+  box-sizing: border-box;
 
   &::after {
     display: block;
@@ -316,12 +348,30 @@ nav {
     background-image: url('../assets/img/pencil.svg');
     background-position: center;
     background-repeat: no-repeat;
-    width: 60%;
-    height: 70%;
+    width: 55%;
+    height: 65%;
     margin: auto;
   }
 }
 
 .car_remove::after {
   background-image: url('../assets/img/trash.svg');
+}
+
+.engine-controls {
+  display: flex;
+  width: 55px;
+  border: 1px solid lightgrey;
+  padding: 3px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  justify-content: space-between
+}
+
+.engine-start {
+  @include engineButton(start);
+}
+
+.engine-stop {
+  @include engineButton(stop);
 }

@@ -1,4 +1,5 @@
 import {
+  DriveIndicators,
   ICar,
   IQueryParams,
   IWinner,
@@ -94,10 +95,8 @@ export default class APIClient {
     return queryParams.length ? `?${queryParams.join('&')}` : '';
   }
 
-  private async load<T>(path: string, options = {}): Promise<T> {
-    const endpoint = `${this.baseURL}${path}`;
-
-    return fetch(endpoint, options)
+  private async load<T>(path: string, query: IQueryParams = {}, options = {}): Promise<T> {
+    return this.request(path, query, options)
       .then((res) => res.json())
       .then((data: T) => data)
       .catch((error) => {
@@ -135,7 +134,7 @@ export default class APIClient {
       body: JSON.stringify(requestObj),
     };
 
-    return this.load<ICar>(path, options);
+    return this.load<ICar>(path, {}, options);
   }
 
   public removeCar(id: number): Promise<void> {
@@ -149,7 +148,7 @@ export default class APIClient {
       if (data?.id) this.removeWinner(data.id);
     });
 
-    return this.load<void>(path, options);
+    return this.load<void>(path, {}, options);
   }
 
   public removeWinner(id: number): Promise<void> {
@@ -158,7 +157,7 @@ export default class APIClient {
       method: 'DELETE',
     };
 
-    return this.load<void>(path, options);
+    return this.load<void>(path, {}, options);
   }
 
   public updateCar(id: number, carName: string, carColor: string): Promise<ICar> {
@@ -172,6 +171,36 @@ export default class APIClient {
       body: JSON.stringify(requestObj),
     };
 
-    return this.load<ICar>(path, options);
+    return this.load<ICar>(path, {}, options);
+  }
+
+  public startEngine(carID: number) {
+    return this.startStopEngine(carID);
+  }
+
+  public stopEngine(carID: number) {
+    return this.startStopEngine(carID, false);
+  }
+
+  public drive(carID: number) {
+    const path = this.paths.engine;
+    const query: IQueryParams = {
+      id: carID,
+      status: 'drive',
+    };
+    const options = { method: 'PATCH' };
+
+    return this.load<DriveIndicators>(path, query, options);
+  }
+
+  private startStopEngine(carID: number, start = true) {
+    const path = this.paths.engine;
+    const query: IQueryParams = {
+      id: carID,
+      status: start ? 'started' : 'stopped',
+    };
+    const options = { method: 'PATCH' };
+
+    return this.load<DriveIndicators>(path, query, options);
   }
 }

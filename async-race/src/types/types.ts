@@ -17,10 +17,15 @@ export type Attributes = {
 };
 
 export type IQueryParams = {
-  [index: string]: string;
+  [index: string]: string | number;
 };
 
 export type TableContentObj<T> = {
   total: string,
   cars: T[]
+};
+
+export type DriveIndicators = {
+  velocity: number,
+  distance: number,
 };
