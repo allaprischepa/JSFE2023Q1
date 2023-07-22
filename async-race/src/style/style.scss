@@ -102,7 +102,7 @@ nav {
 .garage-content {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 }
 
 .control {
@@ -121,22 +121,33 @@ nav {
   gap: 8px;
 }
 
-.table-garage {
+.table-header {
+  padding: 0;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.table-garage,
+.table-winners {
+
   display: flex;
   flex-direction: column;
   gap: 10px;
 
-  .table-info {
+  .info-wrapper {
     display: flex;
     gap: 50px;
     align-items: center;
-    justify-content: end;
   }
+
+}
+
+.table-garage {
 
   .table-items {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
 
     .table_item {
       display: flex;
@@ -179,16 +190,8 @@ nav {
 }
 
 .table-winners {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: max-content;
 
-  .table-info {
-    display: flex;
-    gap: 50px;
-    align-items: center;
-  }
+  width: max-content;
 
   .table-items {
     width: fit-content;

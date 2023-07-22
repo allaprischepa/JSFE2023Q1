@@ -52,12 +52,16 @@ export default abstract class View {
   }
 
   public addTableInfo(total: string, parent: Element): void {
+    const info = createElement('div', ['info-wrapper']);
     const totalAmount = createElement('div', ['total-amount']);
-    totalAmount.innerHTML = `<strong>Total: </strong><span class="amount">${total}</span>`;
-
+    const header = createElement('h2', ['table-header']);
     const pager = this.getPager(+total);
 
-    parent.append(totalAmount, pager);
+    totalAmount.innerHTML = `<strong>Total: </strong><span class="amount">${total}</span>`;
+    header.innerText = this.type;
+
+    info.append(totalAmount, pager);
+    parent.append(header, info);
   }
 
   public updateTableInfo(total: string, parent: Element): void {
