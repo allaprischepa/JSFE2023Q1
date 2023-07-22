@@ -22,7 +22,7 @@ const config = {
           template: path.resolve(__dirname, './src/index.html'),
           filename: 'index.html',
           inject: 'body',
-          // favicon: './src/favicon.ico',
+          favicon: './src/favicon.png',
         }),
         new MiniCssExtractPlugin(),
     ],

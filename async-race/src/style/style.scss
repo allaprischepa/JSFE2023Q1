@@ -3,7 +3,7 @@
 $color-main: #fff;
 $color-additional-1: #ec0033;
 $color-additional-2: #00a876;
-$color-additional-3: #bdf400;
+$color-additional-3: #eeffe8;
 $color-start: rgb(241, 85, 85);
 $color-stop: rgb(66, 188, 66);
 $font-color-main: #555;
@@ -134,6 +134,7 @@ nav {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  width: max-content;
 }
 
 .race-controls {
@@ -144,6 +145,22 @@ nav {
 .create-car-form {
   display: flex;
   gap: 8px;
+}
+
+.generate-cars,
+.race-start,
+.race-reset {
+  width: 100%;
+}
+
+.race-start,
+.race-reset {
+  background-color: $color-additional-3;
+  text-transform: uppercase;
+
+  &:hover {
+    background: darken($color-additional-3, 3);
+  }
 }
 
 .table-header {

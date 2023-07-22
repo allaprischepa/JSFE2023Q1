@@ -134,7 +134,7 @@ export default class GarageView extends View {
       value: 'Create',
     };
 
-    const createCar = createElement('div');
+    const createCar = createElement('div', ['controls_item']);
     const form = createElement('form', ['create-car-form']);
     const carName = createElement('input', [], carNamesAttrs);
     const carColor = createElement('input', ['input-type-color'], carColorAttributes);
@@ -156,7 +156,7 @@ export default class GarageView extends View {
   }
 
   private getGenerateCarsElement(): Element {
-    const generateCars = createElement('div');
+    const generateCars = createElement('div', ['controls_item']);
     const button = createElement('button', ['button', 'generate-cars']);
     button.innerText = 'Generate cars';
 
@@ -171,7 +171,7 @@ export default class GarageView extends View {
   }
 
   static getRaceControlsElement(): Element {
-    const raceControls = createElement('div', ['race-controls']);
+    const raceControls = createElement('div', ['controls_item', 'race-controls']);
     const buttonStart = createElement('button', ['button', 'race-start']);
     const buttonReset = createElement('button', ['button', 'race-reset']);
 
