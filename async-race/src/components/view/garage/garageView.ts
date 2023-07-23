@@ -324,9 +324,10 @@ export default class GarageView extends View {
   }
 
   private createCarAnimation(carData: ICar, car: Element, time: number) {
+    const width = car.clientWidth ? `${car.clientWidth}px` : 'calc(2vw + 50px)';
     const effect = new KeyframeEffect(
       car,
-      { left: ['0', `calc(100% - ${car.clientWidth}px)`] },
+      { left: ['0', `calc(100% - ${width}`] },
       { duration: time, fill: 'forwards' },
     );
 
