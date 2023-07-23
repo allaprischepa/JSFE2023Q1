@@ -53,6 +53,16 @@ $banner-z-index: 300;
   }
 }
 
+@mixin sortImage() {
+  display: block;
+  content: '';
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 7px;
+  height: 1em;
+}
+
 body {
   background: $color-main;
   color: $font-color-main;
@@ -250,7 +260,6 @@ nav {
 
   .table-items {
     width: fit-content;
-    counter-reset: winners-counter;
     border-collapse: collapse;
 
     thead {
@@ -262,11 +271,6 @@ nav {
       border: 1px solid;
       padding: 5px 1vw;
       text-align: center;
-    }
-
-    .num::before {
-      counter-increment: winners-counter;
-      content: counter(winners-counter);
     }
 
     & .car_image {
@@ -472,4 +476,27 @@ nav {
     transform: translateY(0);
   }
 
+}
+
+.column-sort {
+  cursor: pointer;
+
+  .column-text {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  & .column-text::after {
+    @include sortImage();
+    background-image: url('../assets/img/sort.png');
+  }
+
+  &[data-order="ASC"] .column-text::after {
+    background-image: url('../assets/img/sort-asc.png');
+  }
+
+  &[data-order="DESC"] .column-text::after {
+    background-image: url('../assets/img/sort-desc.png');
+  }
 }

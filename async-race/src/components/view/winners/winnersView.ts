@@ -10,6 +10,10 @@ export default class WinnersView extends View {
 
   public page: number;
 
+  private sort = '';
+
+  private order = '';
+
   private rows = {
     num: '№',
     image: 'Image',
@@ -47,7 +51,7 @@ export default class WinnersView extends View {
   }
 
   public updateTableContent(page: number, tableInfo: Element, tableItems: Element): void {
-    const result = this.client.getWinners(page, this.pageLimit);
+    const result = this.client.getWinners(page, this.pageLimit, this.sort, this.order);
     result.then((data) => {
       if (data) {
         this.updateTableInfo(data.total, tableInfo);
@@ -69,9 +73,23 @@ export default class WinnersView extends View {
       const tableHeadRow = tableHead.insertRow();
       tableHead.classList.add('table_head');
 
-      Object.values(this.rows).forEach((val) => {
+      Object.entries(this.rows).forEach(([key, val]) => {
         const elem = tableHeadRow.insertCell();
-        elem.innerText = val;
+        elem.classList.add('column-header', `column-${key}`);
+        elem.innerHTML = `<span class="column-text">${val}</span>`;
+
+        switch (key) {
+          case 'wins':
+          case 'time':
+            elem.classList.add('column-sort');
+            elem.addEventListener('click', () => {
+              WinnersView.clearOtherSorting(tableHead, key);
+              this.setSortOrder(elem);
+              this.sortTableItems(key);
+            });
+            break;
+          default:
+        }
       });
     }
   }
@@ -81,7 +99,8 @@ export default class WinnersView extends View {
     tableBody.innerHTML = '';
 
     if (carItems.length) {
-      carItems.forEach((carItem: IWinnerCar) => {
+      carItems.forEach((carItem: IWinnerCar, ind: number) => {
+        const index = ((this.page - 1) * this.pageLimit) + ind + 1;
         const tableRow = tableBody.insertRow();
         tableRow.classList.add('table_row');
 
@@ -90,6 +109,9 @@ export default class WinnersView extends View {
           elem.classList.add(`${key}`);
 
           switch (key) {
+            case 'num':
+              elem.innerText = `${index}`;
+              break;
             case 'image':
               elem.append(CarItem.getCarImage(carItem.color));
               break;
@@ -110,5 +132,31 @@ export default class WinnersView extends View {
     document.addEventListener('updateWinners', () => {
       this.fillTable(this.page);
     });
+  }
+
+  private setSortOrder(elem: Element): string {
+    let order = elem.getAttribute('data-order');
+
+    if (order) order = order === 'ASC' ? 'DESC' : '';
+    else order = 'ASC';
+
+    this.order = order;
+    elem.setAttribute('data-order', order);
+
+    return order;
+  }
+
+  static clearOtherSorting(tableHead: Element, key: string) {
+    const columns = tableHead.querySelectorAll(`.column-header:not(.column-${key})`);
+
+    if (columns) columns.forEach((column) => column.removeAttribute('data-order'));
+  }
+
+  private sortTableItems(sort: string) {
+    const tableInfo = this.table.querySelector('.table-info');
+    const tableItems = this.table.querySelector('.table-items');
+    this.sort = sort;
+
+    this.updateTableContent(this.page, tableInfo, tableItems);
   }
 }

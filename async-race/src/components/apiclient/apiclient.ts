@@ -36,12 +36,14 @@ export default class APIClient {
     return result;
   }
 
-  public async getWinners(page = 0, limit = 10): Promise<void | TableContentObj<IWinnerCar>> {
+  public async getWinners(page = 0, limit = 10, sort = '', order = ''): Promise<void | TableContentObj<IWinnerCar>> {
     const path = this.paths.winners;
-    const query: IQueryParams = {
+    let query: IQueryParams = {
       _page: `${page}`,
       _limit: `${limit}`,
     };
+
+    if (sort && order) query = { ...query, _sort: sort, _order: order };
 
     const response = this.request(path, query);
     const result = response
