@@ -14,6 +14,8 @@ export default class GarageView extends View {
 
   private control: Element;
 
+  private winMessage: Element;
+
   public pageLimit = 7;
 
   public page: number;
@@ -30,6 +32,7 @@ export default class GarageView extends View {
     this.page = 1;
     this.table = this.getTable();
     this.control = this.getControlElement();
+    this.winMessage = GarageView.getWinMessage();
   }
 
   public getViewContent(): Element {
@@ -296,10 +299,10 @@ export default class GarageView extends View {
   private engineStart(carData: ICar, car: Element, start: Element, stop: Element) {
     const response = this.client.startEngine(carData.id);
     start.classList.add('inactive');
+    document.dispatchEvent(new CustomEvent('engineStart'));
 
     response.then((data: DriveIndicators) => {
       stop.classList.remove('inactive');
-      document.dispatchEvent(new CustomEvent('engineStart'));
 
       const time = data.distance / data.velocity;
       const carAnimation = this.createCarAnimation(carData, car, time);
@@ -379,6 +382,7 @@ export default class GarageView extends View {
     this.activateResetButton();
 
     if (carData) {
+      this.showWinnerMessage(carData.name, time);
       this.client.createWinner(carData.id, time)
         .then(GarageView.generateUpdateWinnersEvent);
     }
@@ -425,5 +429,27 @@ export default class GarageView extends View {
   private activateResetButton(): void {
     const buttonReset = this.control.querySelector('.race-reset');
     if (buttonReset) buttonReset.classList.remove('inactive');
+  }
+
+  private showWinnerMessage(name: string, time: number) {
+    const messageText = this.winMessage.querySelector('.text');
+
+    if (messageText instanceof HTMLElement) {
+      messageText.innerHTML = `<div class="winner"><strong>${name}</strong> won!</div><div>[${time} sec]</div>`;
+
+      this.winMessage.classList.add('show');
+      setTimeout(() => this.winMessage.classList.remove('show'), 5000);
+    }
+  }
+
+  static getWinMessage(): Element {
+    const banner = createElement('div', ['banner']);
+    const bannerText = createElement('div', ['text']);
+    bannerText.innerText = 'finish';
+
+    banner.append(bannerText);
+    document.body.append(banner);
+
+    return banner;
   }
 }

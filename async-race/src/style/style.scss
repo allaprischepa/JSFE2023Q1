@@ -12,6 +12,7 @@ $font-color-additional-2: #888;
 $color-inactive: #dbdbdb;
 
 $edit-form-z-index: 299;
+$banner-z-index: 300;
 
 :root {
   --car-width: calc(2vw + 50px);
@@ -424,6 +425,51 @@ nav {
 
   .garage-content .pager {
     pointer-events: none;
+  }
+
+}
+
+.banner {
+
+  $width: 300px;
+
+  position: fixed;
+  top: 0;
+  right: 10vw;
+  width: $width;
+  min-height: calc($width / 2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: red;
+  color: $color-main;
+  font-size: 1.1em;
+  text-align: center;
+  transform: translateY(calc(-100% - $width / 4));
+  transition: all 1s ease-in-out;
+  z-index: $banner-z-index;
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 100%;
+    border-left: calc($width / 2) solid red;
+    border-right: calc($width / 2) solid red;
+    border-bottom: calc($width / 4) solid transparent;
+  }
+
+  .text {
+    padding: 10px 20px;
+
+    .winner {
+      font-size: 1.5em;
+    }
+  }
+
+  &.show {
+    transform: translateY(0);
   }
 
 }

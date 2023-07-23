@@ -17,5 +17,5 @@ export function createElement(tag: string, classlist: string[] = [], attributes:
 }
 
 export function toSeconds(time: number): number {
-  return +(time / 1000).toFixed(3);
+  return +(time / 1000).toFixed(2);
 }
