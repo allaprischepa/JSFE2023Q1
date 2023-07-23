@@ -4,8 +4,6 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const isProduction = process.env.NODE_ENV == 'production';
-
 const stylesHandler = MiniCssExtractPlugin.loader;
 
 const config = {
@@ -55,11 +53,11 @@ const config = {
     },
 };
 
-module.exports = () => {
+module.exports = ({ mode }) => {
+    isProduction = process.env.NODE_ENV == 'production' || mode == 'prod';
+
     if (isProduction) {
         config.mode = 'production';
-
-
     } else {
         config.mode = 'development';
         config.devtool = 'inline-source-map';
