@@ -1,6 +1,5 @@
 import {
   DriveIndicators,
-  DriveMode,
   ICar,
   IQueryParams,
   IWinner,
@@ -21,15 +20,16 @@ export default class APIClient {
   public async getCars(page = 0, limit = 10): Promise<void | TableContentObj<ICar>> {
     const path = this.paths.garage;
     const query: IQueryParams = {
-      _page: `${page}`,
-      _limit: `${limit}`,
+      _page: page.toString(),
+      _limit: limit.toString(),
     };
 
     const response = this.request(path, query);
     const result = response
       .then((res) => {
-        const totalAmount = res.headers.get('X-Total-Count');
-        return res.json().then((data: ICar[]) => ({ total: totalAmount, cars: data }));
+        const total = res.headers.get('X-Total-Count');
+
+        return res.json().then((cars: ICar[]) => ({ total, cars }));
       })
       .catch((error) => { console.log(error); });
 
@@ -39,19 +39,21 @@ export default class APIClient {
   public async getWinners(page = 0, limit = 10, sort = '', order = ''): Promise<void | TableContentObj<IWinnerCar>> {
     const path = this.paths.winners;
     let query: IQueryParams = {
-      _page: `${page}`,
-      _limit: `${limit}`,
+      _page: page.toString(),
+      _limit: limit.toString(),
     };
 
-    if (sort && order) query = { ...query, _sort: sort, _order: order };
+    if (sort && order) {
+      query = { ...query, _sort: sort, _order: order };
+    }
 
     const response = this.request(path, query);
     const result = response
       .then((res) => {
-        const totalAmount = res.headers.get('X-Total-Count');
+        const total = res.headers.get('X-Total-Count');
         return res.json().then(async (data: IWinner[]) => {
-          const carsArr = await this.getCarWinners(data);
-          return { total: totalAmount, cars: carsArr };
+          const cars = await this.getCarWinners(data);
+          return { total, cars };
         });
       })
       .catch((error) => { console.log(error); });
@@ -59,29 +61,28 @@ export default class APIClient {
     return result;
   }
 
-  private async getCarWinners(winners: IWinner[]): Promise<IWinnerCar[]> {
-    const results = winners.map(async (winner: IWinner, ind: number) => {
-      const car = await this.getCar(winner.id);
-      const res: IWinnerCar = { ...winners[ind], name: car?.name || 'Name', color: car?.color || '#000' };
+  private getCarWinners(winners: IWinner[]): Promise<IWinnerCar[]> {
+    const results = winners.map((winner: IWinner) => this.getCar(winner.id)
+      .then((car: ICar) => {
+        const name = car?.name || 'Name';
+        const color = car?.color || '#000';
 
-      return res;
-    });
+        return { ...winner, name, color };
+      }));
 
     return Promise.all(results);
   }
 
   public async getCar(id: number): Promise<ICar> {
     const path = `${this.paths.garage}/${id}`;
-    const car = await this.load<ICar>(path);
 
-    return car;
+    return this.load<ICar>(path);
   }
 
   public async getWinner(id: number): Promise<IWinner> {
     const path = `${this.paths.winners}/${id}`;
-    const car = await this.load<IWinner>(path);
 
-    return car;
+    return this.load<IWinner>(path);
   }
 
   private request(path: string, query: IQueryParams = {}, options = {}): Promise<Response> {
@@ -92,16 +93,14 @@ export default class APIClient {
   }
 
   static getQueryString(query: IQueryParams = {}): string {
-    const queryParams: string[] = [];
-    Object.keys(query).forEach((key) => queryParams.push(`${key}=${query[key]}`));
+    const queryParams: string[] = Object.keys(query).reduce((accumulator, key) => [...accumulator, `${key}=${query[key]}`], []);
 
-    return queryParams.length ? `?${queryParams.join('&')}` : '';
+    return `?${queryParams.join('&')}`;
   }
 
   private async load<T>(path: string, query: IQueryParams = {}, options = {}): Promise<T> {
     return this.request(path, query, options)
       .then((res) => res.json())
-      .then((data: T) => data)
       .catch((error) => {
         console.log(error);
 
@@ -116,17 +115,13 @@ export default class APIClient {
       const carName = CarItem.generateRandomName();
       const carColor = CarItem.generateRandomColor();
 
-      promises.push(this.createSingleCar(carName, carColor));
+      promises.push(this.createCar(carName, carColor));
     }
 
     return Promise.all(promises);
   }
 
   public createCar(carName: string, carColor: string): Promise<ICar> {
-    return this.createSingleCar(carName, carColor);
-  }
-
-  private createSingleCar(carName: string, carColor: string) {
     const path = this.paths.garage;
     const requestObj = { name: carName, color: carColor };
     const options = {
@@ -196,10 +191,12 @@ export default class APIClient {
     const response = this.request(path, query, options);
     const result = response
       .then((res) => {
-        if (!res.ok) return { success: false };
+        if (!res.ok) {
+          return { success: false };
+        }
+
         return res.json();
       })
-      .then((data: DriveMode) => data)
       .catch((error) => {
         console.log(error);
 

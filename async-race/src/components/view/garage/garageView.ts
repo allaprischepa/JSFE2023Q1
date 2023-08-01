@@ -1,3 +1,4 @@
+import { PAGE_LIMIT_GARAGE } from '../../../consts/consts';
 import {
   Attributes,
   DriveIndicators,
@@ -16,7 +17,7 @@ export default class GarageView extends View {
 
   private winMessage: Element;
 
-  public pageLimit = 7;
+  public pageLimit = PAGE_LIMIT_GARAGE;
 
   public page: number;
 

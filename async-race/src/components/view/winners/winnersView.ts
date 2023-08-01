@@ -1,3 +1,4 @@
+import { PAGE_LIMIT_WINNERS } from '../../../consts/consts';
 import { IWinnerCar } from '../../../types/types';
 import { createElement } from '../../../utils/utils';
 import CarItem from '../car/carItem';
@@ -6,7 +7,7 @@ import View from '../view';
 export default class WinnersView extends View {
   public table: Element;
 
-  public pageLimit = 10;
+  public pageLimit = PAGE_LIMIT_WINNERS;
 
   public page: number;
 
@@ -78,17 +79,13 @@ export default class WinnersView extends View {
         elem.classList.add('column-header', `column-${key}`);
         elem.innerHTML = `<span class="column-text">${val}</span>`;
 
-        switch (key) {
-          case 'wins':
-          case 'time':
-            elem.classList.add('column-sort');
-            elem.addEventListener('click', () => {
-              WinnersView.clearOtherSorting(tableHead, key);
-              this.setSortOrder(elem);
-              this.sortTableItems(key);
-            });
-            break;
-          default:
+        if (['wins', 'time'].includes(key)) {
+          elem.classList.add('column-sort');
+          elem.addEventListener('click', () => {
+            WinnersView.clearOtherSorting(tableHead, key);
+            this.setSortOrder(elem);
+            this.sortTableItems(key);
+          });
         }
       });
     }
@@ -135,15 +132,19 @@ export default class WinnersView extends View {
   }
 
   private setSortOrder(elem: Element): string {
-    let order = elem.getAttribute('data-order');
+    const oldOrder = elem.getAttribute('data-order');
+    let newOrder = 'ASC';
 
-    if (order) order = order === 'ASC' ? 'DESC' : '';
-    else order = 'ASC';
+    if (oldOrder === 'ASC') {
+      newOrder = 'DESC';
+    } else if (oldOrder === 'DESC') {
+      newOrder = '';
+    }
 
-    this.order = order;
-    elem.setAttribute('data-order', order);
+    this.order = newOrder;
+    elem.setAttribute('data-order', newOrder);
 
-    return order;
+    return newOrder;
   }
 
   static clearOtherSorting(tableHead: Element, key: string) {
