@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pets</title>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.png">
+    <link rel="stylesheet" href="../styles/style.css">
+    <script src="../scripts/script.js"></script>
+    <script src="../scripts/slider.js"></script>
+</head>
+<body>
+    <h1>Shelter: Our Pets Page</h1>
+    <div class="top-section">
+        <div class="container">
+            <header>
+                <a href="javascript:void(0);">
+                    <div class="logo">
+                        <div class="logo-title">Cozy House</div>
+                        <div class="logo-subtitle">Shelter for pets in Boston</div>
+                    </div>
+                </a>
+                <i class="icon--burger" id="burgerButton">
+                    <div class="icon--burger__bar"></div>
+                    <div class="icon--burger__bar"></div>
+                    <div class="icon--burger__bar"></div>
+                </i>
+                <nav class="menu-block paragraph-1" id="menuBlock">
+                    <a href="../main/index.html">About the shelter</a>
+                    <a href="" class="active">Our pets</a>
+                    <a href="../main/index.html#help">Help the shelter</a>
+                    <a href="#footer">Contacts</a>
+                </nav>
+            </header>
+        </div>
+    </div>
+    <div class="our-pets--pets-section pets-section" id="our-friends">
+        <div class="container">
+            <div class="child-item pets-header"><h3>Our friends who are&nbsp;looking for a house</h3></div>
+            <div class="child-item slider-wrapper">
+                <div class="our-pets-slider" id="ourPetsSliderContainer">
+                </div>
+            </div>
+            <div class="child-item slider-controls" id="ourPetsSliderControls">
+            </div>
+        </div>
+    </div>
+    <div class="dark-section footer-section" id="footer">
+        <footer>
+            <div class="container">
+                <div class="child-item">
+                    <div class="footer-contacts">
+                        <div class="child-item footer-contacts-header"><h3>For questions and suggestions</h3></div>
+                        <div class="child-item"><a href="mailto:email@shelter.com" class="contact-link"><i class="icon--email"></i><h4>email@shelter.com</h4></a></div>
+                        <div class="child-item"><a href="tel:+136745677554" class="contact-link"><i class="icon--phone"></i><h4>+13 674 567 75 54</h4></a></div>
+                    </div>
+                </div>
+                <div class="child-item">
+                    <div class="footer-locations">
+                        <div class="child-item footer-locations-header"><h3>We are waiting for your&nbsp;visit</h3></div>
+                        <div class="child-item"><a href="https://goo.gl/maps/uVe9HiqbrFqYtPjZ7" class="contact-link" target="_blank"><i class="icon--location"></i><h4>1 Central Street, Boston (entrance from the store)</h4></a></div>
+                        <div class="child-item"><a href="https://goo.gl/maps/Sier2ZytyzBNxnQC9" class="contact-link" target="_blank"><i class="icon--location"></i><h4>18 South Park, London</h4></a></div>
+                    </div>
+                </div>
+                <div class="child-item footer-image">
+                    <picture>
+                        <source media="(max-width:320px)" srcset="../assets/footer-puppy.png">
+                        <source media="(max-width:768px)" srcset="../assets/footer-puppy-1.png">
+                        <source media="(min-width:769px)" srcset="../assets/footer-puppy-2.png">
+                        <img src="../assets/footer-puppy-2.png" alt="Footer image" style="width:auto">
+                    </picture>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <div class="overlay"></div>
+    <div class="card-description-popup"></div>
+</body>
+</html>
